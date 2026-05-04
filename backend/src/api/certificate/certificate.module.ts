@@ -8,8 +8,8 @@ import { AutoIssueCertificateTask } from '@/background/tasks/auto-issue-certific
 import { CertificateController } from '@/api/certificate/certificate.controller';
 import { CertificateService } from '@/api/certificate/certificate.service';
 import { OnCertificateIssuedHandler } from '@/api/certificate/events/on-certificate-issued.handler';
-import { CERTIFICATE_REPOSITORY } from '@/common/abstractions/certificate.repository.interface';
-import { FILE_STORAGE_SERVICE } from '@/common/abstractions/file-storage.service.interface';
+import { CERTIFICATE_REPOSITORY } from '@/common/abstractions/repositories/i-certificate.repository';
+import { FILE_STORAGE_SERVICE } from '@/common/abstractions/services/i-file-storage.service';
 import { EnrollmentModule } from '@/api/enrollment/enrollment.module';
 
 @Module({

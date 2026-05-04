@@ -8,8 +8,8 @@ import { MuxVideoStreamingAdapter } from '@/libs/video/mux-video.service';
 import { CourseController } from '@/api/course/course.controller';
 import { CourseService } from '@/api/course/course.service';
 import { OnLessonCompletedHandler } from '@/api/course/events/on-lesson-completed.handler';
-import { COURSE_REPOSITORY } from '@/common/abstractions/course.repository.interface';
-import { VIDEO_STREAMING_SERVICE } from '@/common/abstractions/video-streaming.service.interface';
+import { COURSE_REPOSITORY } from '@/common/abstractions/repositories/i-course.repository';
+import { VIDEO_STREAMING_SERVICE } from '@/common/abstractions/services/i-video-streaming.service';
 import { EnrollmentModule } from '@/api/enrollment/enrollment.module';
 import { CertificateModule } from '@/api/certificate/certificate.module';
 

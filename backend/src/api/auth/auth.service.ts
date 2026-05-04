@@ -11,12 +11,12 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(registerDto: RegisterDto) {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(registerDto.password, saltRounds);
-    
+
     const user = await this.userService.createUser(
       registerDto.email,
       passwordHash,
@@ -24,12 +24,9 @@ export class AuthService {
     );
 
     return {
-      message: 'User registered successfully',
-      user: {
-        id: user.id.value,
-        email: user.email,
-        role: user.role,
-      },
+      id: user.id.value,
+      email: user.email,
+      role: user.role,
     };
   }
 
@@ -48,7 +45,6 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
 
     return {
-      message: 'Login successful',
       accessToken,
       user: {
         id: user.id.value,

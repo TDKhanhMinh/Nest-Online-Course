@@ -15,10 +15,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
   catch(exception: unknown, host: ArgumentsHost): void {
-    // In certain situations `httpAdapter` might not be available in the
-    // constructor method, thus we should resolve it here.
     const { httpAdapter } = this.httpAdapterHost;
-
     const ctx = host.switchToHttp();
 
     const httpStatus =
@@ -33,19 +30,34 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const exceptionResponse =
       exception instanceof HttpException ? exception.getResponse() : null;
+    
     const additionalData =
       typeof exceptionResponse === 'object' && exceptionResponse !== null
         ? (exceptionResponse as Record<string, unknown>)
         : {};
 
+    // Handle NestJS Validation Errors (class-validator)
+    let messageCode = errorMessage.toUpperCase().replace(/\s+/g, '_');
+    let data: any = additionalData;
+
+    if (httpStatus === HttpStatus.BAD_REQUEST && Array.isArray(additionalData['message'])) {
+      messageCode = 'VALIDATION_ERROR';
+      data = {
+        errors: additionalData['message'],
+      };
+    } else {
+      // Clean up data by removing redundant fields
+      const { statusCode: _, message: __, error: ___, ...rest } = additionalData;
+      data = Object.keys(rest).length > 0 ? rest : {};
+    }
+
     const responseBody = {
       statusCode: httpStatus,
-      message_code: errorMessage.toUpperCase().replace(/\s+/g, '_'),
-      data: additionalData,
+      message_code: messageCode,
+      data: data,
       timestamp: new Date().toISOString(),
     };
 
-    // Log the actual error stack for debugging purposes
     if (exception instanceof Error) {
       this.logger.error(`[${httpStatus}] ${exception.message}`, exception.stack);
     } else {

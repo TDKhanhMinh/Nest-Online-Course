@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ICourseRepository } from '@/common/abstractions/course.repository.interface';
+import { ICourseRepository } from '@/common/abstractions/repositories/i-course.repository';
 import { Course } from '@/api/course/entities/course.entity';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { CourseDocument } from '@/database/schemas/course.schema';

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   IVideoStreamingService,
   VideoUploadResult,
-} from '@/common/abstractions/video-streaming.service.interface';
+} from '@/common/abstractions/services/i-video-streaming.service';
 
 /**
  * Adapter for Mux video platform.

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ICertificateRepository } from '@/common/abstractions/certificate.repository.interface';
+import { ICertificateRepository } from '@/common/abstractions/repositories/i-certificate.repository';
 import { Certificate } from '@/api/certificate/entities/certificate.entity';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { CertificateDocument } from '@/database/schemas/certificate.schema';

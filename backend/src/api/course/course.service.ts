@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ICourseRepository, COURSE_REPOSITORY } from '@/common/abstractions/course.repository.interface';
-import { IEnrollmentRepository, ENROLLMENT_REPOSITORY } from '@/common/abstractions/enrollment.repository.interface';
+import { ICourseRepository, COURSE_REPOSITORY } from '@/common/abstractions/repositories/i-course.repository';
+import { IEnrollmentRepository, ENROLLMENT_REPOSITORY } from '@/common/abstractions/repositories/i-enrollment.repository';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { QuizScore } from '@/api/course/value-objects/quiz-score.vo';
 import { DomainException } from '@/exceptions/domain-exception.base';

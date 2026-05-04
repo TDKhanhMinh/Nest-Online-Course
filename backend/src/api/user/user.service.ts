@@ -1,5 +1,5 @@
 import { Injectable, Inject, ConflictException, NotFoundException } from '@nestjs/common';
-import { IUserRepository } from '@/common/abstractions/user.repository.interface';
+import { IUserRepository } from '@/common/abstractions/repositories/i-user.repository';
 import { User } from './entities/user.entity';
 import { Role } from '@/common/types/role.enum';
 

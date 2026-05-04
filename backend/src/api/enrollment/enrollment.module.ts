@@ -6,8 +6,8 @@ import { EnrollmentMapper } from '@/api/enrollment/enrollment.mapper';
 import { SesEmailNotificationAdapter } from '@/libs/email/ses-email.service';
 import { EnrollmentController } from '@/api/enrollment/enrollment.controller';
 import { EnrollmentService } from '@/api/enrollment/enrollment.service';
-import { ENROLLMENT_REPOSITORY } from '@/common/abstractions/enrollment.repository.interface';
-import { EMAIL_NOTIFICATION_SERVICE } from '@/common/abstractions/email-notification.service.interface';
+import { ENROLLMENT_REPOSITORY } from '@/common/abstractions/repositories/i-enrollment.repository';
+import { EMAIL_NOTIFICATION_SERVICE } from '@/common/abstractions/services/i-email-notification.service';
 import { CourseModule } from '../course/course.module';
 
 @Module({

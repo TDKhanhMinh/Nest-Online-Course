@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { IEnrollmentRepository, ENROLLMENT_REPOSITORY } from '@/common/abstractions/enrollment.repository.interface';
-import { ICourseRepository, COURSE_REPOSITORY } from '@/common/abstractions/course.repository.interface';
-import { IEmailNotificationService, EMAIL_NOTIFICATION_SERVICE } from '@/common/abstractions/email-notification.service.interface';
+import { IEnrollmentRepository, ENROLLMENT_REPOSITORY } from '@/common/abstractions/repositories/i-enrollment.repository';
+import { ICourseRepository, COURSE_REPOSITORY } from '@/common/abstractions/repositories/i-course.repository';
+import { IEmailNotificationService, EMAIL_NOTIFICATION_SERVICE } from '@/common/abstractions/services/i-email-notification.service';
 import { Enrollment } from '@/api/enrollment/entities/enrollment.entity';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { DomainException } from '@/exceptions/domain-exception.base';

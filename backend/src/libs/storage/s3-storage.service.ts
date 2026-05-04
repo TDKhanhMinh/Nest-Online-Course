@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IFileStorageService } from '@/common/abstractions/file-storage.service.interface';
+import { IFileStorageService } from '@/common/abstractions/services/i-file-storage.service';
 
 /**
  * AWS S3 adapter implementing IFileStorageService.

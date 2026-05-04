@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards, Inject } from '@nestjs/common';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { CurrentUser, JwtPayload } from '@/decorators/current-user.decorator';
-import { CERTIFICATE_REPOSITORY, ICertificateRepository } from '@/common/abstractions/certificate.repository.interface';
+import { CERTIFICATE_REPOSITORY, ICertificateRepository } from '@/common/abstractions/repositories/i-certificate.repository';
 import { UniqueId } from '@/common/types/unique-id.vo';
 
 @Controller('certificates')

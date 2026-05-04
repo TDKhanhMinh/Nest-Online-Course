@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { LessonCompletedEvent } from '@/api/course/events/lesson-completed.event';
-import { ICourseRepository, COURSE_REPOSITORY } from '@/common/abstractions/course.repository.interface';
+import { ICourseRepository, COURSE_REPOSITORY } from '@/common/abstractions/repositories/i-course.repository';
 import { CertificateService } from '@/api/certificate/certificate.service';
 
 @Injectable()

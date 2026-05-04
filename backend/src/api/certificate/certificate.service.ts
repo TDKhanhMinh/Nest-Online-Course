@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ICertificateRepository, CERTIFICATE_REPOSITORY } from '@/common/abstractions/certificate.repository.interface';
-import { IFileStorageService, FILE_STORAGE_SERVICE } from '@/common/abstractions/file-storage.service.interface';
+import { ICertificateRepository, CERTIFICATE_REPOSITORY } from '@/common/abstractions/repositories/i-certificate.repository';
+import { IFileStorageService, FILE_STORAGE_SERVICE } from '@/common/abstractions/services/i-file-storage.service';
 import { Certificate } from '@/api/certificate/entities/certificate.entity';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { DomainException } from '@/exceptions/domain-exception.base';
