@@ -1,12 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { DomainExceptionFilter } from './common/filters/domain-exception.filter';
+import { HttpAdapterHost } from '@nestjs/core';
+import { DomainExceptionFilter } from '@/filters/domain-exception.filter';
+import { AllExceptionsFilter } from '@/filters/all-exceptions.filter';
+import { TransformInterceptor } from '@/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api/v1');
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -16,7 +20,11 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalFilters(new DomainExceptionFilter());
+  const httpAdapterHost = app.get(HttpAdapterHost);
+  app.useGlobalFilters(
+    new AllExceptionsFilter(httpAdapterHost),
+    new DomainExceptionFilter(),
+  );
 
   app.enableCors();
 

@@ -4,10 +4,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { JwtModule } from '@nestjs/jwt';
-import databaseConfig from './infrastructure/config/database.config';
-import { CourseModule } from './modules/course/course.module';
-import { EnrollmentModule } from './modules/enrollment/enrollment.module';
-import { CertificateModule } from './modules/certificate/certificate.module';
+import databaseConfig from '@/config/database.config';
+import { CourseModule } from '@/api/course/course.module';
+import { EnrollmentModule } from '@/api/enrollment/enrollment.module';
+import { CertificateModule } from '@/api/certificate/certificate.module';
+import { UserModule } from '@/api/user/user.module';
+import { AuthModule } from '@/api/auth/auth.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { CertificateModule } from './modules/certificate/certificate.module';
     CourseModule,
     EnrollmentModule,
     CertificateModule,
+    UserModule,
+    AuthModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
