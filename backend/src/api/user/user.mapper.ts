@@ -9,13 +9,13 @@ export class UserMapper {
         passwordHash: doc.passwordHash,
         role: doc.role,
       },
-      doc._id,
+      (doc._id as any).toString(),
     );
   }
 
   static toPersistence(user: User): any {
     return {
-      _id: user.id.value,
+      _id: user.id.value as any,
       email: user.email,
       passwordHash: user.passwordHash,
       role: user.role,

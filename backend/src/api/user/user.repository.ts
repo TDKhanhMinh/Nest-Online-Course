@@ -33,4 +33,20 @@ export class UserRepository implements IUserRepository {
       })
       .exec();
   }
+
+  async findAll(limit: number, offset: number): Promise<{ users: User[], total: number }> {
+    const [docs, total] = await Promise.all([
+      this.userModel.find().sort({ createdAt: -1, _id: -1 }).skip(offset).limit(limit).exec(),
+      this.userModel.countDocuments().exec(),
+    ]);
+
+    return {
+      users: docs.map(doc => UserMapper.toDomain(doc)),
+      total,
+    };
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.userModel.findByIdAndDelete(id).exec();
+  }
 }

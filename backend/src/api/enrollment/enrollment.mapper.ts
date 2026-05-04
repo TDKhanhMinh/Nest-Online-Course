@@ -14,13 +14,13 @@ export class EnrollmentMapper {
         status:     new EnrollmentStatus(doc.status as EnrollmentStatusValue),
         enrolledAt: doc.enrolledAt,
       },
-      new UniqueId(doc._id),
+      new UniqueId((doc._id as any).toString()),
     );
   }
 
-  toPersistence(domain: Enrollment): Partial<EnrollmentDocument> {
+  toPersistence(domain: Enrollment): any {
     return {
-      _id:        domain.id.value,
+      _id:        domain.id.value as any,
       studentId:  domain.studentId.value,
       courseId:   domain.courseId.value,
       status:     domain.status.value,

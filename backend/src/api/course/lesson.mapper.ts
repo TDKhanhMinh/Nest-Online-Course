@@ -16,14 +16,14 @@ export class LessonMapper {
         isCompleted:  doc.isCompleted,
         lastScore:    new QuizScore(doc.lastScore),
       },
-      new UniqueId(doc._id),
+      new UniqueId((doc as any)._id.toString()),
     );
   }
 
   /** Domain Entity → plain object for Mongoose sub-document */
-  toPersistence(domain: Lesson): LessonSubDocument {
+  toPersistence(domain: Lesson): any {
     return {
-      _id:          domain.id.value,
+      _id:          domain.id.value as any,
       title:        domain.title,
       videoAssetId: domain.videoAssetId,
       order:        domain.order,

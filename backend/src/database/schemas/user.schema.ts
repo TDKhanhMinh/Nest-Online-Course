@@ -3,9 +3,7 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Role } from '@/common/types/role.enum';
 
 @Schema({ timestamps: true })
-export class UserDocument extends Document<string> {
-  @Prop({ type: String, required: true })
-  declare _id: string;
+export class UserDocument extends Document {
 
   @Prop({ required: true, unique: true })
   email: string;

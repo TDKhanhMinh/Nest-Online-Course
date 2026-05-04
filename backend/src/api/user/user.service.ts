@@ -32,4 +32,30 @@ export class UserService {
     }
     return user;
   }
+
+  async findAll(limit: number, offset: number): Promise<{ users: User[], total: number }> {
+    return this.userRepository.findAll(limit, offset);
+  }
+
+  async updateUser(id: string, updateData: { email?: string, role?: Role }): Promise<User> {
+    const user = await this.findById(id);
+
+    if (updateData.email && updateData.email !== user.email) {
+      const existing = await this.userRepository.findByEmail(updateData.email);
+      if (existing) throw new ConflictException('Email already in use');
+      user.updateEmail(updateData.email);
+    }
+
+    if (updateData.role) {
+      user.updateRole(updateData.role);
+    }
+
+    await this.userRepository.save(user);
+    return user;
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    const user = await this.findById(id);
+    await this.userRepository.delete(user.id.value);
+  }
 }

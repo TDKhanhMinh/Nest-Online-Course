@@ -6,7 +6,7 @@ import { Certificate } from '@/api/certificate/entities/certificate.entity';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { DomainException } from '@/exceptions/domain-exception.base';
 import { ErrorCode } from '@/exceptions/error-codes.enum';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export class IssueCertificateCommand {
   studentId: string;
@@ -30,19 +30,19 @@ export class CertificateService {
     private readonly fileStorage: IFileStorageService,
 
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async issueCertificate(cmd: IssueCertificateCommand): Promise<IssueCertificateResult> {
     const studentId = new UniqueId(cmd.studentId);
-    const courseId  = new UniqueId(cmd.courseId);
+    const courseId = new UniqueId(cmd.courseId);
 
     const existing = await this.certRepo.findByStudentAndCourse(studentId, courseId);
     if (existing) throw new DomainException(ErrorCode.CERTIFICATE_ALREADY_ISSUED, `Certificate already issued for student "${cmd.studentId}" and course "${cmd.courseId}"`);
 
-    const certNumber = `CERT-${Date.now()}-${uuidv4().slice(0, 8).toUpperCase()}`;
+    const certNumber = `CERT-${Date.now()}-${randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`;
 
     const pdfBuffer = Buffer.from(`Certificate ${certNumber}`); // Placeholder
-    const certUrl   = await this.fileStorage.uploadFile(pdfBuffer, `${certNumber}.pdf`, 'application/pdf');
+    const certUrl = await this.fileStorage.uploadFile(pdfBuffer, `${certNumber}.pdf`, 'application/pdf');
 
     const certificate = Certificate.issue(studentId, courseId, certNumber, certUrl);
     await this.certRepo.save(certificate);
@@ -53,10 +53,10 @@ export class CertificateService {
     certificate.clearDomainEvents();
 
     return {
-      certificateId:     certificate.id.value,
+      certificateId: certificate.id.value,
       certificateNumber: certificate.certificateNumber,
-      certificateUrl:    certificate.certificateUrl,
-      issuedAt:          certificate.issuedAt,
+      certificateUrl: certificate.certificateUrl,
+      issuedAt: certificate.issuedAt,
     };
   }
 

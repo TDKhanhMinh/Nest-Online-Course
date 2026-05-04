@@ -1,11 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 
-@Schema({ collection: 'certificates', timestamps: true })
-export class CertificateDocument extends Document<string> {
-  @Prop({ type: String, required: true })
-  declare _id: string;
-
+@Schema({ timestamps: true })
+export class CertificateDocument extends Document {
   @Prop({ type: String, required: true, index: true })
   studentId: string;
 

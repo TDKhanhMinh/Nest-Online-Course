@@ -14,13 +14,13 @@ export class CertificateMapper {
         certificateUrl:    doc.certificateUrl,
         issuedAt:          doc.issuedAt,
       },
-      new UniqueId(doc._id),
+      new UniqueId((doc._id as any).toString()),
     );
   }
 
-  toPersistence(domain: Certificate): Partial<CertificateDocument> {
+  toPersistence(domain: Certificate): any {
     return {
-      _id:               domain.id.value,
+      _id:               domain.id.value as any,
       studentId:         domain.studentId.value,
       courseId:          domain.courseId.value,
       certificateNumber: domain.certificateNumber,

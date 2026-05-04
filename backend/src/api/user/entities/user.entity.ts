@@ -21,6 +21,14 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.role;
   }
 
+  updateEmail(email: string): void {
+    this.props.email = email;
+  }
+
+  updateRole(role: Role): void {
+    this.props.role = role;
+  }
+
   public static create(props: UserProps, id?: string): User {
     return new User(props, id ? new UniqueId(id) : UniqueId.generate());
   }

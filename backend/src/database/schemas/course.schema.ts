@@ -5,11 +5,8 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
  * LessonSubDocument – nhúng trực tiếp vào CourseDocument.
  * MongoDB: Lessons là sub-document của Course (1 aggregate = 1 collection).
  */
-@Schema({ _id: false })
+@Schema()
 export class LessonSubDocument {
-  @Prop({ type: String, required: true })
-  _id: string;
-
   @Prop({ required: true })
   title: string;
 
@@ -28,11 +25,8 @@ export class LessonSubDocument {
 
 export const LessonSubSchema: MongooseSchema = SchemaFactory.createForClass(LessonSubDocument);
 
-@Schema({ collection: 'courses', timestamps: true })
-export class CourseDocument extends Document<string> {
-  @Prop({ type: String, required: true })
-  declare _id: string;
-
+@Schema({ timestamps: true })
+export class CourseDocument extends Document {
   @Prop({ required: true })
   title: string;
 

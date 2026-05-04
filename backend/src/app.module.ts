@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { JwtModule } from '@nestjs/jwt';
-import databaseConfig from '@/config/database.config';
+import databaseConfig from '@/database/config/database.config';
 import { CourseModule } from '@/api/course/course.module';
 import { EnrollmentModule } from '@/api/enrollment/enrollment.module';
 import { CertificateModule } from '@/api/certificate/certificate.module';

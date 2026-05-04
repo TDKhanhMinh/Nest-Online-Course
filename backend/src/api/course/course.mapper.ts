@@ -21,14 +21,14 @@ export class CourseMapper {
         isPublished:  doc.isPublished,
         lessons:      (doc.lessons ?? []).map((l) => this.lessonMapper.toDomain(l)),
       },
-      new UniqueId(doc._id),
+      new UniqueId((doc._id as any).toString()),
     );
   }
 
   /** Domain Aggregate → plain object for Mongoose save */
-  toPersistence(domain: Course): Partial<CourseDocument> {
+  toPersistence(domain: Course): any {
     return {
-      _id:         domain.id.value,
+      _id:         domain.id.value as any,
       title:       domain.title.value,
       description: domain.description,
       instructorId: domain.instructorId.value,
