@@ -20,7 +20,10 @@ export class CertificateMongooseRepository implements ICertificateRepository {
     return doc ? this.mapper.toDomain(doc as CertificateDocument) : null;
   }
 
-  async findByStudentAndCourse(studentId: UniqueId, courseId: UniqueId): Promise<Certificate | null> {
+  async findByStudentAndCourse(
+    studentId: UniqueId,
+    courseId: UniqueId,
+  ): Promise<Certificate | null> {
     const doc = await this.certModel
       .findOne({ studentId: studentId.value, courseId: courseId.value })
       .lean()

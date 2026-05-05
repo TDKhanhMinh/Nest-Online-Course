@@ -1,34 +1,49 @@
+"use client";
+
 import { BookOpen, Send } from "lucide-react";
-import { FaFacebookF, FaLinkedinIn, FaYoutube, } from "react-icons/fa6";
-
-const footerLinks = {
-  "Khám phá": [
-    { label: "Tất cả khóa học", href: "#" },
-    { label: "Lộ trình học", href: "#" },
-    { label: "Bootcamp", href: "#" },
-    { label: "Live Class", href: "#" },
-  ],
-  "Giảng viên": [
-    { label: "Trở thành giảng viên", href: "#" },
-    { label: "Tài nguyên giảng dạy", href: "#" },
-    { label: "Cộng đồng giảng viên", href: "#" },
-  ],
-  "Hỗ trợ": [
-    { label: "Trung tâm trợ giúp", href: "#" },
-    { label: "Liên hệ", href: "#" },
-    { label: "Chính sách bảo mật", href: "#" },
-    { label: "Điều khoản sử dụng", href: "#" },
-  ],
-};
-
-const socialLinks = [
-  { icon: FaFacebookF, label: "Facebook", href: "#" },
-  { icon: FaLinkedinIn, label: "LinkedIn", href: "#" },
-  { icon: FaYoutube, label: "YouTube", href: "#" },
-  { icon: Send, label: "Telegram", href: "#" },
-];
+import { FaFacebookF, FaLinkedinIn, FaYoutube } from "react-icons/fa6";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 export default function Footer() {
+  const t = useTranslations();
+
+  const footerLinks = [
+    {
+      title: t("Nav.explore"),
+      links: [
+        { label: t("Footer.all_courses"), href: "#" },
+        { label: t("Footer.learning_paths"), href: "#" },
+        { label: t("Footer.bootcamp"), href: "#" },
+        { label: t("Footer.live_class"), href: "#" },
+      ],
+    },
+    {
+      title: t("Nav.instructors"),
+      links: [
+        { label: t("Footer.become_instructor"), href: "#" },
+        { label: t("Footer.teaching_resources"), href: "#" },
+        { label: t("Footer.instructor_community"), href: "#" },
+      ],
+    },
+    {
+      title: t("Nav.support"),
+      links: [
+        { label: t("Footer.help_center"), href: "#" },
+        { label: t("Footer.contact"), href: "#" },
+        { label: t("Footer.privacy_policy"), href: "#" },
+        { label: t("Footer.terms_of_use"), href: "#" },
+      ],
+    },
+  ];
+
+  const socialLinks = [
+    { icon: FaFacebookF, label: t("Common.facebook"), href: "#" },
+    { icon: FaLinkedinIn, label: t("Common.linkedin"), href: "#" },
+    { icon: FaYoutube, label: t("Common.youtube"), href: "#" },
+    { icon: Send, label: t("Common.telegram"), href: "#" },
+  ];
+
   return (
     <footer className="border-t border-brand-border bg-brand-bg2">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -38,17 +53,16 @@ export default function Footer() {
 
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <a href="/" className="mb-4 flex items-center gap-2 no-underline">
+            <Link href="/" className="mb-4 flex items-center gap-2 no-underline">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-amber">
                 <BookOpen className="h-4 w-4 text-black" strokeWidth={2.5} />
               </div>
               <span className="font-sora text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                 NexLearn
               </span>
-            </a>
+            </Link>
             <p className="mt-3 max-w-[220px] text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-              Nền tảng học trực tuyến hàng đầu Việt Nam, kết nối học viên với
-              chuyên gia thực chiến.
+              {t("Footer.description")}
             </p>
 
             {/* Social icons */}
@@ -67,7 +81,7 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          {Object.entries(footerLinks).map(([title, links]) => (
+          {footerLinks.map(({ title, links }) => (
             <div key={title}>
               <h4 className="mb-4 text-sm font-bold tracking-wide text-slate-900 dark:text-white">
                 {title}
@@ -94,17 +108,17 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
           <p className="text-xs text-slate-500">
-            © {new Date().getFullYear()} NexLearn. Made with ☕ in Vietnam.
+            {t("Footer.copyright", { year: new Date().getFullYear() })}
           </p>
           <div className="flex gap-4">
             <a href="#" className="text-xs text-slate-500 hover:text-brand-amber2 no-underline transition-colors">
-              Chính sách bảo mật
+              {t("Footer.privacy_policy")}
             </a>
             <a href="#" className="text-xs text-slate-500 hover:text-brand-amber2 no-underline transition-colors">
-              Điều khoản
+              {t("Footer.terms")}
             </a>
             <a href="#" className="text-xs text-slate-500 hover:text-brand-amber2 no-underline transition-colors">
-              Cookie
+              {t("Footer.cookie")}
             </a>
           </div>
         </div>

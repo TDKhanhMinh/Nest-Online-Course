@@ -4,7 +4,10 @@ import { EnrollStudentRequestDto } from '@/api/enrollment/dto/enroll-student.req
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { CurrentUser, JwtPayload } from '@/decorators/current-user.decorator';
 
-@Controller('enrollments')
+@Controller({
+  path: 'enrollments',
+  version: '1',
+})
 @UseGuards(JwtAuthGuard)
 export class EnrollmentController {
   constructor(private readonly enrollmentService: EnrollmentService) {}

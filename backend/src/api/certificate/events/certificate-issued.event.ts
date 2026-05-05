@@ -15,9 +15,9 @@ export class CertificateIssuedEvent extends DomainEvent {
     occurredAt?: Date;
   }) {
     super(props.occurredAt);
-    this.certificateId  = props.certificateId;
-    this.studentId      = props.studentId;
-    this.courseId       = props.courseId;
+    this.certificateId = props.certificateId;
+    this.studentId = props.studentId;
+    this.courseId = props.courseId;
     this.certificateUrl = props.certificateUrl;
   }
 }

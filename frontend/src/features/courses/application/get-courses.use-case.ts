@@ -5,7 +5,7 @@ export class GetCoursesUseCase {
     // This is where you would put business logic, 
     // such as mapping data, validation, or combining multiple API calls.
     const courses = await courseApi.getCourses();
-    
+
     // Example business logic: sort by title
     return courses.sort((a, b) => a.title.localeCompare(b.title));
   }

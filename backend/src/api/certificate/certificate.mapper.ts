@@ -8,11 +8,11 @@ export class CertificateMapper {
   toDomain(doc: CertificateDocument): Certificate {
     return Certificate.reconstitute(
       {
-        studentId:         new UniqueId(doc.studentId),
-        courseId:          new UniqueId(doc.courseId),
+        studentId: new UniqueId(doc.studentId),
+        courseId: new UniqueId(doc.courseId),
         certificateNumber: doc.certificateNumber,
-        certificateUrl:    doc.certificateUrl,
-        issuedAt:          doc.issuedAt,
+        certificateUrl: doc.certificateUrl,
+        issuedAt: doc.issuedAt,
       },
       new UniqueId((doc._id as any).toString()),
     );
@@ -20,12 +20,12 @@ export class CertificateMapper {
 
   toPersistence(domain: Certificate): any {
     return {
-      _id:               domain.id.value as any,
-      studentId:         domain.studentId.value,
-      courseId:          domain.courseId.value,
+      _id: domain.id.value as any,
+      studentId: domain.studentId.value,
+      courseId: domain.courseId.value,
       certificateNumber: domain.certificateNumber,
-      certificateUrl:    domain.certificateUrl,
-      issuedAt:          domain.issuedAt,
+      certificateUrl: domain.certificateUrl,
+      issuedAt: domain.issuedAt,
     };
   }
 }

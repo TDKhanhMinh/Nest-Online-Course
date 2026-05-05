@@ -1,7 +1,10 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 
-export default createMiddleware(routing);
+export const proxy = (request: any) => {
+  console.log("Proxy middleware running for:", request.nextUrl.pathname);
+  return createMiddleware(routing)(request);
+};
 
 export const config = {
   // Match all pathnames except for

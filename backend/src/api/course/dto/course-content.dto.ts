@@ -20,7 +20,7 @@ export class UpdateSectionDto {
 
 export enum LectureType {
   VIDEO = 'VIDEO',
-  ARTICLE = 'ARTICLE'
+  ARTICLE = 'ARTICLE',
 }
 
 export class CreateLectureDto {

@@ -2,13 +2,16 @@
 
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("Auth.layout");
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-brand-bg flex flex-col items-center justify-center p-4">
       {/* Background Glows */}
@@ -45,7 +48,7 @@ export default function AuthLayout({
       {/* Footer decoration */}
       <div className="mt-12 text-center">
         <p className="text-xs text-slate-500">
-          © {new Date().getFullYear()} NexLearn. Nền tảng học tập của tương lai.
+          © {new Date().getFullYear()} NexLearn. {t("motto")}
         </p>
       </div>
     </div>

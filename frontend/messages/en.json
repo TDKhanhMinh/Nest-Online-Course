@@ -1,35 +1,222 @@
 {
-  "HomePage": {
-    "badge": "The Next Generation of Learning",
-    "title": "Elevate your knowledge with",
-    "brand": "Nest Online Course",
-    "description": "Experience the most modern online learning platform, built with cutting-edge technology to deliver the smoothest experience.",
-    "cta_start": "Get Started",
-    "cta_browse": "Browse Courses"
+  "Common": {
+    "login": "Login",
+    "signup": "Sign up",
+    "start_free": "Start for free",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "An error occurred.",
+    "register": "Register",
+    "toggle_theme": "Toggle theme",
+    "facebook": "Facebook",
+    "linkedin": "LinkedIn",
+    "youtube": "YouTube",
+    "telegram": "Telegram"
   },
-  "Features": {
-    "quality_title": "Quality Courses",
-    "quality_desc": "Content curated by leading industry experts.",
-    "modern_title": "Modern Interface",
-    "modern_desc": "Smooth experience across all mobile and desktop devices.",
-    "cert_title": "Trusted Certificates",
-    "cert_desc": "Receive high-value course completion certificates."
+  "Nav": {
+    "courses": "Courses",
+    "roadmap": "Roadmap",
+    "instructors": "Instructors",
+    "blog": "Blog",
+    "explore": "Explore",
+    "support": "Support"
   },
-  "Courses": {
-    "section_title": "Clean Architecture in Action",
-    "section_desc": "The data below is fetched through the layers:",
-    "flow": "API → Use Case → Hook → UI",
-    "loading": "Loading course list...",
-    "error": "An error occurred while loading data.",
-    "instructor": "Instructor: {name}",
-    "detail": "Details",
-    "arch_badge": "Clean Architecture has been applied",
-    "arch_flow": "Infrastructure (API) → Application (Use Case) → Presentation (Hook) → UI"
+  "Header": {
+    "toggle_menu": "Toggle menu"
   },
   "Footer": {
-    "copyright": "© 2026 Nest Online Course. Built with Clean Architecture & Next.js."
+    "description": "Vietnam's leading online learning platform, connecting students with industry experts.",
+    "all_courses": "All Courses",
+    "learning_paths": "Learning Paths",
+    "bootcamp": "Bootcamp",
+    "live_class": "Live Class",
+    "become_instructor": "Become an Instructor",
+    "teaching_resources": "Teaching Resources",
+    "instructor_community": "Instructor Community",
+    "help_center": "Help Center",
+    "contact": "Contact",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_use": "Terms of Use",
+    "copyright": "© {year} NexLearn. Made with ☕ in Vietnam.",
+    "terms": "Terms",
+    "cookie": "Cookie"
+  },
+  "HomePage": {
+    "hero": {
+      "badge": "Over 50,000 students learning daily",
+      "title_prefix": "Elevate your skills, ",
+      "title_highlight": "conquer the future",
+      "subtitle": "Learn from leading industry experts. Practical courses, constantly updated, learn anytime, anywhere.",
+      "search_placeholder": "Search for courses, skills, instructors..."
+    },
+    "stats": {
+      "courses": "Courses",
+      "courses_val": "1,200+",
+      "instructors": "Instructors",
+      "instructors_val": "320+",
+      "students": "Students",
+      "students_val": "50K+",
+      "rating": "Avg Rating",
+      "rating_val": "4.8★"
+    },
+    "trust_bar": "Trusted by",
+    "categories": {
+      "tag": "Categories",
+      "title": "Explore by Category",
+      "subtitle": "Choose the field you want to develop in",
+      "programming": "Programming",
+      "design": "Design",
+      "data_ai": "Data & AI",
+      "mobile_dev": "Mobile Dev",
+      "cloud_devops": "Cloud/DevOps",
+      "security": "Security",
+      "marketing": "Marketing",
+      "business": "Business",
+      "course_count": "{count} courses"
+    },
+    "featured": {
+      "tag": "Featured",
+      "title": "Most Popular Courses",
+      "subtitle": "Curated by our expert team",
+      "view_all": "View All",
+      "bestseller": "Bestseller",
+      "newest": "Newest",
+      "hot": "Hot",
+      "duration": "{count} hours",
+      "lessons": "{count} lessons",
+      "students": "{count} students",
+      "register": "Register"
+    },
+    "features": {
+      "tag": "Why Choose NexLearn",
+      "title": "Superior Learning Experience",
+      "subtitle": "Built for modern learners",
+      "path_title": "Personalized Roadmap",
+      "path_desc": "AI analyzes and recommends a learning path that fits your goals and level.",
+      "cert_title": "Recognized Certificates",
+      "cert_desc": "Completion certificates recognized by over 200 companies in Vietnam and internationally.",
+      "mentor_title": "1-1 Mentor Support",
+      "mentor_desc": "Schedule direct consultations with experienced instructors and mentors.",
+      "anywhere_title": "Learn Anytime, Anywhere",
+      "anywhere_desc": "Smooth mobile app, supports offline lesson downloads to learn without internet."
+    },
+    "testimonials": {
+      "tag": "Student Testimonials",
+      "title": "Thousands Have Transformed",
+      "subtitle": "Real stories from the NexLearn community",
+      "quote1": "I found my first programming job after 3 months of studying on NexLearn. The teaching quality is truly impressive and close to business reality.",
+      "quote2": "The Data Science course helped me successfully switch from accounting to Data Analyst. Clear roadmap, rich practical exercises.",
+      "quote3": "Group learning and code review from mentors are big pluses. I learned a lot from the student community here."
+    },
+    "cta": {
+      "tag": "Ready to Start?",
+      "title": "Start your learning journey today",
+      "subtitle": "Join for free, experience 7 days of Premium features. No credit card required.",
+      "button": "Register for free now",
+      "secondary_button": "View featured courses"
+    },
+    "course_data": {
+      "react": {
+        "category": "Frontend",
+        "title": "React & Next.js 14 — Complete from Zero to Hero",
+        "author": "Khoa Nguyen · Senior Engineer @ Tiki"
+      },
+      "ai": {
+        "category": "AI & Machine Learning",
+        "title": "LLM Engineering & Prompt Engineering in Practice",
+        "author": "Tuan Tran · AI Lead @ VNG"
+      },
+      "security": {
+        "category": "Cybersecurity",
+        "title": "Ethical Hacking & Penetration Testing for Beginners",
+        "author": "Dung Le · Security Researcher"
+      }
+    },
+    "testimonials_data": {
+      "pt": {
+        "role": "Frontend Dev @ Shopee"
+      },
+      "nh": {
+        "role": "Data Analyst @ Grab"
+      },
+      "tl": {
+        "role": "Backend Dev @ MoMo"
+      }
+    }
   },
   "LocaleSwitcher": {
     "label": "Language"
+  },
+  "Auth": {
+    "layout": {
+      "motto": "The learning platform of the future."
+    },
+    "login": {
+      "title": "Welcome Back",
+      "description": "Enter your information to continue learning",
+      "google_login": "Google",
+      "github_login": "Github",
+      "or_continue_with": "Or continue with",
+      "email_label": "Email",
+      "email_placeholder": "name@example.com",
+      "password_label": "Password",
+      "forgot_password": "Forgot password?",
+      "login_button": "Login Now",
+      "processing": "Processing...",
+      "no_account": "Don't have an account?",
+      "signup_free": "Sign up for free"
+    },
+    "signup": {
+      "title": "Create Account",
+      "description": "Join 50,000+ students nationwide",
+      "google_signup": "Google",
+      "github_signup": "Github",
+      "or_signup_with": "Or sign up with email",
+      "name_label": "Full Name",
+      "name_placeholder": "John Doe",
+      "email_label": "Email",
+      "email_placeholder": "name@example.com",
+      "password_label": "Password",
+      "password_placeholder": "••••••••",
+      "password_hint": "At least 8 characters, including letters and numbers",
+      "signup_button": "Create Account",
+      "initializing": "Initializing...",
+      "have_account": "Already have an account?",
+      "login_link": "Login",
+      "or": "Or",
+      "become_instructor": "Become an instructor?"
+    },
+    "register_instructor": {
+      "title": "Become an Instructor",
+      "description": "Share your knowledge and inspire students worldwide.",
+      "headline_label": "Professional Headline",
+      "headline_placeholder": "e.g. Senior Software Engineer at Google",
+      "biography_label": "Biography",
+      "biography_placeholder": "Tell us about your experience and expertise...",
+      "website_label": "Website",
+      "website_placeholder": "https://yourwebsite.com",
+      "twitter_label": "Twitter",
+      "twitter_placeholder": "https://twitter.com/yourprofile",
+      "linkedin_label": "LinkedIn",
+      "linkedin_placeholder": "https://linkedin.com/in/yourprofile",
+      "youtube_label": "YouTube",
+      "youtube_placeholder": "https://youtube.com/c/yourchannel",
+      "register_button": "Register as Instructor"
+    },
+    "Validation": {
+      "required": "{field} is required",
+      "email": "Invalid email address",
+      "email_max": "Email must not exceed {max} characters",
+      "password_min": "Password must be at least {min} characters",
+      "password_max": "Password must not exceed {max} characters",
+      "password_complexity": "Password must include letters and numbers",
+      "fullName_min": "Full name must be at least {min} characters",
+      "fullName_max": "Full name must not exceed {max} characters",
+      "headline_min": "Headline must be at least {min} characters",
+      "headline_max": "Headline must not exceed {max} characters",
+      "biography_min": "Biography must be at least {min} characters",
+      "biography_max": "Biography must not exceed {max} characters",
+      "invalid_url": "Invalid {field} URL"
+    }
   }
 }

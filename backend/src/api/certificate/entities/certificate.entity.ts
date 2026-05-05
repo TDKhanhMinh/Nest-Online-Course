@@ -11,11 +11,21 @@ export interface CertificateProps {
 }
 
 export class Certificate extends AggregateRoot<CertificateProps> {
-  get studentId(): UniqueId        { return this.props.studentId; }
-  get courseId(): UniqueId         { return this.props.courseId; }
-  get certificateNumber(): string  { return this.props.certificateNumber; }
-  get certificateUrl(): string     { return this.props.certificateUrl; }
-  get issuedAt(): Date             { return this.props.issuedAt; }
+  get studentId(): UniqueId {
+    return this.props.studentId;
+  }
+  get courseId(): UniqueId {
+    return this.props.courseId;
+  }
+  get certificateNumber(): string {
+    return this.props.certificateNumber;
+  }
+  get certificateUrl(): string {
+    return this.props.certificateUrl;
+  }
+  get issuedAt(): Date {
+    return this.props.issuedAt;
+  }
 
   static issue(
     studentId: UniqueId,
@@ -25,13 +35,19 @@ export class Certificate extends AggregateRoot<CertificateProps> {
     id?: UniqueId,
   ): Certificate {
     const cert = new Certificate(
-      { studentId, courseId, certificateNumber, certificateUrl, issuedAt: new Date() },
+      {
+        studentId,
+        courseId,
+        certificateNumber,
+        certificateUrl,
+        issuedAt: new Date(),
+      },
       id ?? UniqueId.generate(),
     );
 
     cert.addDomainEvent(
       new CertificateIssuedEvent({
-        certificateId:  cert.id,
+        certificateId: cert.id,
         studentId,
         courseId,
         certificateUrl,

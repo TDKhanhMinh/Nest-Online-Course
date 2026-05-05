@@ -1,35 +1,222 @@
 {
-  "HomePage": {
-    "badge": "Thế hệ học tập mới",
-    "title": "Nâng tầm tri thức với",
-    "brand": "Nest Online Course",
-    "description": "Trải nghiệm nền tảng học tập trực tuyến hiện đại nhất, được xây dựng với công nghệ tối tân để mang lại trải nghiệm mượt mà nhất.",
-    "cta_start": "Bắt đầu ngay",
-    "cta_browse": "Xem khóa học"
+  "Common": {
+    "login": "Đăng nhập",
+    "signup": "Đăng ký",
+    "start_free": "Bắt đầu miễn phí",
+    "search": "Tìm kiếm",
+    "loading": "Đang tải...",
+    "error": "Đã có lỗi xảy ra.",
+    "register": "Đăng ký",
+    "toggle_theme": "Chuyển đổi giao diện",
+    "facebook": "Facebook",
+    "linkedin": "LinkedIn",
+    "youtube": "YouTube",
+    "telegram": "Telegram"
   },
-  "Features": {
-    "quality_title": "Khóa học chất lượng",
-    "quality_desc": "Nội dung được kiểm duyệt bởi các chuyên gia đầu ngành.",
-    "modern_title": "Giao diện hiện đại",
-    "modern_desc": "Trải nghiệm mượt mà trên mọi thiết bị di động và máy tính.",
-    "cert_title": "Chứng chỉ uy tín",
-    "cert_desc": "Nhận chứng chỉ hoàn thành khóa học có giá trị cao."
+  "Nav": {
+    "courses": "Khóa học",
+    "roadmap": "Lộ trình",
+    "instructors": "Giảng viên",
+    "blog": "Blog",
+    "explore": "Khám phá",
+    "support": "Hỗ trợ"
   },
-  "Courses": {
-    "section_title": "Clean Architecture in Action",
-    "section_desc": "Dữ liệu dưới đây được lấy thông qua các lớp:",
-    "flow": "API → Use Case → Hook → UI",
-    "loading": "Đang tải danh sách khóa học...",
-    "error": "Đã có lỗi xảy ra khi tải dữ liệu.",
-    "instructor": "Giảng viên: {name}",
-    "detail": "Chi tiết",
-    "arch_badge": "Kiến trúc Clean Architecture đã được áp dụng",
-    "arch_flow": "Infrastructure (API) → Application (Use Case) → Presentation (Hook) → UI"
+  "Header": {
+    "toggle_menu": "Bật/tắt menu"
   },
   "Footer": {
-    "copyright": "© 2026 Nest Online Course. Xây dựng với Clean Architecture & Next.js."
+    "description": "Nền tảng học trực tuyến hàng đầu Việt Nam, kết nối học viên với chuyên gia thực chiến.",
+    "all_courses": "Tất cả khóa học",
+    "learning_paths": "Lộ trình học",
+    "bootcamp": "Bootcamp",
+    "live_class": "Live Class",
+    "become_instructor": "Trở thành giảng viên",
+    "teaching_resources": "Tài nguyên giảng dạy",
+    "instructor_community": "Cộng đồng giảng viên",
+    "help_center": "Trung tâm trợ giúp",
+    "contact": "Liên hệ",
+    "privacy_policy": "Chính sách bảo mật",
+    "terms_of_use": "Điều khoản sử dụng",
+    "copyright": "© {year} NexLearn. Made with ☕ in Vietnam.",
+    "terms": "Điều khoản",
+    "cookie": "Cookie"
+  },
+  "HomePage": {
+    "hero": {
+      "badge": "Hơn 50,000 học viên đang học mỗi ngày",
+      "title_prefix": "Nâng tầm kỹ năng, ",
+      "title_highlight": "chinh phục tương lai",
+      "subtitle": "Học từ các chuyên gia hàng đầu trong ngành. Khóa học thực tiễn, cập nhật liên tục, học mọi lúc mọi nơi.",
+      "search_placeholder": "Tìm kiếm khóa học, kỹ năng, giảng viên..."
+    },
+    "stats": {
+      "courses": "Khóa học",
+      "courses_val": "1.200+",
+      "instructors": "Giảng viên",
+      "instructors_val": "320+",
+      "students": "Học viên",
+      "students_val": "50.000+",
+      "rating": "Đánh giá TB",
+      "rating_val": "4.8★"
+    },
+    "trust_bar": "Tin dùng bởi",
+    "categories": {
+      "tag": "Danh mục",
+      "title": "Khám phá theo lĩnh vực",
+      "subtitle": "Chọn lĩnh vực bạn muốn phát triển",
+      "programming": "Lập trình",
+      "design": "Thiết kế",
+      "data_ai": "Data & AI",
+      "mobile_dev": "Mobile Dev",
+      "cloud_devops": "Cloud/DevOps",
+      "security": "Bảo mật",
+      "marketing": "Marketing",
+      "business": "Kinh doanh",
+      "course_count": "{count} khóa"
+    },
+    "featured": {
+      "tag": "Nổi bật",
+      "title": "Khóa học được yêu thích nhất",
+      "subtitle": "Được chọn lọc bởi đội ngũ chuyên gia",
+      "view_all": "Xem tất cả",
+      "bestseller": "Bestseller",
+      "newest": "Mới nhất",
+      "hot": "Hot",
+      "duration": "{count} giờ",
+      "lessons": "{count} bài",
+      "students": "{count} học viên",
+      "register": "Đăng ký"
+    },
+    "features": {
+      "tag": "Tại sao chọn NexLearn",
+      "title": "Trải nghiệm học vượt trội",
+      "subtitle": "Được xây dựng cho người học hiện đại",
+      "path_title": "Lộ trình cá nhân hóa",
+      "path_desc": "AI phân tích và đề xuất lộ trình học phù hợp với mục tiêu và trình độ của bạn.",
+      "cert_title": "Chứng chỉ được công nhận",
+      "cert_desc": "Chứng chỉ hoàn thành được hơn 200 công ty tại Việt Nam và quốc tế công nhận.",
+      "mentor_title": "Hỗ trợ 1-1 với mentor",
+      "mentor_desc": "Đặt lịch tư vấn trực tiếp với giảng viên và mentor có kinh nghiệm trong ngành.",
+      "anywhere_title": "Học mọi lúc, mọi nơi",
+      "anywhere_desc": "Ứng dụng di động mượt mà, hỗ trợ tải bài học offline để học khi không có mạng."
+    },
+    "testimonials": {
+      "tag": "Học viên nói gì",
+      "title": "Hàng ngàn người đã thay đổi",
+      "subtitle": "Câu chuyện thực tế từ cộng đồng NexLearn",
+      "quote1": "Tôi đã tìm được công việc lập trình đầu tiên sau 3 tháng học trên NexLearn. Chất lượng giảng dạy thực sự ấn tượng và sát với thực tế doanh nghiệp.",
+      "quote2": "Khóa Data Science giúp tôi chuyển ngành thành công từ kế toán sang Data Analyst. Lộ trình rõ ràng, bài tập thực hành phong phú.",
+      "quote3": "Tính năng học nhóm và code review từ mentor là điểm cộng lớn. Tôi học được rất nhiều từ cộng đồng học viên ở đây."
+    },
+    "cta": {
+      "tag": "Sẵn sàng chưa?",
+      "title": "Bắt đầu hành trình học tập của bạn ngay hôm nay",
+      "subtitle": "Tham gia miễn phí, trải nghiệm 7 ngày đầy đủ tính năng Premium. Không cần thẻ tín dụng.",
+      "button": "Đăng ký miễn phí ngay",
+      "secondary_button": "Xem khóa học nổi bật"
+    },
+    "course_data": {
+      "react": {
+        "category": "Lập trình Web",
+        "title": "React & Next.js 14 — Toàn tập từ Zero tới Hero",
+        "author": "Nguyễn Văn Khoa · Senior Engineer @ Tiki"
+      },
+      "ai": {
+        "category": "AI & Học máy",
+        "title": "LLM Engineering & Prompt Engineering thực chiến",
+        "author": "Trần Minh Tuấn · AI Lead @ VNG"
+      },
+      "security": {
+        "category": "Bảo mật mạng",
+        "title": "Ethical Hacking & Penetration Testing từ cơ bản",
+        "author": "Lê Hoàng Dũng · Security Researcher"
+      }
+    },
+    "testimonials_data": {
+      "pt": {
+        "role": "Lập trình viên Frontend @ Shopee"
+      },
+      "nh": {
+        "role": "Chuyên viên phân tích dữ liệu @ Grab"
+      },
+      "tl": {
+        "role": "Lập trình viên Backend @ MoMo"
+      }
+    }
   },
   "LocaleSwitcher": {
     "label": "Ngôn ngữ"
+  },
+  "Auth": {
+    "layout": {
+      "motto": "Nền tảng học tập của tương lai."
+    },
+    "login": {
+      "title": "Chào mừng trở lại",
+      "description": "Nhập thông tin của bạn để tiếp tục học tập",
+      "google_login": "Google",
+      "github_login": "Github",
+      "or_continue_with": "Hoặc tiếp tục với",
+      "email_label": "Email",
+      "email_placeholder": "name@example.com",
+      "password_label": "Mật khẩu",
+      "forgot_password": "Quên mật khẩu?",
+      "login_button": "Đăng nhập ngay",
+      "processing": "Đang xử lý...",
+      "no_account": "Chưa có tài khoản?",
+      "signup_free": "Đăng ký miễn phí"
+    },
+    "signup": {
+      "title": "Tạo tài khoản",
+      "description": "Tham gia cùng 50,000+ học viên trên toàn quốc",
+      "google_signup": "Google",
+      "github_signup": "Github",
+      "or_signup_with": "Hoặc đăng ký bằng email",
+      "name_label": "Họ và tên",
+      "name_placeholder": "Nguyễn Văn A",
+      "email_label": "Email",
+      "email_placeholder": "name@example.com",
+      "password_label": "Mật khẩu",
+      "password_placeholder": "••••••••",
+      "password_hint": "Ít nhất 8 ký tự, bao gồm chữ và số",
+      "signup_button": "Đăng ký tài khoản",
+      "initializing": "Đang khởi tạo...",
+      "have_account": "Đã có tài khoản?",
+      "login_link": "Đăng nhập",
+      "or": "Hoặc",
+      "become_instructor": "Trở thành giảng viên?"
+    },
+    "register_instructor": {
+      "title": "Trở thành Giảng viên",
+      "description": "Chia sẻ kiến thức của bạn và truyền cảm hứng cho học viên trên toàn thế giới.",
+      "headline_label": "Tiêu đề chuyên môn",
+      "headline_placeholder": "VD: Senior Software Engineer tại Google",
+      "biography_label": "Tiểu sử",
+      "biography_placeholder": "Hãy kể cho chúng tôi về kinh nghiệm và chuyên môn của bạn...",
+      "website_label": "Trang web",
+      "website_placeholder": "https://yourwebsite.com",
+      "twitter_label": "Twitter",
+      "twitter_placeholder": "https://twitter.com/yourprofile",
+      "linkedin_label": "LinkedIn",
+      "linkedin_placeholder": "https://linkedin.com/in/yourprofile",
+      "youtube_label": "YouTube",
+      "youtube_placeholder": "https://youtube.com/c/yourchannel",
+      "register_button": "Đăng ký làm giảng viên"
+    },
+    "Validation": {
+      "required": "{field} không được để trống",
+      "email": "Email không hợp lệ",
+      "email_max": "Email không được vượt quá {max} ký tự",
+      "password_min": "Mật khẩu phải có ít nhất {min} ký tự",
+      "password_max": "Mật khẩu không được vượt quá {max} ký tự",
+      "password_complexity": "Mật khẩu phải bao gồm cả chữ và số",
+      "fullName_min": "Họ tên phải có ít nhất {min} ký tự",
+      "fullName_max": "Họ tên không được vượt quá {max} ký tự",
+      "headline_min": "Tiêu đề chuyên môn phải có ít nhất {min} ký tự",
+      "headline_max": "Tiêu đề chuyên môn không được vượt quá {max} ký tự",
+      "biography_min": "Tiểu sử phải có ít nhất {min} ký tự",
+      "biography_max": "Tiểu sử không được vượt quá {max} ký tự",
+      "invalid_url": "URL {field} không hợp lệ"
+    }
   }
 }

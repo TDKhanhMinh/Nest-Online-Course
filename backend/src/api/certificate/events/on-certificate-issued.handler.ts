@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { CertificateIssuedEvent } from '@/api/certificate/events/certificate-issued.event';
-import { IEmailNotificationService, EMAIL_NOTIFICATION_SERVICE } from '@/common/abstractions/services/i-email-notification.service';
+import {
+  IEmailNotificationService,
+  EMAIL_NOTIFICATION_SERVICE,
+} from '@/common/abstractions/services/i-email-notification.service';
 import { Inject } from '@nestjs/common';
 
 @Injectable()

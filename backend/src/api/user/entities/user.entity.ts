@@ -45,7 +45,7 @@ export class User extends AggregateRoot<UserProps> {
     if (!this.isInstructor) {
       throw new Error('Only instructors can have courses');
     }
-    if (!this.props.courseIds.some(id => id.equals(courseId))) {
+    if (!this.props.courseIds.some((id) => id.equals(courseId))) {
       this.props.courseIds.push(courseId);
     }
   }
@@ -58,10 +58,13 @@ export class User extends AggregateRoot<UserProps> {
     this.props.roles = roles;
   }
 
-  public static create(props: Omit<UserProps, 'courseIds'> & { courseIds?: UniqueId[] }, id?: string): User {
+  public static create(
+    props: Omit<UserProps, 'courseIds'> & { courseIds?: UniqueId[] },
+    id?: string,
+  ): User {
     return new User(
       { ...props, courseIds: props.courseIds ?? [] },
-      id ? new UniqueId(id) : UniqueId.generate()
+      id ? new UniqueId(id) : UniqueId.generate(),
     );
   }
 

@@ -21,7 +21,10 @@ import { CursorOptionsDto } from '@/common/pagination/cursor/cursor-options.dto'
 import { CreateSectionDto, UpdateSectionDto, CreateLectureDto, UpdateLectureDto } from './dto/course-content.dto';
 import { CreateReviewDto } from './dto/review.dto';
 
-@Controller('courses')
+@Controller({
+  path: 'courses',
+  version: '1',
+})
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CourseController {
   constructor(

@@ -4,7 +4,10 @@ import { CreateOrderDto } from './dto/order.dto';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { CurrentUser, JwtPayload } from '@/decorators/current-user.decorator';
 
-@Controller('orders')
+@Controller({
+  path: 'orders',
+  version: '1',
+})
 @UseGuards(JwtAuthGuard)
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}

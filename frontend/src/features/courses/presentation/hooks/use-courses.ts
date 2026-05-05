@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCoursesUseCase } from "../../application/get-courses.use-case";
+import { queryKeys } from "@/lib/query-keys";
 
 export const useCourses = () => {
   return useQuery({
-    queryKey: ["courses"],
+    queryKey: queryKeys.courses.all,
     queryFn: () => getCoursesUseCase.execute(),
   });
 };

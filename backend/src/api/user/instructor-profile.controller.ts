@@ -6,13 +6,21 @@ import { RolesGuard } from '@/guards/roles.guard';
 import { Roles } from '@/decorators/roles.decorator';
 import { Role } from '@/common/types/role.enum';
 
-@Controller('instructor-profiles')
+@Controller({
+  path: 'instructor-profiles',
+  version: '1',
+})
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class InstructorProfileController {
   constructor(private readonly profileService: InstructorProfileService) {}
 
   @Post()
   async create(@Req() req: any, @Body() dto: CreateInstructorProfileDto) {
+    return this.profileService.createProfile(req.user.id, dto);
+  }
+
+  @Post('register')
+  async register(@Req() req: any, @Body() dto: CreateInstructorProfileDto) {
     return this.profileService.createProfile(req.user.id, dto);
   }
 

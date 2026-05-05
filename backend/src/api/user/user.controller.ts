@@ -8,7 +8,10 @@ import { Role } from '@/common/types/role.enum';
 import { UserPaginationDto } from './dto/user-pagination.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('users')
+@Controller({
+  path: 'users',
+  version: '1',
+})
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
