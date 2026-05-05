@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { HttpAdapterHost } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import { DomainExceptionFilter } from '@/filters/domain-exception.filter';
-import { AllExceptionsFilter } from '@/filters/all-exceptions.filter';
+import { GlobalExceptionFilter } from '@/filters/global-exception.filter';
 import { TransformInterceptor } from '@/interceptors/transform.interceptor';
 
 async function bootstrap() {
@@ -20,10 +20,10 @@ async function bootstrap() {
     }),
   );
 
-  const httpAdapterHost = app.get(HttpAdapterHost);
+  const configService = app.get(ConfigService);
   app.useGlobalFilters(
-    new AllExceptionsFilter(httpAdapterHost),
     new DomainExceptionFilter(),
+    new GlobalExceptionFilter(configService),
   );
 
   app.enableCors();
