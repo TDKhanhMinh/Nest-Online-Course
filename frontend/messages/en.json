@@ -1,0 +1,35 @@
+{
+  "HomePage": {
+    "badge": "The Next Generation of Learning",
+    "title": "Elevate your knowledge with",
+    "brand": "Nest Online Course",
+    "description": "Experience the most modern online learning platform, built with cutting-edge technology to deliver the smoothest experience.",
+    "cta_start": "Get Started",
+    "cta_browse": "Browse Courses"
+  },
+  "Features": {
+    "quality_title": "Quality Courses",
+    "quality_desc": "Content curated by leading industry experts.",
+    "modern_title": "Modern Interface",
+    "modern_desc": "Smooth experience across all mobile and desktop devices.",
+    "cert_title": "Trusted Certificates",
+    "cert_desc": "Receive high-value course completion certificates."
+  },
+  "Courses": {
+    "section_title": "Clean Architecture in Action",
+    "section_desc": "The data below is fetched through the layers:",
+    "flow": "API → Use Case → Hook → UI",
+    "loading": "Loading course list...",
+    "error": "An error occurred while loading data.",
+    "instructor": "Instructor: {name}",
+    "detail": "Details",
+    "arch_badge": "Clean Architecture has been applied",
+    "arch_flow": "Infrastructure (API) → Application (Use Case) → Presentation (Hook) → UI"
+  },
+  "Footer": {
+    "copyright": "© 2026 Nest Online Course. Built with Clean Architecture & Next.js."
+  },
+  "LocaleSwitcher": {
+    "label": "Language"
+  }
+}

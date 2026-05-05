@@ -1,0 +1,35 @@
+{
+  "HomePage": {
+    "badge": "Thế hệ học tập mới",
+    "title": "Nâng tầm tri thức với",
+    "brand": "Nest Online Course",
+    "description": "Trải nghiệm nền tảng học tập trực tuyến hiện đại nhất, được xây dựng với công nghệ tối tân để mang lại trải nghiệm mượt mà nhất.",
+    "cta_start": "Bắt đầu ngay",
+    "cta_browse": "Xem khóa học"
+  },
+  "Features": {
+    "quality_title": "Khóa học chất lượng",
+    "quality_desc": "Nội dung được kiểm duyệt bởi các chuyên gia đầu ngành.",
+    "modern_title": "Giao diện hiện đại",
+    "modern_desc": "Trải nghiệm mượt mà trên mọi thiết bị di động và máy tính.",
+    "cert_title": "Chứng chỉ uy tín",
+    "cert_desc": "Nhận chứng chỉ hoàn thành khóa học có giá trị cao."
+  },
+  "Courses": {
+    "section_title": "Clean Architecture in Action",
+    "section_desc": "Dữ liệu dưới đây được lấy thông qua các lớp:",
+    "flow": "API → Use Case → Hook → UI",
+    "loading": "Đang tải danh sách khóa học...",
+    "error": "Đã có lỗi xảy ra khi tải dữ liệu.",
+    "instructor": "Giảng viên: {name}",
+    "detail": "Chi tiết",
+    "arch_badge": "Kiến trúc Clean Architecture đã được áp dụng",
+    "arch_flow": "Infrastructure (API) → Application (Use Case) → Presentation (Hook) → UI"
+  },
+  "Footer": {
+    "copyright": "© 2026 Nest Online Course. Xây dựng với Clean Architecture & Next.js."
+  },
+  "LocaleSwitcher": {
+    "label": "Ngôn ngữ"
+  }
+}
