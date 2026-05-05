@@ -5,6 +5,7 @@ import { UserService } from '@/api/user/user.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from '@/decorators/current-user.decorator';
+import { Role } from '@/common/types/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -18,15 +19,17 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(registerDto.password, saltRounds);
 
     const user = await this.userService.createUser(
+      registerDto.fullName,
       registerDto.email,
       passwordHash,
-      registerDto.role,
+      registerDto.role ? [registerDto.role] : [Role.STUDENT],
     );
 
     return {
       id: user.id.value,
+      fullName: user.fullName,
       email: user.email,
-      role: user.role,
+      roles: user.roles,
     };
   }
 
@@ -41,15 +44,16 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload: JwtPayload = { sub: user.id.value, email: user.email, role: user.role };
+    const payload: JwtPayload = { sub: user.id.value, email: user.email, roles: user.roles };
     const accessToken = this.jwtService.sign(payload);
 
     return {
       accessToken,
       user: {
         id: user.id.value,
+        fullName: user.fullName,
         email: user.email,
-        role: user.role,
+        roles: user.roles,
       },
     };
   }

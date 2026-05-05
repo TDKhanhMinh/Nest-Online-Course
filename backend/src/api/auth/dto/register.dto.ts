@@ -2,6 +2,9 @@ import { IsEmail, IsNotEmpty, MinLength, IsEnum, IsOptional } from 'class-valida
 import { Role } from '@/common/types/role.enum';
 
 export class RegisterDto {
+  @IsNotEmpty({ message: 'Full name is required' })
+  fullName: string;
+
   @IsEmail({}, { message: 'Invalid email format' })
   @IsNotEmpty({ message: 'Email is required' })
   email: string;

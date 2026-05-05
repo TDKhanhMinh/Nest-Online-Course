@@ -24,6 +24,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
       [ErrorCode.ALREADY_ENROLLED]: HttpStatus.CONFLICT,
       [ErrorCode.CERTIFICATE_ALREADY_ISSUED]: HttpStatus.CONFLICT,
       [ErrorCode.LESSON_ALREADY_COMPLETED]: HttpStatus.CONFLICT,
+      [ErrorCode.VALIDATION_ERROR]: HttpStatus.BAD_REQUEST,
     };
 
     const status = statusMap[exception.code] ?? HttpStatus.BAD_REQUEST;

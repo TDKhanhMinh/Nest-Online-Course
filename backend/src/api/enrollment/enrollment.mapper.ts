@@ -13,6 +13,7 @@ export class EnrollmentMapper {
         courseId:   new UniqueId(doc.courseId),
         status:     new EnrollmentStatus(doc.status as EnrollmentStatusValue),
         enrolledAt: doc.enrolledAt,
+        completedLectureIds: (doc.completedLectureIds ?? []).map(id => new UniqueId(id)),
       },
       new UniqueId((doc._id as any).toString()),
     );
@@ -25,6 +26,7 @@ export class EnrollmentMapper {
       courseId:   domain.courseId.value,
       status:     domain.status.value,
       enrolledAt: domain.enrolledAt,
+      completedLectureIds: domain.completedLectureIds.map(id => id.value),
     };
   }
 }

@@ -7,6 +7,7 @@ export interface EnrollmentProps {
   courseId: UniqueId;
   status: EnrollmentStatus;
   enrolledAt: Date;
+  completedLectureIds: UniqueId[];
 }
 
 export class Enrollment extends AggregateRoot<EnrollmentProps> {
@@ -14,8 +15,15 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
   get courseId(): UniqueId        { return this.props.courseId; }
   get status(): EnrollmentStatus  { return this.props.status; }
   get enrolledAt(): Date          { return this.props.enrolledAt; }
+  get completedLectureIds(): UniqueId[] { return this.props.completedLectureIds; }
 
   isActive(): boolean { return this.props.status.isActive(); }
+
+  markLectureAsComplete(lectureId: UniqueId): void {
+    if (!this.props.completedLectureIds.some(id => id.equals(lectureId))) {
+      this.props.completedLectureIds.push(lectureId);
+    }
+  }
 
   complete(): void {
     this.props.status = EnrollmentStatus.completed();
@@ -27,7 +35,13 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
 
   static create(studentId: UniqueId, courseId: UniqueId, id?: UniqueId): Enrollment {
     return new Enrollment(
-      { studentId, courseId, status: EnrollmentStatus.active(), enrolledAt: new Date() },
+      { 
+        studentId, 
+        courseId, 
+        status: EnrollmentStatus.active(), 
+        enrolledAt: new Date(),
+        completedLectureIds: []
+      },
       id ?? UniqueId.generate(),
     );
   }

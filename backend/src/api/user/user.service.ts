@@ -10,13 +10,13 @@ export class UserService {
     private readonly userRepository: IUserRepository,
   ) {}
 
-  async createUser(email: string, passwordHash: string, role: Role = Role.USER): Promise<User> {
+  async createUser(fullName: string, email: string, passwordHash: string, roles: Role[] = [Role.STUDENT]): Promise<User> {
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
       throw new ConflictException('Email is already registered');
     }
 
-    const user = User.create({ email, passwordHash, role });
+    const user = User.create({ fullName, email, passwordHash, roles });
     await this.userRepository.save(user);
     return user;
   }
@@ -37,7 +37,7 @@ export class UserService {
     return this.userRepository.findAll(limit, offset);
   }
 
-  async updateUser(id: string, updateData: { email?: string, role?: Role }): Promise<User> {
+  async updateUser(id: string, updateData: { email?: string, roles?: Role[], fullName?: string }): Promise<User> {
     const user = await this.findById(id);
 
     if (updateData.email && updateData.email !== user.email) {
@@ -46,8 +46,12 @@ export class UserService {
       user.updateEmail(updateData.email);
     }
 
-    if (updateData.role) {
-      user.updateRole(updateData.role);
+    if (updateData.roles) {
+      user.updateRoles(updateData.roles);
+    }
+
+    if (updateData.fullName) {
+      user.props.fullName = updateData.fullName;
     }
 
     await this.userRepository.save(user);

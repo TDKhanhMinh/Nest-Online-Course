@@ -3,20 +3,22 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class EnrollmentDocument extends Document {
-  @Prop({ type: String, required: true, index: true })
+  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'UserDocument' })
   studentId: string;
 
-  @Prop({ type: String, required: true, index: true })
+  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'CourseDocument' })
   courseId: string;
+
+  @Prop({ type: [String], default: [] })
+  completedLectureIds: string[];
 
   @Prop({ type: String, default: 'ACTIVE' })
   status: string;
 
-  @Prop({ type: Date, required: true })
+  @Prop({ type: Date, default: Date.now })
   enrolledAt: Date;
 }
 
 export const EnrollmentSchema: MongooseSchema = SchemaFactory.createForClass(EnrollmentDocument);
 
-// Compound index để query nhanh theo (studentId + courseId)
 EnrollmentSchema.index({ studentId: 1, courseId: 1 }, { unique: true });

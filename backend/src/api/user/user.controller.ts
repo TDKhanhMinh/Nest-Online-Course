@@ -18,8 +18,9 @@ export class UserController {
     const userProfile = await this.userService.findById(user.sub);
     return {
       id: userProfile.id.value,
+      fullName: userProfile.fullName,
       email: userProfile.email,
-      role: userProfile.role,
+      roles: userProfile.roles,
     };
   }
 
@@ -31,8 +32,9 @@ export class UserController {
     return {
       users: users.map(u => ({
         id: u.id.value,
+        fullName: u.fullName,
         email: u.email,
-        role: u.role,
+        roles: u.roles,
       })),
       total,
       limit: pagination.limit,
@@ -47,8 +49,9 @@ export class UserController {
     const user = await this.userService.updateUser(id, updateData);
     return {
       id: user.id.value,
+      fullName: user.fullName,
       email: user.email,
-      role: user.role,
+      roles: user.roles,
     };
   }
 

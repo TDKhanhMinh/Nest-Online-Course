@@ -2,7 +2,7 @@ import { UniqueId } from '@/common/types/unique-id.vo';
 import { DomainEvent } from './domain-event.base';
 
 export abstract class Entity<TProps> {
-  protected readonly props: TProps;
+  public readonly props: TProps;
   private readonly _id: UniqueId;
 
   constructor(props: TProps, id: UniqueId) {

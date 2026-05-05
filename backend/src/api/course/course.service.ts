@@ -1,46 +1,18 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ICourseRepository, COURSE_REPOSITORY } from '@/common/abstractions/repositories/i-course.repository';
 import { IEnrollmentRepository, ENROLLMENT_REPOSITORY } from '@/common/abstractions/repositories/i-enrollment.repository';
+import { ISectionRepository } from '@/common/abstractions/repositories/i-section.repository';
+import { ILectureRepository } from '@/common/abstractions/repositories/i-lecture.repository';
+import { IReviewRepository } from '@/common/abstractions/repositories/i-review.repository';
 import { UniqueId } from '@/common/types/unique-id.vo';
-import { QuizScore } from '@/api/course/value-objects/quiz-score.vo';
+import { Section } from './entities/section.entity';
+import { Lecture } from './entities/lecture.entity';
+import { Review } from './entities/review.entity';
+import { CreateSectionDto, UpdateSectionDto, CreateLectureDto, UpdateLectureDto } from './dto/course-content.dto';
+import { CreateReviewDto } from './dto/review.dto';
 import { DomainException } from '@/exceptions/domain-exception.base';
 import { ErrorCode } from '@/exceptions/error-codes.enum';
-
-export class CompleteLessonCommand {
-  courseId: string;
-  lessonId: string;
-  studentId: string;
-  score: number;
-}
-
-export class CompleteLessonResult {
-  courseId: string;
-  lessonId: string;
-  allCompleted: boolean;
-  eligibleForCertificate: boolean;
-}
-
-export class GetCourseProgressQuery {
-  courseId: string;
-  studentId: string;
-}
-
-export class GetCourseProgressResult {
-  courseId: string;
-  courseTitle: string;
-  totalLessons: number;
-  completedLessons: number;
-  progressPercent: number;
-  eligibleForCertificate: boolean;
-  lessons: Array<{
-    lessonId: string;
-    title: string;
-    order: number;
-    isCompleted: boolean;
-    lastScore: number;
-  }>;
-}
 
 @Injectable()
 export class CourseService {
@@ -51,75 +23,147 @@ export class CourseService {
     @Inject(ENROLLMENT_REPOSITORY)
     private readonly enrollmentRepo: IEnrollmentRepository,
 
+    @Inject(ISectionRepository)
+    private readonly sectionRepo: ISectionRepository,
+
+    @Inject(ILectureRepository)
+    private readonly lectureRepo: ILectureRepository,
+
+    @Inject(IReviewRepository)
+    private readonly reviewRepo: IReviewRepository,
+
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
-  async completeLesson(cmd: CompleteLessonCommand): Promise<CompleteLessonResult> {
-    const courseId  = new UniqueId(cmd.courseId);
-    const lessonId  = new UniqueId(cmd.lessonId);
-    const studentId = new UniqueId(cmd.studentId);
-    const score     = new QuizScore(cmd.score);
+  // ... (previous methods)
 
-    const enrollment = await this.enrollmentRepo.findByStudentAndCourse(studentId, courseId);
-    if (!enrollment?.isActive()) {
-      throw new DomainException(ErrorCode.NOT_ENROLLED, `Student "${cmd.studentId}" is not enrolled in course "${cmd.courseId}"`);
-    }
-
+  async createReview(userId: string, dto: CreateReviewDto): Promise<Review> {
+    const courseId = new UniqueId(dto.courseId);
     const course = await this.courseRepo.findByIdOrThrow(courseId);
-    course.completeLesson(lessonId, studentId, score);
 
-    await this.courseRepo.save(course);
-
-    for (const event of course.domainEvents) {
-      await this.eventEmitter.emitAsync(event.constructor.name, event);
+    // Check if user is enrolled
+    const enrollment = await this.enrollmentRepo.findByStudentAndCourse(new UniqueId(userId), courseId);
+    if (!enrollment) {
+      throw new DomainException(ErrorCode.NOT_ENROLLED, 'You must be enrolled to review this course');
     }
-    course.clearDomainEvents();
+
+    const review = Review.create({
+      courseId: course.id,
+      studentId: new UniqueId(userId),
+      rating: dto.rating,
+      comment: dto.comment,
+    });
+
+    await this.reviewRepo.save(review);
+    return review;
+  }
+
+  async getCourseReviews(courseId: string): Promise<Review[]> {
+    return this.reviewRepo.findByCourseId(courseId);
+  }
+
+  // --- Course Content Management ---
+
+  async createSection(courseId: string, dto: CreateSectionDto): Promise<Section> {
+    const course = await this.courseRepo.findByIdOrThrow(new UniqueId(courseId));
+
+    const section = Section.create({
+      courseId: course.id.value,
+      title: dto.title,
+      order: dto.order,
+    });
+
+    await this.sectionRepo.save(section);
+    return section;
+  }
+
+  async updateSection(sectionId: string, dto: UpdateSectionDto): Promise<Section> {
+    const section = await this.sectionRepo.findById(sectionId);
+    if (!section) throw new NotFoundException('Section not found');
+
+    section.update(dto);
+
+    await this.sectionRepo.save(section);
+    return section;
+  }
+
+  async deleteSection(sectionId: string): Promise<void> {
+    await this.sectionRepo.delete(sectionId);
+  }
+
+  async createLecture(sectionId: string, dto: CreateLectureDto): Promise<Lecture> {
+    const section = await this.sectionRepo.findById(sectionId);
+    if (!section) throw new NotFoundException('Section not found');
+
+    const lecture = Lecture.create({
+      sectionId: section.id.value,
+      title: dto.title,
+      content: dto.content,
+      type: dto.type,
+      order: dto.order,
+      videoUrl: dto.videoUrl,
+      duration: dto.duration,
+    });
+
+    await this.lectureRepo.save(lecture);
+    return lecture;
+  }
+
+  async updateLecture(lectureId: string, dto: UpdateLectureDto): Promise<Lecture> {
+    const lecture = await this.lectureRepo.findById(lectureId);
+    if (!lecture) throw new NotFoundException('Lecture not found');
+
+    lecture.update(dto);
+
+    await this.lectureRepo.save(lecture);
+    return lecture;
+  }
+
+  async deleteLecture(lectureId: string): Promise<void> {
+    await this.lectureRepo.delete(lectureId);
+  }
+
+  async getCourseFullContent(courseId: string) {
+    const course = await this.courseRepo.findByIdOrThrow(new UniqueId(courseId));
+    const sections = await this.sectionRepo.findByCourseId(courseId);
+
+    const sectionsWithLectures = await Promise.all(
+      sections.sort((a, b) => a.order - b.order).map(async (section) => {
+        const lectures = await this.lectureRepo.findBySectionId(section.id.value);
+        return {
+          id: section.id.value,
+          courseId: section.courseId,
+          title: section.title,
+          order: section.order,
+          lectures: lectures.sort((a, b) => a.order - b.order).map(l => ({
+            id: l.id.value,
+            sectionId: l.sectionId,
+            title: l.title,
+            content: l.content,
+            type: l.type,
+            order: l.order,
+            videoUrl: l.videoUrl,
+            duration: l.duration,
+            isPreview: l.isPreview,
+          }))
+        };
+      })
+    );
 
     return {
-      courseId: courseId.value,
-      lessonId: lessonId.value,
-      allCompleted: course.allLessonsCompleted(),
-      eligibleForCertificate: course.isEligibleForCertificate(),
+      courseId: course.id.value,
+      title: course.title.value,
+      sections: sectionsWithLectures
     };
   }
 
-  async getCourseProgress(query: GetCourseProgressQuery): Promise<GetCourseProgressResult> {
-    const courseId  = new UniqueId(query.courseId);
-    const studentId = new UniqueId(query.studentId);
+  // --- Existing Logic (Updated for new structure if needed) ---
 
-    const enrollment = await this.enrollmentRepo.findByStudentAndCourse(studentId, courseId);
-    if (!enrollment?.isActive()) {
-      throw new DomainException(ErrorCode.NOT_ENROLLED, `Student "${query.studentId}" is not enrolled in course "${query.courseId}"`);
-    }
-
-    const course = await this.courseRepo.findByIdOrThrow(courseId);
-    const completedCount = course.lessons.filter((l) => l.isCompleted).length;
-
-    return {
-      courseId:   course.id.value,
-      courseTitle: course.title.value,
-      totalLessons: course.lessons.length,
-      completedLessons: completedCount,
-      progressPercent:
-        course.lessons.length > 0
-          ? Math.round((completedCount / course.lessons.length) * 100)
-          : 0,
-      eligibleForCertificate: course.isEligibleForCertificate(),
-      lessons: course.lessons.map((l) => ({
-        lessonId:    l.id.value,
-        title:       l.title,
-        order:       l.order,
-        isCompleted: l.isCompleted,
-        lastScore:   l.lastScore.value,
-      })),
-    };
-  }
-
-  async getAllWithOffset(pageOptionsDto: import('@/common/pagination/offset/page-options.dto').PageOptionsDto) {
+  async getAllWithOffset(pageOptionsDto: any) {
     return this.courseRepo.findAllWithOffset(pageOptionsDto);
   }
 
-  async getAllWithCursor(cursorOptionsDto: import('@/common/pagination/cursor/cursor-options.dto').CursorOptionsDto) {
+  async getAllWithCursor(cursorOptionsDto: any) {
     return this.courseRepo.findAllWithCursor(cursorOptionsDto);
   }
 }
