@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.agent/
+.antigravity/
+.claude/
+.codex/
+.gemini/
+.github/
+.obsidian/
+.cursor/
+.serena/
+.cursor/

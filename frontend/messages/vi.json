@@ -147,6 +147,17 @@
   "LocaleSwitcher": {
     "label": "Ngôn ngữ"
   },
+  "UserMenu": {
+    "learning_label": "Học tập",
+    "my_courses": "Khóa học của tôi",
+    "certificates": "Chứng chỉ",
+    "account_label": "Tài khoản",
+    "profile": "Hồ sơ cá nhân",
+    "orders": "Lịch sử đơn hàng",
+    "dashboard": "Bảng điều khiển",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
   "Auth": {
     "layout": {
       "motto": "Nền tảng học tập của tương lai."

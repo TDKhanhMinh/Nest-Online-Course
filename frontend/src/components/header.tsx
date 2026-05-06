@@ -1,21 +1,22 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, BookOpen } from "lucide-react";
-import { Link } from "@/i18n/navigation";
-import { ThemeToggle } from "./theme-toggle";
-import { useTranslations } from "next-intl";
-import { useMe, useLogout } from "@/features/auth/presentation/hooks/use-auth-hooks";
-import { User, LogOut, Settings, LayoutDashboard } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLogout, useMe } from "@/features/auth/presentation/hooks/use-auth-hooks";
+import { Link } from "@/i18n/navigation";
+import { Award, BookOpen, GraduationCap, LayoutDashboard, LogOut, Menu, Receipt, Settings, User, UserCircle, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { LanguageSwitcher } from "./language-switcher";
+import { ThemeToggle } from "./theme-toggle";
 
 export default function Header() {
   const t = useTranslations();
@@ -59,10 +60,11 @@ export default function Header() {
 
         {/* Desktop actions */}
         <div className="hidden items-center gap-3 md:flex">
+          <LanguageSwitcher />
           <ThemeToggle />
           {user ? (
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger render={
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-brand-bg2 hover:bg-brand-bg3 p-0 overflow-hidden border border-brand-border cursor-pointer">
                   {user.avatar ? (
                     <img src={user.avatar} alt={user.fullName} className="h-full w-full object-cover" />
@@ -70,29 +72,87 @@ export default function Header() {
                     <User className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                   )}
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 mt-2 border-brand-border bg-brand-bg/95 backdrop-blur-md" align="end">
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none text-slate-900 dark:text-white">{user.fullName}</p>
-                    <p className="text-xs leading-none text-slate-500">{user.email}</p>
+              } />
+              <DropdownMenuContent className="w-60 mt-2 border-brand-border bg-brand-bg/95 backdrop-blur-md" align="end">
+                <div className="px-3 py-2.5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-amber/15 text-brand-amber">
+                      {user.avatar ? (
+                        <img src={user.avatar} alt={user.fullName} className="h-full w-full rounded-full object-cover" />
+                      ) : (
+                        <span className="text-sm font-bold">{user.fullName?.charAt(0)?.toUpperCase()}</span>
+                      )}
+                    </div>
+                    <div className="flex flex-col space-y-0.5 min-w-0">
+                      <p className="text-sm font-semibold leading-none text-slate-900 dark:text-white truncate">{user.fullName}</p>
+                      <p className="text-xs leading-none text-slate-500 truncate">{user.email}</p>
+                    </div>
                   </div>
-                </DropdownMenuLabel>
+                </div>
+
                 <DropdownMenuSeparator className="bg-brand-border" />
-                <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer" >
-                  <Link href="/dashboard" className="flex items-center w-full">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    <span>Dashboard</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
+
+                {/* Learning section */}
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 py-1.5">
+                    {t("UserMenu.learning_label")}
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer px-3 py-2">
+                    <Link href="/my-courses" className="flex items-center w-full no-underline text-inherit">
+                      <GraduationCap className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span>{t("UserMenu.my_courses")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer px-3 py-2">
+                    <Link href="/certificates" className="flex items-center w-full no-underline text-inherit">
+                      <Award className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span>{t("UserMenu.certificates")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
                 <DropdownMenuSeparator className="bg-brand-border" />
-                <DropdownMenuItem className="focus:bg-red-500/10 text-red-500 focus:text-red-500 cursor-pointer" onClick={() => logout()}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Logout</span>
+
+                {/* Account section */}
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 py-1.5">
+                    {t("UserMenu.account_label")}
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer px-3 py-2">
+                    <Link href="/profile" className="flex items-center w-full no-underline text-inherit">
+                      <UserCircle className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span>{t("UserMenu.profile")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer px-3 py-2">
+                    <Link href="/orders" className="flex items-center w-full no-underline text-inherit">
+                      <Receipt className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span>{t("UserMenu.orders")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer px-3 py-2">
+                    <Link href="/dashboard" className="flex items-center w-full no-underline text-inherit">
+                      <LayoutDashboard className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span>{t("UserMenu.dashboard")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer px-3 py-2">
+                    <Link href="/settings" className="flex items-center w-full no-underline text-inherit">
+                      <Settings className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span>{t("UserMenu.settings")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator className="bg-brand-border" />
+
+                {/* Logout */}
+                <DropdownMenuItem
+                  className="focus:bg-red-500/10 text-red-500 focus:text-red-500 cursor-pointer px-3 py-2"
+                  onClick={() => logout()}
+                >
+                  <LogOut className="mr-2.5 h-4 w-4" />
+                  <span>{t("UserMenu.logout")}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -102,14 +162,18 @@ export default function Header() {
                 variant="outline"
                 size="sm"
                 className="border-brand-border bg-transparent text-slate-600 hover:border-brand-amber hover:bg-transparent hover:text-brand-amber dark:text-slate-400"
+                render={<Link href="/auth/login" />}
+                nativeButton={false}
               >
-                <Link href="/auth/login">{t("Common.login")}</Link>
+                {t("Common.login")}
               </Button>
               <Button
                 size="sm"
                 className="bg-brand-amber font-semibold text-black hover:bg-brand-amber2"
+                render={<Link href="/auth/signup" />}
+                nativeButton={false}
               >
-                <Link href="/auth/signup">{t("Common.start_free")}</Link>
+                {t("Common.start_free")}
               </Button>
             </>
           )}
@@ -117,6 +181,7 @@ export default function Header() {
 
         {/* Mobile menu toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          <LanguageSwitcher />
           <ThemeToggle />
           <button
             className="flex items-center justify-center text-slate-600 dark:text-slate-400"
@@ -165,13 +230,54 @@ export default function Header() {
 
             {user && (
               <>
+                {/* Learning links */}
+                <p className="px-3 pt-2 pb-1 text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium">
+                  {t("UserMenu.learning_label")}
+                </p>
+                <Link
+                  href="/my-courses"
+                  className="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-brand-bg3 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white no-underline"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <GraduationCap className="mr-3 h-4 w-4" />
+                  {t("UserMenu.my_courses")}
+                </Link>
+                <Link
+                  href="/certificates"
+                  className="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-brand-bg3 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white no-underline"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <Award className="mr-3 h-4 w-4" />
+                  {t("UserMenu.certificates")}
+                </Link>
+
+                {/* Account links */}
+                <p className="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium">
+                  {t("UserMenu.account_label")}
+                </p>
+                <Link
+                  href="/profile"
+                  className="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-brand-bg3 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white no-underline"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <UserCircle className="mr-3 h-4 w-4" />
+                  {t("UserMenu.profile")}
+                </Link>
+                <Link
+                  href="/orders"
+                  className="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-brand-bg3 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white no-underline"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <Receipt className="mr-3 h-4 w-4" />
+                  {t("UserMenu.orders")}
+                </Link>
                 <Link
                   href="/dashboard"
                   className="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-brand-bg3 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white no-underline"
                   onClick={() => setMenuOpen(false)}
                 >
                   <LayoutDashboard className="mr-3 h-4 w-4" />
-                  Dashboard
+                  {t("UserMenu.dashboard")}
                 </Link>
                 <Link
                   href="/settings"
@@ -179,7 +285,7 @@ export default function Header() {
                   onClick={() => setMenuOpen(false)}
                 >
                   <Settings className="mr-3 h-4 w-4" />
-                  Settings
+                  {t("UserMenu.settings")}
                 </Link>
               </>
             )}
@@ -196,20 +302,24 @@ export default function Header() {
                 }}
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                {t("UserMenu.logout")}
               </Button>
             ) : (
               <>
                 <Button
                   variant="outline"
                   className="w-full border-brand-border bg-transparent text-slate-600 hover:border-brand-amber hover:text-brand-amber dark:text-slate-400"
+                  render={<Link href="/auth/login" onClick={() => setMenuOpen(false)} />}
+                  nativeButton={false}
                 >
-                  <Link href="/auth/login" onClick={() => setMenuOpen(false)}>{t("Common.login")}</Link>
+                  {t("Common.login")}
                 </Button>
                 <Button
                   className="w-full bg-brand-amber font-semibold text-black hover:bg-brand-amber2"
+                  render={<Link href="/auth/signup" onClick={() => setMenuOpen(false)} />}
+                  nativeButton={false}
                 >
-                  <Link href="/auth/signup" onClick={() => setMenuOpen(false)}>{t("Common.start_free")}</Link>
+                  {t("Common.start_free")}
                 </Button>
               </>
             )}

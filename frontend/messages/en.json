@@ -147,6 +147,17 @@
   "LocaleSwitcher": {
     "label": "Language"
   },
+  "UserMenu": {
+    "learning_label": "Learning",
+    "my_courses": "My Courses",
+    "certificates": "Certificates",
+    "account_label": "Account",
+    "profile": "Profile",
+    "orders": "Order History",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
   "Auth": {
     "layout": {
       "motto": "The learning platform of the future."

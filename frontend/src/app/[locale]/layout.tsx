@@ -47,15 +47,14 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      suppressHydrationWarning
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem={false}
+      disableTransitionOnChange
     >
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="dark"
-        enableSystem={false}
-        disableTransitionOnChange
+      <div
+        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
         <NextIntlClientProvider messages={messages} locale={locale}>
           <QueryProvider>
@@ -67,7 +66,7 @@ export default async function LocaleLayout({
             </TooltipProvider>
           </QueryProvider>
         </NextIntlClientProvider>
-      </ThemeProvider>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
