@@ -6,14 +6,15 @@ import { UniqueId } from '@/common/types/unique-id.vo';
 @Injectable()
 export class ReviewMapper {
   toDomain(doc: ReviewDocument): Review {
-    return Review.create(
+    return Review.reconstitute(
       {
         courseId: new UniqueId(doc.courseId.toString()),
         studentId: new UniqueId(doc.studentId.toString()),
         rating: doc.rating,
         comment: doc.comment,
+        createdAt: doc.createdAt || new Date(),
       },
-      new UniqueId((doc._id as any).toString()),
+      (doc._id as any).toString(),
     );
   }
 

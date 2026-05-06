@@ -4,11 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useRouter } from "@/i18n/navigation";
 import {
   Search, Star, Clock, BookOpen, Users, Award, Smartphone,
   MessageSquare, TrendingUp, ChevronRight,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { CourseCard } from "@/features/course/presentation/components/course-card";
+import { Course } from "@/features/course/domain/course.types";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -24,69 +28,26 @@ function SectionHeader({
   );
 }
 
-function CourseCard({ course }: { course: any }) {
-  const t = useTranslations("HomePage.featured");
-  return (
-    <Card className="group overflow-hidden border border-brand-border bg-brand-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-amber/40 hover:shadow-2xl hover:shadow-black/50">
-      {/* Thumbnail */}
-      <div className={`relative flex h-40 items-center justify-center bg-gradient-to-br ${course.gradient}`}>
-        <span className="text-5xl">{course.emoji}</span>
-        <span className={`absolute left-3 top-3 rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${course.badgeColor}`}>
-          {course.badge}
-        </span>
-      </div>
-
-      <CardContent className="p-4">
-        <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-brand-amber">
-          {course.category}
-        </p>
-        <h3 className="mb-1.5 font-sora text-[15px] font-bold leading-snug text-slate-900 dark:text-white">
-          {course.title}
-        </h3>
-        <p className="mb-3 text-xs text-slate-600 dark:text-slate-400">{course.author}</p>
-
-        {/* Meta */}
-        <div className="mb-3 flex flex-wrap gap-3 text-[11px] text-slate-600 dark:text-slate-400">
-          <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{t("duration", { count: course.durationVal })}</span>
-          <span className="flex items-center gap-1"><BookOpen className="h-3 w-3" />{t("lessons", { count: course.lessonsVal })}</span>
-          <span className="flex items-center gap-1"><Users className="h-3 w-3" />{t("students", { count: course.studentsVal })}</span>
-        </div>
-
-        {/* Rating */}
-        <div className="mb-4 flex items-center gap-1.5">
-          <div className="flex text-amber-400">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="h-3 w-3" fill={i < Math.floor(course.rating) ? "currentColor" : "none"} />
-            ))}
-          </div>
-          <span className="text-xs font-semibold text-slate-900 dark:text-white">{course.rating}</span>
-          <span className="text-xs text-slate-500">({course.reviews.toLocaleString()})</span>
-        </div>
-
-        {/* Footer */}
-        <div className="flex items-center justify-between border-t border-brand-border pt-3">
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-sora text-lg font-extrabold text-brand-amber">{course.price}</span>
-            <span className="text-xs text-slate-500 line-through">{course.originalPrice}</span>
-          </div>
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-7 border-brand-amber/50 bg-transparent px-3 text-xs font-semibold text-brand-amber hover:bg-brand-amber hover:text-black"
-          >
-            {t("register")}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
 // ─── Main Page Body ───────────────────────────────────────────────────────────
 
 export default function HomePage() {
   const t = useTranslations("HomePage");
   const tc = useTranslations("Common");
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/courses?q=${encodeURIComponent(searchQuery)}`);
+    } else {
+      router.push("/courses");
+    }
+  };
+
+  const handleCategoryClick = (category: string) => {
+    router.push(`/courses?category=${encodeURIComponent(category)}`);
+  };
 
   const stats = [
     { value: t("stats.courses_val"), label: t("stats.courses") },
@@ -98,55 +59,67 @@ export default function HomePage() {
   const trustLogos = ["FPT Software", "VNG Corp", "Tiki", "Momo", "Got It", "KMS Tech"];
 
   const categories = [
-    { icon: "💻", name: t("categories.programming"), count: 284 },
-    { icon: "🎨", name: t("categories.design"),      count: 156 },
-    { icon: "📊", name: t("categories.data_ai"),     count: 203 },
-    { icon: "📱", name: t("categories.mobile_dev"),  count: 98  },
-    { icon: "☁️", name: t("categories.cloud_devops"), count: 112 },
-    { icon: "🔐", name: t("categories.security"),     count: 67  },
-    { icon: "📢", name: t("categories.marketing"),    count: 145 },
-    { icon: "💼", name: t("categories.business"),     count: 89  },
+    { icon: "💻", name: t("categories.programming"), count: 284, key: "Frontend" },
+    { icon: "🎨", name: t("categories.design"),      count: 156, key: "Design" },
+    { icon: "📊", name: t("categories.data_ai"),     count: 203, key: "AI & Data Science" },
+    { icon: "📱", name: t("categories.mobile_dev"),  count: 98,  key: "Mobile" },
+    { icon: "☁️", name: t("categories.cloud_devops"), count: 112, key: "DevOps" },
+    { icon: "🔐", name: t("categories.security"),     count: 67,  key: "Cybersecurity" },
+    { icon: "📢", name: t("categories.marketing"),    count: 145, key: "Marketing" },
+    { icon: "💼", name: t("categories.business"),     count: 89,  key: "Business" },
   ];
 
-  const courses = [
+  const featuredCourses: Course[] = [
     {
-      id: "react",
-      gradient: "from-blue-100 via-cyan-100 to-teal-100 dark:from-[#0f2027] dark:via-[#203a43] dark:to-[#2c5364]",
-      emoji: "⚛️",
-      badge: t("featured.bestseller"),
-      badgeColor: "bg-brand-amber text-black",
-      category: t("course_data.react.category"),
+      id: "react-1",
       title: t("course_data.react.title"),
+      slug: "react-nextjs-complete",
       author: t("course_data.react.author"),
-      durationVal: 42, lessonsVal: 186, studentsVal: "12.4k",
-      rating: 4.9, reviews: 3241,
-      price: "599K", originalPrice: "1,299K",
+      category: t("course_data.react.category"),
+      thumbnail: "/images/courses/react.png",
+      rating: 4.9,
+      reviewCount: 3241,
+      price: 599000,
+      originalPrice: 1299000,
+      duration: 42,
+      lessons: 186,
+      students: 12400,
+      level: "intermediate",
+      isBestseller: true,
     },
     {
-      id: "ai",
-      gradient: "from-purple-100 via-violet-100 to-fuchsia-100 dark:from-[#1a0533] dark:via-[#2d1b69] dark:to-[#11998e]",
-      emoji: "🤖",
-      badge: t("featured.newest"),
-      badgeColor: "bg-blue-500 text-white",
-      category: t("course_data.ai.category"),
+      id: "ai-1",
       title: t("course_data.ai.title"),
+      slug: "llm-prompt-engineering",
       author: t("course_data.ai.author"),
-      durationVal: 28, lessonsVal: 124, studentsVal: "8.7k",
-      rating: 4.8, reviews: 1876,
-      price: "799K", originalPrice: "1,499K",
+      category: t("course_data.ai.category"),
+      thumbnail: "/images/courses/ai.png",
+      rating: 4.8,
+      reviewCount: 1876,
+      price: 799000,
+      originalPrice: 1499000,
+      duration: 28,
+      lessons: 124,
+      students: 8700,
+      level: "advanced",
+      isNew: true,
     },
     {
-      id: "security",
-      gradient: "from-rose-100 via-red-100 to-orange-100 dark:from-[#0a0a1a] dark:via-[#1a1a2e] dark:to-[#e94560]",
-      emoji: "🔐",
-      badge: t("featured.hot"),
-      badgeColor: "bg-red-500 text-white",
-      category: t("course_data.security.category"),
+      id: "security-1",
       title: t("course_data.security.title"),
+      slug: "ethical-hacking-beginners",
       author: t("course_data.security.author"),
-      durationVal: 36, lessonsVal: 158, studentsVal: "5.2k",
-      rating: 4.7, reviews: 987,
-      price: "699K", originalPrice: "1,199K",
+      category: t("course_data.security.category"),
+      thumbnail: "/images/courses/security.png",
+      rating: 4.7,
+      reviewCount: 987,
+      price: 699000,
+      originalPrice: 1199000,
+      duration: 36,
+      lessons: 158,
+      students: 5200,
+      level: "beginner",
+      isHot: true,
     },
   ];
 
@@ -220,15 +193,20 @@ export default function HomePage() {
         </p>
 
         {/* Search */}
-        <div className="mx-auto mb-12 flex max-w-[560px] overflow-hidden rounded-xl border border-brand-border bg-brand-card2 focus-within:border-brand-amber transition-colors">
+        <form 
+          onSubmit={handleSearch}
+          className="mx-auto mb-12 flex max-w-[560px] overflow-hidden rounded-xl border border-brand-border bg-brand-card2 focus-within:border-brand-amber transition-colors"
+        >
           <Input
             placeholder={t("hero.search_placeholder")}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-1 border-0 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:ring-0"
           />
-          <Button className="rounded-none bg-brand-amber px-6 font-semibold text-black hover:bg-brand-amber2">
+          <Button type="submit" className="rounded-none bg-brand-amber px-6 font-semibold text-black hover:bg-brand-amber2">
             <Search className="mr-2 h-4 w-4" /> {tc("search")}
           </Button>
-        </div>
+        </form>
 
         {/* Stats */}
         <div className="flex flex-wrap justify-center gap-10">
@@ -262,6 +240,7 @@ export default function HomePage() {
           {categories.map((cat) => (
             <button
               key={cat.name}
+              onClick={() => handleCategoryClick(cat.key)}
               className="group flex flex-col items-center rounded-xl border border-brand-border bg-brand-card p-4 text-center transition-all hover:-translate-y-1 hover:border-brand-amber/50 hover:bg-brand-card2"
             >
               <span className="mb-2 text-3xl">{cat.icon}</span>
@@ -282,13 +261,17 @@ export default function HomePage() {
             title={t("featured.title")}
             subtitle={t("featured.subtitle")}
           />
-          <Button variant="ghost" className="mb-9 text-sm text-brand-amber hover:text-brand-amber2">
+          <Button 
+            variant="ghost" 
+            className="mb-9 text-sm text-brand-amber hover:text-brand-amber2"
+            onClick={() => router.push("/courses")}
+          >
             {t("featured.view_all")} <ChevronRight className="ml-1 h-4 w-4" />
           </Button>
         </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((course) => (
-            <CourseCard key={course.title} course={course} />
+          {featuredCourses.map((course) => (
+            <CourseCard key={course.id} course={course} />
           ))}
         </div>
       </section>

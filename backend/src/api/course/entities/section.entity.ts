@@ -4,7 +4,7 @@ import { UniqueId } from '@/common/types/unique-id.vo';
 export interface SectionProps {
   courseId: string;
   title: string;
-  order: number;
+  orderIndex: number;
 }
 
 export class Section extends Entity<SectionProps> {
@@ -16,13 +16,13 @@ export class Section extends Entity<SectionProps> {
     return this.props.title;
   }
 
-  get order(): number {
-    return this.props.order;
+  get orderIndex(): number {
+    return this.props.orderIndex;
   }
 
   public update(props: Partial<SectionProps>): void {
     if (props.title !== undefined) this.props.title = props.title;
-    if (props.order !== undefined) this.props.order = props.order;
+    if (props.orderIndex !== undefined) this.props.orderIndex = props.orderIndex;
   }
 
   public static create(props: SectionProps, id?: string): Section {

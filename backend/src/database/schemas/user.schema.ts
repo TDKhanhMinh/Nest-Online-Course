@@ -17,8 +17,14 @@ export class UserDocument extends Document {
   @Prop({ type: [String], enum: Role, default: [Role.STUDENT] })
   roles: Role[];
 
-  @Prop({ type: [String], default: [] })
-  courseIds: string[];
+  @Prop({ type: String })
+  avatarUrl?: string;
+
+  @Prop({ type: String })
+  bio?: string;
+
+  @Prop({ type: Boolean, default: true })
+  isActive: boolean;
 }
 
-export const UserSchema: MongooseSchema = SchemaFactory.createForClass(UserDocument);
+export const UserSchema = SchemaFactory.createForClass(UserDocument);

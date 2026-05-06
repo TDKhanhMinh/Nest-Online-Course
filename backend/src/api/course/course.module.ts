@@ -6,26 +6,30 @@ import {
   SectionSchema,
 } from '@/database/schemas/section.schema';
 import {
-  LectureDocument,
-  LectureSchema,
-} from '@/database/schemas/lecture.schema';
+  LessonDocument,
+  LessonSchema,
+} from '@/database/schemas/lesson.schema';
 import { ReviewDocument, ReviewSchema } from '@/database/schemas/review.schema';
+import { CategoryDocument, CategorySchema } from '@/database/schemas/category.schema';
 import { CourseMongooseRepository } from '@/api/course/course.repository';
 import { SectionRepository } from '@/api/course/section.repository';
-import { LectureRepository } from '@/api/course/lecture.repository';
+import { LessonRepository } from '@/api/course/lesson.repository';
 import { ReviewRepository } from '@/api/course/review.repository';
 import { CourseMapper } from '@/api/course/course.mapper';
 import { SectionMapper } from '@/api/course/section.mapper';
-import { LectureMapper } from '@/api/course/lecture.mapper';
+import { LessonMapper } from '@/api/course/lesson.mapper';
 import { ReviewMapper } from '@/api/course/review.mapper';
+import { CategoryMapper } from '@/api/course/category.mapper';
+import { CategoryRepository } from '@/api/course/category.repository';
 import { MuxVideoStreamingAdapter } from '@/libs/video/mux-video.service';
 import { CourseController } from '@/api/course/course.controller';
 import { CourseService } from '@/api/course/course.service';
 import { OnLessonCompletedHandler } from '@/api/course/events/on-lesson-completed.handler';
 import { COURSE_REPOSITORY } from '@/common/abstractions/repositories/i-course.repository';
 import { ISectionRepository } from '@/common/abstractions/repositories/i-section.repository';
-import { ILectureRepository } from '@/common/abstractions/repositories/i-lecture.repository';
+import { ILessonRepository } from '@/common/abstractions/repositories/i-lesson.repository';
 import { IReviewRepository } from '@/common/abstractions/repositories/i-review.repository';
+import { ICATEGORY_REPOSITORY } from '@/common/abstractions/repositories/i-category.repository';
 import { VIDEO_STREAMING_SERVICE } from '@/common/abstractions/services/i-video-streaming.service';
 import { EnrollmentModule } from '@/api/enrollment/enrollment.module';
 import { CertificateModule } from '@/api/certificate/certificate.module';
@@ -35,31 +39,35 @@ import { CertificateModule } from '@/api/certificate/certificate.module';
     MongooseModule.forFeature([
       { name: CourseDocument.name, schema: CourseSchema },
       { name: SectionDocument.name, schema: SectionSchema },
-      { name: LectureDocument.name, schema: LectureSchema },
+      { name: LessonDocument.name, schema: LessonSchema },
       { name: ReviewDocument.name, schema: ReviewSchema },
+      { name: CategoryDocument.name, schema: CategorySchema },
     ]),
     forwardRef(() => EnrollmentModule),
-    CertificateModule,
+    forwardRef(() => CertificateModule),
   ],
   controllers: [CourseController],
   providers: [
     { provide: COURSE_REPOSITORY, useClass: CourseMongooseRepository },
     { provide: ISectionRepository, useClass: SectionRepository },
-    { provide: ILectureRepository, useClass: LectureRepository },
+    { provide: ILessonRepository, useClass: LessonRepository },
     { provide: IReviewRepository, useClass: ReviewRepository },
+    { provide: ICATEGORY_REPOSITORY, useClass: CategoryRepository },
     { provide: VIDEO_STREAMING_SERVICE, useClass: MuxVideoStreamingAdapter },
     CourseMapper,
     SectionMapper,
-    LectureMapper,
+    LessonMapper,
     ReviewMapper,
+    CategoryMapper,
     CourseService,
     OnLessonCompletedHandler,
   ],
   exports: [
     COURSE_REPOSITORY,
     ISectionRepository,
-    ILectureRepository,
+    ILessonRepository,
     IReviewRepository,
+    ICATEGORY_REPOSITORY,
   ],
 })
 export class CourseModule {}

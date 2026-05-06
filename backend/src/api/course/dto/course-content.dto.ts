@@ -1,11 +1,12 @@
-import { IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsEnum, IsBoolean } from 'class-validator';
+import { LessonType } from '@/common/types/lesson-type.enum';
 
 export class CreateSectionDto {
   @IsString()
   title: string;
 
   @IsNumber()
-  order: number;
+  orderIndex: number;
 }
 
 export class UpdateSectionDto {
@@ -15,58 +16,62 @@ export class UpdateSectionDto {
 
   @IsOptional()
   @IsNumber()
-  order?: number;
+  orderIndex?: number;
 }
 
-export enum LectureType {
-  VIDEO = 'VIDEO',
-  ARTICLE = 'ARTICLE',
-}
-
-export class CreateLectureDto {
+export class CreateLessonDto {
   @IsString()
   title: string;
 
-  @IsString()
-  content: string;
-
-  @IsEnum(LectureType)
-  type: LectureType;
+  @IsEnum(LessonType)
+  type: LessonType;
 
   @IsNumber()
-  order: number;
+  orderIndex: number;
 
   @IsOptional()
   @IsString()
-  videoUrl?: string;
+  contentUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  textContent?: string;
 
   @IsOptional()
   @IsNumber()
   duration?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isFreePreview?: boolean;
 }
 
-export class UpdateLectureDto {
+export class UpdateLessonDto {
   @IsOptional()
   @IsString()
   title?: string;
 
   @IsOptional()
-  @IsString()
-  content?: string;
-
-  @IsOptional()
-  @IsEnum(LectureType)
-  type?: LectureType;
+  @IsEnum(LessonType)
+  type?: LessonType;
 
   @IsOptional()
   @IsNumber()
-  order?: number;
+  orderIndex?: number;
 
   @IsOptional()
   @IsString()
-  videoUrl?: string;
+  contentUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  textContent?: string;
 
   @IsOptional()
   @IsNumber()
   duration?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isFreePreview?: boolean;
 }

@@ -9,17 +9,17 @@ import {
   ENROLLMENT_REPOSITORY,
 } from '@/common/abstractions/repositories/i-enrollment.repository';
 import { ISectionRepository } from '@/common/abstractions/repositories/i-section.repository';
-import { ILectureRepository } from '@/common/abstractions/repositories/i-lecture.repository';
+import { ILessonRepository } from '@/common/abstractions/repositories/i-lesson.repository';
 import { IReviewRepository } from '@/common/abstractions/repositories/i-review.repository';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { Section } from './entities/section.entity';
-import { Lecture } from './entities/lecture.entity';
+import { Lesson } from './entities/lesson.entity';
 import { Review } from './entities/review.entity';
 import {
   CreateSectionDto,
   UpdateSectionDto,
-  CreateLectureDto,
-  UpdateLectureDto,
+  CreateLessonDto,
+  UpdateLessonDto,
 } from './dto/course-content.dto';
 import { CreateReviewDto } from './dto/review.dto';
 import { DomainException } from '@/exceptions/domain-exception.base';
@@ -37,8 +37,8 @@ export class CourseService {
     @Inject(ISectionRepository)
     private readonly sectionRepo: ISectionRepository,
 
-    @Inject(ILectureRepository)
-    private readonly lectureRepo: ILectureRepository,
+    @Inject(ILessonRepository)
+    private readonly lessonRepo: ILessonRepository,
 
     @Inject(IReviewRepository)
     private readonly reviewRepo: IReviewRepository,
@@ -92,7 +92,7 @@ export class CourseService {
     const section = Section.create({
       courseId: course.id.value,
       title: dto.title,
-      order: dto.order,
+      orderIndex: dto.orderIndex,
     });
 
     await this.sectionRepo.save(section);
@@ -116,43 +116,45 @@ export class CourseService {
     await this.sectionRepo.delete(sectionId);
   }
 
-  async createLecture(
+  async createLesson(
     sectionId: string,
-    dto: CreateLectureDto,
-  ): Promise<Lecture> {
+    dto: CreateLessonDto,
+  ): Promise<Lesson> {
     const section = await this.sectionRepo.findById(sectionId);
     if (!section) throw new NotFoundException('Section not found');
 
-    const lecture = Lecture.create({
+    const lesson = Lesson.create({
       sectionId: section.id.value,
       title: dto.title,
-      content: dto.content,
+      contentUrl: dto.contentUrl,
+      textContent: dto.textContent,
       type: dto.type,
-      order: dto.order,
-      videoUrl: dto.videoUrl,
+      orderIndex: dto.orderIndex,
       duration: dto.duration,
+      isFreePreview: dto.isFreePreview,
     });
 
-    await this.lectureRepo.save(lecture);
-    return lecture;
+    await this.lessonRepo.save(lesson);
+    return lesson;
   }
 
-  async updateLecture(
-    lectureId: string,
-    dto: UpdateLectureDto,
-  ): Promise<Lecture> {
-    const lecture = await this.lectureRepo.findById(lectureId);
-    if (!lecture) throw new NotFoundException('Lecture not found');
+  async updateLesson(
+    lessonId: string,
+    dto: UpdateLessonDto,
+  ): Promise<Lesson> {
+    const lesson = await this.lessonRepo.findById(lessonId);
+    if (!lesson) throw new NotFoundException('Lesson not found');
 
-    lecture.update(dto);
+    lesson.update(dto);
 
-    await this.lectureRepo.save(lecture);
-    return lecture;
+    await this.lessonRepo.save(lesson);
+    return lesson;
   }
 
-  async deleteLecture(lectureId: string): Promise<void> {
-    await this.lectureRepo.delete(lectureId);
+  async deleteLesson(lessonId: string): Promise<void> {
+    await this.lessonRepo.delete(lessonId);
   }
+
 
   async getCourseFullContent(courseId: string) {
     const course = await this.courseRepo.findByIdOrThrow(
@@ -160,30 +162,30 @@ export class CourseService {
     );
     const sections = await this.sectionRepo.findByCourseId(courseId);
 
-    const sectionsWithLectures = await Promise.all(
+    const sectionsWithLessons = await Promise.all(
       sections
-        .sort((a, b) => a.order - b.order)
+        .sort((a, b) => a.orderIndex - b.orderIndex)
         .map(async (section) => {
-          const lectures = await this.lectureRepo.findBySectionId(
+          const lessons = await this.lessonRepo.findBySectionId(
             section.id.value,
           );
           return {
             id: section.id.value,
             courseId: section.courseId,
             title: section.title,
-            order: section.order,
-            lectures: lectures
-              .sort((a, b) => a.order - b.order)
+            orderIndex: section.orderIndex,
+            lessons: lessons
+              .sort((a, b) => a.orderIndex - b.orderIndex)
               .map((l) => ({
                 id: l.id.value,
                 sectionId: l.sectionId,
                 title: l.title,
-                content: l.content,
+                contentUrl: l.contentUrl,
+                textContent: l.textContent,
                 type: l.type,
-                order: l.order,
-                videoUrl: l.videoUrl,
+                orderIndex: l.orderIndex,
                 duration: l.duration,
-                isPreview: l.isPreview,
+                isFreePreview: l.isFreePreview,
               })),
           };
         }),
@@ -192,7 +194,7 @@ export class CourseService {
     return {
       courseId: course.id.value,
       title: course.title.value,
-      sections: sectionsWithLectures,
+      sections: sectionsWithLessons,
     };
   }
 

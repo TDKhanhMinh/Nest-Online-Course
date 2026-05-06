@@ -5,11 +5,11 @@ import { SectionDocument } from '@/database/schemas/section.schema';
 @Injectable()
 export class SectionMapper {
   toDomain(doc: SectionDocument): Section {
-    return Section.create(
+    return Section.reconstitute(
       {
         courseId: doc.courseId.toString(),
         title: doc.title,
-        order: doc.orderIndex,
+        orderIndex: doc.orderIndex,
       },
       (doc._id as any).toString(),
     );
@@ -20,7 +20,7 @@ export class SectionMapper {
       _id: domain.id.value as any,
       courseId: domain.courseId,
       title: domain.title,
-      orderIndex: domain.order,
+      orderIndex: domain.orderIndex,
     };
   }
 }

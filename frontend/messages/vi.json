@@ -229,5 +229,371 @@
       "biography_max": "Tiểu sử không được vượt quá {max} ký tự",
       "invalid_url": "URL {field} không hợp lệ"
     }
+  },
+  "ForgotPassword": {
+    "title": "Quên mật khẩu",
+    "description": "Đừng lo lắng, chuyện này thường xuyên xảy ra. Nhập email của bạn và chúng tôi sẽ gửi liên kết khôi phục.",
+    "email_label": "Email",
+    "email_placeholder": "name@example.com",
+    "send_button": "Gửi liên kết khôi phục",
+    "back_to_login": "Quay lại Đăng nhập",
+    "success_title": "Kiểm tra email của bạn",
+    "success_message": "Chúng tôi đã gửi liên kết khôi phục mật khẩu đến {email}. Vui lòng kiểm tra hộp thư đến của bạn.",
+    "resend_button": "Không nhận được email? Gửi lại"
+  },
+  "Dashboard": {
+    "welcome": "Chào mừng trở lại, {name}!",
+    "stats": {
+      "courses_in_progress": "Đang học",
+      "completed_courses": "Đã hoàn thành",
+      "learning_hours": "Giờ học"
+    },
+    "continue_learning": "Tiếp tục học tập",
+    "no_courses": "Bạn chưa đăng ký khóa học nào.",
+    "explore_courses": "Khám phá khóa học",
+    "notifications": "Thông báo",
+    "recommended": "Gợi ý cho bạn"
+  },
+  "Profile": {
+    "title": "Cài đặt hồ sơ",
+    "description": "Quản lý thông tin cá nhân và tùy chọn tài khoản của bạn.",
+    "tabs": {
+      "general": "Thông tin chung",
+      "security": "Bảo mật",
+      "notifications": "Thông báo"
+    },
+    "general": {
+      "title": "Thông tin chung",
+      "description": "Cập nhật thông tin cá nhân và ảnh đại diện của bạn.",
+      "avatar_label": "Ảnh đại diện",
+      "upload_button": "Tải ảnh mới",
+      "remove_button": "Gỡ bỏ",
+      "name_label": "Họ và tên",
+      "email_label": "Địa chỉ Email",
+      "bio_label": "Tiểu sử",
+      "save_button": "Lưu thay đổi"
+    },
+    "security": {
+      "title": "Đổi mật khẩu",
+      "description": "Bảo mật tài khoản của bạn bằng mật khẩu mạnh.",
+      "current_password": "Mật khẩu hiện tại",
+      "new_password": "Mật khẩu mới",
+      "confirm_password": "Xác nhận mật khẩu mới",
+      "update_button": "Cập nhật mật khẩu",
+      "mismatch_error": "Mật khẩu mới không khớp"
+    },
+    "notifications": {
+      "title": "Cài đặt thông báo",
+      "description": "Quản lý cách bạn nhận cảnh báo và cập nhật.",
+      "save_button": "Lưu tùy chọn",
+      "email_title": "Thông báo Email",
+      "email_desc": "Nhận cập nhật về khóa học và cộng đồng qua email.",
+      "app_title": "Thông báo ứng dụng",
+      "app_desc": "Nhận cảnh báo thời gian thực trên bảng điều khiển.",
+      "learning_title": "Nhắc nhở học tập",
+      "learning_desc": "Nhận lời nhắc để duy trì lịch trình học tập của bạn.",
+      "promo_title": "Email quảng cáo",
+      "promo_desc": "Nhận tin tức về các khóa học mới và ưu đãi đặc biệt."
+    }
+  },
+  "CourseCatalog": {
+    "title": "Tất cả Khóa học",
+    "breadcrumb": "Khóa học",
+    "search_results": "Tìm thấy {count} khóa học cho \"{query}\"",
+    "all_results": "Hiện có {count} khóa học",
+    "filters": {
+      "title": "Bộ lọc",
+      "clear_all": "Xóa tất cả",
+      "categories": "Danh mục",
+      "levels": "Cấp độ",
+      "price": "Giá cả",
+      "ratings": "Đánh giá",
+      "level_options": {
+        "beginner": "Cơ bản",
+        "intermediate": "Trung cấp",
+        "advanced": "Nâng cao"
+      },
+      "price_options": {
+        "free": "Miễn phí",
+        "paid": "Có phí"
+      },
+      "rating_up": "trở lên"
+    },
+    "sort": {
+      "label": "Sắp xếp theo",
+      "newest": "Mới nhất",
+      "popular": "Phổ biến nhất",
+      "price_low": "Giá: Thấp đến Cao",
+      "price_high": "Giá: Cao đến Thấp"
+    },
+    "empty": {
+      "title": "Không tìm thấy khóa học",
+      "description": "Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm của bạn.",
+      "button": "Xóa tất cả bộ lọc"
+    }
+  },
+  "CourseDetail": {
+    "hero": {
+      "last_updated": "Cập nhật mới nhất",
+      "language": "Tiếng Việt",
+      "best_seller": "Bán chạy nhất"
+    },
+    "enrollment": {
+      "buy_now": "Mua ngay",
+      "enroll_now": "Đăng ký ngay",
+      "money_back": "Hoàn tiền trong 30 ngày",
+      "includes": "Khóa học này bao gồm:",
+      "lifetime": "Truy cập trọn đời",
+      "mobile": "Học trên điện thoại và TV",
+      "certificate": "Chứng chỉ hoàn thành",
+      "assignments": "Bài tập & Trắc nghiệm"
+    },
+    "tabs": {
+      "overview": "Tổng quan",
+      "curriculum": "Nội dung",
+      "instructor": "Giảng viên",
+      "reviews": "Đánh giá"
+    },
+    "overview": {
+      "title": "Bạn sẽ học được gì",
+      "requirements": "Yêu cầu",
+      "description": "Mô tả khóa học"
+    },
+    "curriculum": {
+      "title": "Nội dung khóa học",
+      "stats": "{sections} chương • {lessons} bài học • {duration} tổng thời lượng",
+      "expand_all": "Mở rộng tất cả",
+      "collapse_all": "Thu gọn tất cả"
+    },
+    "instructor": {
+      "title": "Về giảng viên",
+      "students": "Học viên",
+      "reviews": "Đánh giá",
+      "courses": "Khóa học"
+    },
+    "reviews": {
+      "title": "Phản hồi từ học viên",
+      "rating_out_of": "trên 5 sao",
+      "search_placeholder": "Tìm kiếm đánh giá"
+    }
+  },
+  "MyCourses": {
+    "title": "Học tập của tôi",
+    "tabs": {
+      "all": "Tất cả khóa học",
+      "in_progress": "Đang học",
+      "completed": "Đã hoàn thành",
+      "wishlist": "Yêu thích"
+    },
+    "search_placeholder": "Tìm kiếm khóa học của tôi...",
+    "progress": "Đã hoàn thành {percent}%",
+    "continue": "Tiếp tục học",
+    "start": "Bắt đầu học",
+    "empty": "Bạn chưa đăng ký khóa học nào.",
+    "explore": "Khám phá khóa học"
+  },
+  "Learning": {
+    "tabs": {
+      "overview": "Tổng quan",
+      "notes": "Ghi chú",
+      "resources": "Tài liệu",
+      "qa": "Hỏi đáp"
+    },
+    "navigation": {
+      "prev": "Bài trước",
+      "next": "Bài tiếp theo",
+      "complete_continue": "Hoàn thành và Tiếp tục"
+    },
+    "sidebar": {
+      "title": "Nội dung khóa học",
+      "search": "Tìm kiếm bài học..."
+    },
+    "notes": {
+      "title": "Ghi chú của tôi",
+      "add_placeholder": "Tạo ghi chú tại {time}...",
+      "save": "Lưu ghi chú",
+      "empty": "Chưa có ghi chú nào. Hãy ghi lại những khoảnh khắc quan trọng khi học!"
+    }
+  },
+  "Certificates": {
+    "title": "Chứng chỉ của tôi",
+    "subtitle": "Trưng bày thành tích và sự phát triển chuyên môn của bạn.",
+    "issued_on": "Cấp ngày {date}",
+    "download": "Tải xuống PDF",
+    "share": "Chia sẻ",
+    "empty": {
+      "title": "Chưa có chứng chỉ",
+      "description": "Hoàn thành các khóa học để nhận được chứng chỉ uy tín.",
+      "button": "Đến mục Học tập"
+    },
+    "verify": "Mã xác thực: {id}"
+  },
+  "Cart": {
+    "title": "Giỏ hàng",
+    "breadcrumb": "Giỏ hàng",
+    "empty": {
+      "title": "Giỏ hàng của bạn đang trống",
+      "description": "Tiếp tục mua sắm để tìm khóa học phù hợp!",
+      "button": "Tiếp tục mua sắm"
+    },
+    "summary": {
+      "title": "Tổng cộng",
+      "original_price": "Giá gốc",
+      "discounts": "Giảm giá",
+      "total": "Tổng tiền",
+      "checkout_button": "Thanh toán",
+      "coupon_placeholder": "Nhập mã giảm giá",
+      "coupon_apply": "Áp dụng"
+    },
+    "items_count": "{count} khóa học trong giỏ hàng",
+    "remove": "Xóa",
+    "move_to_wishlist": "Chuyển vào yêu thích"
+  },
+  "Checkout": {
+    "title": "Thanh toán",
+    "breadcrumb": "Thanh toán",
+    "payment_method": {
+      "title": "Phương thức thanh toán",
+      "credit_card": "Thẻ tín dụng/Ghi nợ",
+      "paypal": "PayPal",
+      "momo": "Ví điện tử MoMo",
+      "bank_transfer": "Chuyển khoản ngân hàng"
+    },
+    "order_summary": {
+      "title": "Tóm tắt đơn hàng",
+      "complete_button": "Hoàn tất thanh toán",
+      "terms": "Bằng việc hoàn thành việc mua hàng, bạn đồng ý với các {terms}."
+    },
+    "success": {
+      "title": "Cảm ơn bạn đã mua hàng!",
+      "message": "Email xác nhận đã được gửi đến {email}.",
+      "button": "Đến mục Học tập"
+    }
+  },
+  "Orders": {
+    "title": "Lịch sử đơn hàng",
+    "breadcrumb": "Đơn hàng",
+    "table": {
+      "id": "Mã đơn hàng",
+      "date": "Ngày mua",
+      "items": "Sản phẩm",
+      "total": "Tổng tiền",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "success": "Thành công",
+      "pending": "Chờ xử lý",
+      "failed": "Thất bại",
+      "refunded": "Đã hoàn tiền"
+    },
+    "view_invoice": "Xem hóa đơn",
+    "empty": "Bạn chưa thực hiện giao dịch nào."
+  },
+  "Quiz": {
+    "title": "Bài kiểm tra: {title}",
+    "start_button": "Bắt đầu làm bài",
+    "submit_button": "Nộp bài",
+    "next_button": "Tiếp theo",
+    "previous_button": "Câu trước",
+    "retry_button": "Làm lại",
+    "continue_button": "Tiếp tục",
+    "time_left": "Thời gian còn lại: {time}",
+    "questions_count": "{count} Câu hỏi",
+    "time_limit": "{time} Phút",
+    "question_counter": "Câu {current} / {total}",
+    "question_indicator": "Câu {current}/{total}",
+    "score": "Điểm của bạn: {score}/{total}",
+    "score_summary": "Bạn trả lời đúng {score} trên {total} câu hỏi.",
+    "final_score": "Điểm cuối",
+    "passing_score": "Điểm chuẩn",
+    "passed_title": "Chúc mừng, bạn đã vượt qua!",
+    "failed_title": "Bạn chưa đạt yêu cầu. Vui lòng thử lại.",
+    "review_answers": "Xem lại đáp án",
+    "explanation": "Giải thích:",
+    "retake": "Làm lại bài"
+  },
+  "Assignment": {
+    "title": "Bài tập: {title}",
+    "description": "Hướng dẫn",
+    "points": "{points} Điểm",
+    "due": "Hạn nộp: {date}",
+    "your_work": "Bài làm của bạn",
+    "requirements_title": "Yêu cầu",
+    "requirement_1": "Nộp file ZIP chứa mã nguồn của bạn.",
+    "requirement_2": "Bao gồm file README.md với hướng dẫn chạy ứng dụng.",
+    "requirement_3": "Hoặc bạn có thể cung cấp liên kết kho lưu trữ GitHub trong phần bình luận.",
+    "drag_drop": "Nhấp để tải lên hoặc kéo thả tệp",
+    "supported_files": "Định dạng hỗ trợ",
+    "upload_zone": "Nhấp để tải lên hoặc kéo thả tệp của bạn vào đây",
+    "upload_hint": "Định dạng hỗ trợ: PDF, ZIP, DOCX (Tối đa: 20MB)",
+    "comments_placeholder": "Thêm liên kết GitHub hoặc bình luận cho giảng viên...",
+    "comments_links": "Bình luận / Liên kết",
+    "submitted_files": "Tệp đã nộp",
+    "notes_label": "Ghi chú thêm (Tùy chọn)",
+    "notes_placeholder": "Bất kỳ bình luận nào cho giảng viên...",
+    "submit_button": "Nộp bài tập",
+    "submitting": "Đang nộp...",
+    "unsubmit_button": "Hủy nộp bài",
+    "unsubmit_hint": "Bạn có thể hủy nộp bài để chỉnh sửa trước hạn nộp.",
+    "submitted_success": "Bài tập của bạn đã được nộp thành công.",
+    "status_pending": "Đang chờ chấm điểm",
+    "status_submitted": "Đã nộp",
+    "status_graded": "Đã chấm điểm: {score}/100"
+  },
+  "Discussion": {
+    "title": "Diễn đàn thảo luận",
+    "search_placeholder": "Tìm kiếm thảo luận...",
+    "new_post": "Đặt câu hỏi",
+    "post_title_placeholder": "Tiêu đề ngắn gọn cho câu hỏi của bạn...",
+    "post_body_placeholder": "Mô tả chi tiết vấn đề hoặc câu hỏi của bạn...",
+    "post_button": "Đăng",
+    "cancel_button": "Hủy",
+    "reply_button": "Trả lời",
+    "reply_placeholder": "Viết câu trả lời...",
+    "time_ago": "{time} trước",
+    "replies": "{count} câu trả lời",
+    "upvotes": "{count} lượt thích",
+    "author_badge": "Giảng viên",
+    "empty": "Chưa có thảo luận nào. Hãy là người đầu tiên đặt câu hỏi!"
+  },
+  "Grades": {
+    "title": "Điểm số của tôi",
+    "subtitle": "Theo dõi thành tích của bạn qua tất cả các khóa học đã đăng ký.",
+    "breadcrumb": "Điểm số",
+    "stats": {
+      "average_score": "Điểm trung bình",
+      "quizzes_taken": "Bài kiểm tra",
+      "assignments": "Bài tập",
+      "pending_review": "Chờ chấm điểm"
+    },
+    "search_placeholder": "Tìm kiếm bài đánh giá...",
+    "filter": {
+      "course": "Khóa học",
+      "all_courses": "Tất cả khóa học",
+      "type": "Loại",
+      "all_types": "Tất cả loại",
+      "quizzes": "Trắc nghiệm",
+      "assignments": "Bài tập"
+    },
+    "table": {
+      "course": "Khóa học",
+      "assessment": "Tên bài đánh giá",
+      "type": "Loại",
+      "score": "Điểm số",
+      "status": "Trạng thái",
+      "date": "Ngày nộp"
+    },
+    "types": {
+      "quiz": "Trắc nghiệm",
+      "assignment": "Bài tập"
+    },
+    "status": {
+      "passed": "Đạt",
+      "failed": "Chưa đạt",
+      "pending": "Chờ chấm",
+      "graded": "Đã chấm"
+    },
+    "empty": "Chưa có điểm số nào được ghi nhận."
   }
 }

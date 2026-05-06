@@ -1,48 +1,75 @@
 import { Entity } from '@/common/abstractions/aggregate-root.base';
 import { UniqueId } from '@/common/types/unique-id.vo';
-import { QuizScore } from '@/api/course/value-objects/quiz-score.vo';
+import { LessonType } from '@/common/types/lesson-type.enum';
 
 export interface LessonProps {
+  sectionId: string;
   title: string;
-  videoAssetId: string;
-  order: number;
-  isCompleted: boolean;
-  lastScore: QuizScore;
+  type: LessonType;
+  contentUrl?: string;
+  textContent?: string;
+  duration?: number;
+  orderIndex: number;
+  isFreePreview: boolean;
 }
 
 export class Lesson extends Entity<LessonProps> {
+  get sectionId(): string {
+    return this.props.sectionId;
+  }
+
   get title(): string {
     return this.props.title;
   }
-  get videoAssetId(): string {
-    return this.props.videoAssetId;
-  }
-  get order(): number {
-    return this.props.order;
-  }
-  get isCompleted(): boolean {
-    return this.props.isCompleted;
-  }
-  get lastScore(): QuizScore {
-    return this.props.lastScore;
+
+  get type(): LessonType {
+    return this.props.type;
   }
 
-  markCompleted(score: QuizScore): void {
-    this.props.isCompleted = true;
-    this.props.lastScore = score;
+  get contentUrl(): string | undefined {
+    return this.props.contentUrl;
   }
 
-  static create(
-    props: Omit<LessonProps, 'isCompleted' | 'lastScore'>,
-    id?: UniqueId,
+  get textContent(): string | undefined {
+    return this.props.textContent;
+  }
+
+  get duration(): number | undefined {
+    return this.props.duration;
+  }
+
+  get orderIndex(): number {
+    return this.props.orderIndex;
+  }
+
+  get isFreePreview(): boolean {
+    return this.props.isFreePreview;
+  }
+
+  public update(props: Partial<LessonProps>): void {
+    if (props.title !== undefined) this.props.title = props.title;
+    if (props.type !== undefined) this.props.type = props.type;
+    if (props.contentUrl !== undefined) this.props.contentUrl = props.contentUrl;
+    if (props.textContent !== undefined) this.props.textContent = props.textContent;
+    if (props.duration !== undefined) this.props.duration = props.duration;
+    if (props.orderIndex !== undefined) this.props.orderIndex = props.orderIndex;
+    if (props.isFreePreview !== undefined) this.props.isFreePreview = props.isFreePreview;
+  }
+
+  public static create(
+    props: Omit<LessonProps, 'isFreePreview'> & { isFreePreview?: boolean },
+    id?: string,
   ): Lesson {
     return new Lesson(
-      { ...props, isCompleted: false, lastScore: new QuizScore(0) },
-      id ?? UniqueId.generate(),
+      {
+        ...props,
+        isFreePreview: props.isFreePreview ?? false,
+      },
+      id ? new UniqueId(id) : UniqueId.generate(),
     );
   }
 
-  static reconstitute(props: LessonProps, id: UniqueId): Lesson {
-    return new Lesson(props, id);
+  public static reconstitute(props: LessonProps, id: string): Lesson {
+    return new Lesson(props, new UniqueId(id));
   }
 }

@@ -47,16 +47,16 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem={false}
-      disableTransitionOnChange
+    <div
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <div
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      >
-        <NextIntlClientProvider messages={messages} locale={locale}>
+      <NextIntlClientProvider messages={messages} locale={locale}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
           <QueryProvider>
             <TooltipProvider>
               <Header />
@@ -65,8 +65,8 @@ export default async function LocaleLayout({
               <Toaster />
             </TooltipProvider>
           </QueryProvider>
-        </NextIntlClientProvider>
-      </div>
-    </ThemeProvider>
+        </ThemeProvider>
+      </NextIntlClientProvider>
+    </div>
   );
 }

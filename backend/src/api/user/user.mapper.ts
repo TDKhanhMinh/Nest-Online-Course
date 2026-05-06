@@ -1,16 +1,17 @@
 import { User } from './entities/user.entity';
 import { UserDocument } from '@/database/schemas/user.schema';
-import { UniqueId } from '@/common/types/unique-id.vo';
 
 export class UserMapper {
   static toDomain(doc: UserDocument): User {
-    return User.create(
+    return User.reconstitute(
       {
         fullName: doc.fullName,
         email: doc.email,
         passwordHash: doc.passwordHash,
+        avatarUrl: doc.avatarUrl,
+        bio: doc.bio,
         roles: doc.roles,
-        courseIds: doc.courseIds?.map(id => new UniqueId(id)) ?? [],
+        isActive: doc.isActive,
       },
       (doc._id as any).toString(),
     );
@@ -22,8 +23,10 @@ export class UserMapper {
       fullName: user.fullName,
       email: user.email,
       passwordHash: user.passwordHash,
+      avatarUrl: user.avatarUrl,
+      bio: user.bio,
       roles: user.roles,
-      courseIds: user.courseIds.map(id => id.value),
+      isActive: user.isActive,
     };
   }
 }

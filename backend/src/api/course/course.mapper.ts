@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Course, CourseStatus } from '@/api/course/entities/course.entity';
+import { Course } from '@/api/course/entities/course.entity';
 import { CourseDocument } from '@/database/schemas/course.schema';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { CourseTitle } from '@/api/course/value-objects/course-title.vo';
-import { QuizScore } from '@/api/course/value-objects/quiz-score.vo';
+import { CourseStatus } from '@/common/types/course-status.enum';
+import { CourseLevel } from '@/common/types/course-level.enum';
 
 @Injectable()
 export class CourseMapper {
@@ -12,13 +13,15 @@ export class CourseMapper {
     return Course.reconstitute(
       {
         title: new CourseTitle(doc.title),
-        subtitle: doc.subtitle,
+        slug: doc.slug,
         description: doc.description,
         instructorId: new UniqueId(doc.instructorId),
-        priceTier: doc.priceTier,
+        categoryId: new UniqueId(doc.categoryId),
+        price: parseFloat(doc.price.toString()),
+        thumbnailUrl: doc.thumbnailUrl,
+        level: doc.level as CourseLevel,
+        language: doc.language,
         status: doc.status as CourseStatus,
-        minPassScore: new QuizScore(doc.minPassScore),
-        isPublished: doc.isPublished,
       },
       new UniqueId((doc._id as any).toString()),
     );
@@ -27,15 +30,17 @@ export class CourseMapper {
   /** Domain Aggregate → plain object for Mongoose save */
   toPersistence(domain: Course): any {
     return {
-      _id: domain.id.value as any,
+      _id: domain.id.value,
       title: domain.title.value,
-      subtitle: domain.subtitle,
+      slug: domain.slug,
       description: domain.description,
       instructorId: domain.instructorId.value,
-      priceTier: domain.priceTier,
+      categoryId: domain.categoryId.value,
+      price: domain.price,
+      thumbnailUrl: domain.thumbnailUrl,
+      level: domain.level,
+      language: domain.language,
       status: domain.status,
-      minPassScore: domain.minPassScore.value,
-      isPublished: domain.isPublished,
     };
   }
 }

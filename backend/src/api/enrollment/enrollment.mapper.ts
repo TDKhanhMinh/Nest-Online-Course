@@ -9,11 +9,11 @@ export class EnrollmentMapper {
   toDomain(doc: EnrollmentDocument): Enrollment {
     return Enrollment.reconstitute(
       {
-        studentId:  new UniqueId(doc.studentId),
-        courseId:   new UniqueId(doc.courseId),
-        status:     new EnrollmentStatus(doc.status as EnrollmentStatusValue),
+        studentId: new UniqueId(doc.studentId),
+        courseId: new UniqueId(doc.courseId),
+        status: new EnrollmentStatus(doc.status as EnrollmentStatusValue),
         enrolledAt: doc.enrolledAt,
-        completedLectureIds: (doc.completedLectureIds ?? []).map(id => new UniqueId(id)),
+        progress: doc.progress ? Number(doc.progress.toString()) : 0,
       },
       new UniqueId((doc._id as any).toString()),
     );
@@ -21,12 +21,12 @@ export class EnrollmentMapper {
 
   toPersistence(domain: Enrollment): any {
     return {
-      _id:        domain.id.value as any,
-      studentId:  domain.studentId.value,
-      courseId:   domain.courseId.value,
-      status:     domain.status.value,
+      _id: domain.id.value as any,
+      studentId: domain.studentId.value,
+      courseId: domain.courseId.value,
+      status: domain.status.value,
       enrolledAt: domain.enrolledAt,
-      completedLectureIds: domain.completedLectureIds.map(id => id.value),
+      progress: domain.progress,
     };
   }
 }

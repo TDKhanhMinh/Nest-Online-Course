@@ -9,11 +9,14 @@ export class ReviewDocument extends Document {
   @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'CourseDocument' })
   courseId: string;
 
-  @Prop({ required: true, min: 1, max: 5 })
+  @Prop({ required: true, min: 1, max: 5, default: 5 })
   rating: number;
 
-  @Prop({ required: true })
-  comment: string;
+  @Prop()
+  comment?: string;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const ReviewSchema = SchemaFactory.createForClass(ReviewDocument);

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLogout, useMe } from "@/features/auth/presentation/hooks/use-auth-hooks";
 import { Link } from "@/i18n/navigation";
-import { Award, BookOpen, GraduationCap, LayoutDashboard, LogOut, Menu, Receipt, Settings, User, UserCircle, X } from "lucide-react";
+import { Award, BookOpen, GraduationCap, LayoutDashboard, LogOut, Menu, Receipt, Settings, ShoppingBag, User, UserCircle, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { LanguageSwitcher } from "./language-switcher";
@@ -62,6 +62,12 @@ export default function Header() {
         <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher />
           <ThemeToggle />
+          <Link href="/cart" className="relative group p-2 rounded-lg hover:bg-brand-bg2 transition-colors no-underline">
+            <ShoppingBag className="h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-brand-amber transition-colors" />
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-amber text-[10px] font-black text-black shadow-lg border border-brand-bg ring-2 ring-brand-bg">
+              2
+            </span>
+          </Link>
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger render={
@@ -181,6 +187,12 @@ export default function Header() {
 
         {/* Mobile menu toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          <Link href="/cart" className="relative p-2 rounded-lg hover:bg-brand-bg3 transition-colors no-underline">
+            <ShoppingBag className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+            <span className="absolute top-1 right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-brand-amber text-[8px] font-black text-black">
+              2
+            </span>
+          </Link>
           <LanguageSwitcher />
           <ThemeToggle />
           <button

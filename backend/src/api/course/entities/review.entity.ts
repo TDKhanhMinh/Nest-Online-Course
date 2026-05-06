@@ -7,7 +7,7 @@ export interface ReviewProps {
   studentId: UniqueId;
   courseId: UniqueId;
   rating: number;
-  comment: string;
+  comment?: string;
   createdAt: Date;
 }
 
@@ -21,7 +21,7 @@ export class Review extends Entity<ReviewProps> {
   get rating(): number {
     return this.props.rating;
   }
-  get comment(): string {
+  get comment(): string | undefined {
     return this.props.comment;
   }
   get createdAt(): Date {
@@ -29,10 +29,11 @@ export class Review extends Entity<ReviewProps> {
   }
 
   static create(
-    props: Omit<ReviewProps, 'createdAt'> & { createdAt?: Date },
+    props: Omit<ReviewProps, 'createdAt' | 'rating'> & { createdAt?: Date; rating?: number },
     id?: UniqueId,
   ): Review {
-    if (props.rating < 1 || props.rating > 5) {
+    const rating = props.rating ?? 5;
+    if (rating < 1 || rating > 5) {
       throw new DomainException(
         ErrorCode.VALIDATION_ERROR,
         'Rating must be between 1 and 5',
@@ -41,6 +42,7 @@ export class Review extends Entity<ReviewProps> {
     return new Review(
       {
         ...props,
+        rating,
         createdAt: props.createdAt ?? new Date(),
       },
       id ?? UniqueId.generate(),

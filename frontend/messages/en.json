@@ -229,5 +229,371 @@
       "biography_max": "Biography must not exceed {max} characters",
       "invalid_url": "Invalid {field} URL"
     }
+  },
+  "ForgotPassword": {
+    "title": "Forgot Password",
+    "description": "Don't worry, it happens. Enter your email and we'll send you a reset link.",
+    "email_label": "Email",
+    "email_placeholder": "name@example.com",
+    "send_button": "Send Reset Link",
+    "back_to_login": "Back to Login",
+    "success_title": "Check your email",
+    "success_message": "We have sent a password reset link to {email}. Please check your inbox.",
+    "resend_button": "Didn't receive the email? Resend"
+  },
+  "Dashboard": {
+    "welcome": "Welcome back, {name}!",
+    "stats": {
+      "courses_in_progress": "In Progress",
+      "completed_courses": "Completed",
+      "learning_hours": "Learning Hours"
+    },
+    "continue_learning": "Continue Learning",
+    "no_courses": "You haven't enrolled in any courses yet.",
+    "explore_courses": "Explore Courses",
+    "notifications": "Notifications",
+    "recommended": "Recommended for You"
+  },
+  "Profile": {
+    "title": "Profile Settings",
+    "description": "Manage your account settings and preferences.",
+    "tabs": {
+      "general": "General",
+      "security": "Security",
+      "notifications": "Notifications"
+    },
+    "general": {
+      "title": "General Information",
+      "description": "Update your personal information and profile picture.",
+      "avatar_label": "Profile Picture",
+      "upload_button": "Upload new photo",
+      "remove_button": "Remove",
+      "name_label": "Full Name",
+      "email_label": "Email Address",
+      "bio_label": "Bio",
+      "save_button": "Save Changes"
+    },
+    "security": {
+      "title": "Change Password",
+      "description": "Secure your account with a strong password.",
+      "current_password": "Current Password",
+      "new_password": "New Password",
+      "confirm_password": "Confirm New Password",
+      "update_button": "Update Password",
+      "mismatch_error": "New passwords do not match"
+    },
+    "notifications": {
+      "title": "Notification Settings",
+      "description": "Manage how you receive alerts and updates.",
+      "save_button": "Save Preferences",
+      "email_title": "Email Notifications",
+      "email_desc": "Receive updates about your courses and community via email.",
+      "app_title": "App Notifications",
+      "app_desc": "Receive real-time alerts in the application dashboard.",
+      "learning_title": "Learning Reminders",
+      "learning_desc": "Get nudges to keep up with your learning schedule.",
+      "promo_title": "Promotional Emails",
+      "promo_desc": "Receive news about new courses and special offers."
+    }
+  },
+  "CourseCatalog": {
+    "title": "All Courses",
+    "breadcrumb": "Courses",
+    "search_results": "{count} courses found for \"{query}\"",
+    "all_results": "{count} courses available",
+    "filters": {
+      "title": "Filters",
+      "clear_all": "Clear All",
+      "categories": "Categories",
+      "levels": "Levels",
+      "price": "Price",
+      "ratings": "Ratings",
+      "level_options": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "price_options": {
+        "free": "Free",
+        "paid": "Paid"
+      },
+      "rating_up": "& Up"
+    },
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest",
+      "popular": "Most Popular",
+      "price_low": "Price: Low to High",
+      "price_high": "Price: High to Low"
+    },
+    "empty": {
+      "title": "No courses found",
+      "description": "Try adjusting your filters or search keywords.",
+      "button": "Clear all filters"
+    }
+  },
+  "CourseDetail": {
+    "hero": {
+      "last_updated": "Last updated",
+      "language": "English",
+      "best_seller": "Best Seller"
+    },
+    "enrollment": {
+      "buy_now": "Buy Now",
+      "enroll_now": "Enroll Now",
+      "money_back": "30-Day Money-Back Guarantee",
+      "includes": "This course includes:",
+      "lifetime": "Full lifetime access",
+      "mobile": "Access on mobile and TV",
+      "certificate": "Certificate of completion",
+      "assignments": "Assignments & Quizzes"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "curriculum": "Curriculum",
+      "instructor": "Instructor",
+      "reviews": "Reviews"
+    },
+    "overview": {
+      "title": "What you'll learn",
+      "requirements": "Requirements",
+      "description": "Description"
+    },
+    "curriculum": {
+      "title": "Course content",
+      "stats": "{sections} sections • {lessons} lessons • {duration} total length",
+      "expand_all": "Expand all sections",
+      "collapse_all": "Collapse all sections"
+    },
+    "instructor": {
+      "title": "About the instructor",
+      "students": "Students",
+      "reviews": "Reviews",
+      "courses": "Courses"
+    },
+    "reviews": {
+      "title": "Student feedback",
+      "rating_out_of": "out of 5",
+      "search_placeholder": "Search reviews"
+    }
+  },
+  "MyCourses": {
+    "title": "My Learning",
+    "tabs": {
+      "all": "All Courses",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "wishlist": "Wishlist"
+    },
+    "search_placeholder": "Search my courses...",
+    "progress": "{percent}% completed",
+    "continue": "Continue Learning",
+    "start": "Start Learning",
+    "empty": "You haven't enrolled in any courses yet.",
+    "explore": "Explore Courses"
+  },
+  "Learning": {
+    "tabs": {
+      "overview": "Overview",
+      "notes": "Notes",
+      "resources": "Resources",
+      "qa": "Q&A"
+    },
+    "navigation": {
+      "prev": "Previous",
+      "next": "Next",
+      "complete_continue": "Complete and Continue"
+    },
+    "sidebar": {
+      "title": "Course Content",
+      "search": "Search lessons..."
+    },
+    "notes": {
+      "title": "My Notes",
+      "add_placeholder": "Create a note at {time}...",
+      "save": "Save Note",
+      "empty": "No notes yet. Capture important moments while learning!"
+    }
+  },
+  "Certificates": {
+    "title": "My Certificates",
+    "subtitle": "Showcase your achievements and professional growth.",
+    "issued_on": "Issued on {date}",
+    "download": "Download PDF",
+    "share": "Share",
+    "empty": {
+      "title": "No certificates yet",
+      "description": "Complete your courses to earn recognized certificates.",
+      "button": "Go to My Learning"
+    },
+    "verify": "Verify ID: {id}"
+  },
+  "Cart": {
+    "title": "Shopping Cart",
+    "breadcrumb": "Cart",
+    "empty": {
+      "title": "Your cart is empty",
+      "description": "Keep shopping to find a course!",
+      "button": "Keep Shopping"
+    },
+    "summary": {
+      "title": "Total",
+      "original_price": "Original Price",
+      "discounts": "Discounts",
+      "total": "Total",
+      "checkout_button": "Checkout",
+      "coupon_placeholder": "Enter Coupon",
+      "coupon_apply": "Apply"
+    },
+    "items_count": "{count} Course in Cart | {count} Courses in Cart",
+    "remove": "Remove",
+    "move_to_wishlist": "Move to Wishlist"
+  },
+  "Checkout": {
+    "title": "Checkout",
+    "breadcrumb": "Checkout",
+    "payment_method": {
+      "title": "Payment Method",
+      "credit_card": "Credit or Debit Card",
+      "paypal": "PayPal",
+      "momo": "MoMo E-wallet",
+      "bank_transfer": "Bank Transfer"
+    },
+    "order_summary": {
+      "title": "Order Summary",
+      "complete_button": "Complete Payment",
+      "terms": "By completing your purchase, you agree to these {terms}."
+    },
+    "success": {
+      "title": "Thank you for your purchase!",
+      "message": "A confirmation email has been sent to {email}.",
+      "button": "Go to My Learning"
+    }
+  },
+  "Orders": {
+    "title": "Order History",
+    "breadcrumb": "Orders",
+    "table": {
+      "id": "Order ID",
+      "date": "Date",
+      "items": "Items",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "success": "Success",
+      "pending": "Pending",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "view_invoice": "View Invoice",
+    "empty": "You haven't made any purchases yet."
+  },
+  "Quiz": {
+    "title": "Quiz: {title}",
+    "start_button": "Start Quiz",
+    "submit_button": "Submit Answers",
+    "next_button": "Next",
+    "previous_button": "Previous",
+    "retry_button": "Retake Quiz",
+    "continue_button": "Continue",
+    "time_left": "Time left: {time}",
+    "questions_count": "{count} Questions",
+    "time_limit": "{time} Minutes",
+    "question_counter": "Question {current} of {total}",
+    "question_indicator": "Q {current}/{total}",
+    "score": "Your Score: {score}/{total}",
+    "score_summary": "You scored {score} out of {total} questions correctly.",
+    "final_score": "Final Score",
+    "passing_score": "Passing Score",
+    "passed_title": "Congratulations, you passed!",
+    "failed_title": "You did not pass. Please try again.",
+    "review_answers": "Review Answers",
+    "explanation": "Explanation:",
+    "retake": "Retake Quiz"
+  },
+  "Assignment": {
+    "title": "Assignment: {title}",
+    "description": "Instructions",
+    "points": "{points} Points",
+    "due": "Due: {date}",
+    "your_work": "Your Work",
+    "requirements_title": "Requirements",
+    "requirement_1": "Submit a compressed ZIP file containing your source code.",
+    "requirement_2": "Include a README.md file with instructions to run your application.",
+    "requirement_3": "Alternatively, you can provide a GitHub repository link in the comments section.",
+    "drag_drop": "Click to upload or drag and drop",
+    "supported_files": "Supported formats",
+    "upload_zone": "Click to upload or drag and drop your file here",
+    "upload_hint": "Supported formats: PDF, ZIP, DOCX (Max: 20MB)",
+    "comments_placeholder": "Add a GitHub link or any comments for the instructor...",
+    "comments_links": "Comments / Links",
+    "submitted_files": "Submitted Files",
+    "notes_label": "Additional Notes (Optional)",
+    "notes_placeholder": "Any comments for the instructor...",
+    "submit_button": "Submit Assignment",
+    "submitting": "Submitting...",
+    "unsubmit_button": "Unsubmit",
+    "unsubmit_hint": "You can unsubmit to make changes before the due date.",
+    "submitted_success": "Your assignment has been submitted successfully.",
+    "status_pending": "Pending Review",
+    "status_submitted": "Submitted",
+    "status_graded": "Graded: {score}/100"
+  },
+  "Discussion": {
+    "title": "Discussion Forum",
+    "search_placeholder": "Search discussions...",
+    "new_post": "Ask a Question",
+    "post_title_placeholder": "Brief title of your question...",
+    "post_body_placeholder": "Describe your problem or question in detail...",
+    "post_button": "Post",
+    "cancel_button": "Cancel",
+    "reply_button": "Reply",
+    "reply_placeholder": "Write a reply...",
+    "time_ago": "{time} ago",
+    "replies": "{count} replies",
+    "upvotes": "{count} upvotes",
+    "author_badge": "Instructor",
+    "empty": "No discussions yet. Be the first to ask a question!"
+  },
+  "Grades": {
+    "title": "My Grades",
+    "subtitle": "Track your performance across all enrolled courses.",
+    "breadcrumb": "Grades",
+    "stats": {
+      "average_score": "Average Score",
+      "quizzes_taken": "Quizzes Taken",
+      "assignments": "Assignments",
+      "pending_review": "Pending Review"
+    },
+    "search_placeholder": "Search assessments...",
+    "filter": {
+      "course": "Course",
+      "all_courses": "All Courses",
+      "type": "Type",
+      "all_types": "All Types",
+      "quizzes": "Quizzes",
+      "assignments": "Assignments"
+    },
+    "table": {
+      "course": "Course",
+      "assessment": "Assessment Name",
+      "type": "Type",
+      "score": "Score",
+      "status": "Status",
+      "date": "Submitted On"
+    },
+    "types": {
+      "quiz": "Quiz",
+      "assignment": "Assignment"
+    },
+    "status": {
+      "passed": "Passed",
+      "failed": "Failed",
+      "pending": "Pending",
+      "graded": "Graded"
+    },
+    "empty": "No grades recorded yet."
   }
 }

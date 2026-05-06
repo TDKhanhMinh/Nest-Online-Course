@@ -1,15 +1,15 @@
 import { AggregateRoot } from '@/common/abstractions/aggregate-root.base';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { Role } from '@/common/types/role.enum';
-import { InstructorProfile } from './instructor-profile.entity';
 
 export interface UserProps {
   fullName: string;
   email: string;
   passwordHash: string;
+  avatarUrl?: string;
+  bio?: string;
   roles: Role[];
-  instructorProfile?: InstructorProfile;
-  courseIds: UniqueId[];
+  isActive: boolean;
 }
 
 export class User extends AggregateRoot<UserProps> {
@@ -25,29 +25,32 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.passwordHash;
   }
 
+  get avatarUrl(): string | undefined {
+    return this.props.avatarUrl;
+  }
+
+  get bio(): string | undefined {
+    return this.props.bio;
+  }
+
   get roles(): Role[] {
     return this.props.roles;
   }
 
-  get instructorProfile(): InstructorProfile | undefined {
-    return this.props.instructorProfile;
-  }
-
-  get courseIds(): UniqueId[] {
-    return this.props.courseIds;
+  get isActive(): boolean {
+    return this.props.isActive;
   }
 
   get isInstructor(): boolean {
     return this.props.roles.includes(Role.INSTRUCTOR);
   }
 
-  addCourse(courseId: UniqueId): void {
-    if (!this.isInstructor) {
-      throw new Error('Only instructors can have courses');
-    }
-    if (!this.props.courseIds.some((id) => id.equals(courseId))) {
-      this.props.courseIds.push(courseId);
-    }
+  updateBio(bio: string): void {
+    this.props.bio = bio;
+  }
+
+  updateAvatar(avatarUrl: string): void {
+    this.props.avatarUrl = avatarUrl;
   }
 
   updateEmail(email: string): void {
@@ -59,11 +62,11 @@ export class User extends AggregateRoot<UserProps> {
   }
 
   public static create(
-    props: Omit<UserProps, 'courseIds'> & { courseIds?: UniqueId[] },
+    props: Omit<UserProps, 'isActive'> & { isActive?: boolean },
     id?: string,
   ): User {
     return new User(
-      { ...props, courseIds: props.courseIds ?? [] },
+      { ...props, isActive: props.isActive ?? true },
       id ? new UniqueId(id) : UniqueId.generate(),
     );
   }

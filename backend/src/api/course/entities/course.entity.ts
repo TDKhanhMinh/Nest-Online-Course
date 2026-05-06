@@ -1,31 +1,28 @@
 import { AggregateRoot } from '@/common/abstractions/aggregate-root.base';
 import { UniqueId } from '@/common/types/unique-id.vo';
 import { CourseTitle } from '@/api/course/value-objects/course-title.vo';
-import { QuizScore } from '@/api/course/value-objects/quiz-score.vo';
-
-export enum CourseStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED',
-}
+import { CourseStatus } from '@/common/types/course-status.enum';
+import { CourseLevel } from '@/common/types/course-level.enum';
 
 export interface CourseProps {
   title: CourseTitle;
-  subtitle?: string;
+  slug: string;
   instructorId: UniqueId;
+  categoryId: UniqueId;
   description: string;
-  priceTier: number;
+  price: number;
+  thumbnailUrl?: string;
+  level: CourseLevel;
+  language: string;
   status: CourseStatus;
-  minPassScore: QuizScore;
-  isPublished: boolean;
 }
 
 export class Course extends AggregateRoot<CourseProps> {
   get title(): CourseTitle {
     return this.props.title;
   }
-  get subtitle(): string | undefined {
-    return this.props.subtitle;
+  get slug(): string {
+    return this.props.slug;
   }
   get description(): string {
     return this.props.description;
@@ -33,17 +30,23 @@ export class Course extends AggregateRoot<CourseProps> {
   get instructorId(): UniqueId {
     return this.props.instructorId;
   }
-  get priceTier(): number {
-    return this.props.priceTier;
+  get categoryId(): UniqueId {
+    return this.props.categoryId;
+  }
+  get price(): number {
+    return this.props.price;
+  }
+  get thumbnailUrl(): string | undefined {
+    return this.props.thumbnailUrl;
+  }
+  get level(): CourseLevel {
+    return this.props.level;
+  }
+  get language(): string {
+    return this.props.language;
   }
   get status(): CourseStatus {
     return this.props.status;
-  }
-  get minPassScore(): QuizScore {
-    return this.props.minPassScore;
-  }
-  get isPublished(): boolean {
-    return this.props.isPublished;
   }
 
   isEligibleForCertificate(): boolean {
@@ -52,7 +55,6 @@ export class Course extends AggregateRoot<CourseProps> {
 
   updateStatus(status: CourseStatus): void {
     this.props.status = status;
-    this.props.isPublished = status === CourseStatus.PUBLISHED;
   }
 
   static create(props: CourseProps, id?: UniqueId): Course {

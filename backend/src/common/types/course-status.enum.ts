@@ -1,0 +1,6 @@
+export enum CourseStatus {
+  DRAFT = 'DRAFT',
+  PENDING_APPROVAL = 'PENDING_APPROVAL',
+  PUBLISHED = 'PUBLISHED',
+  REJECTED = 'REJECTED',
+}

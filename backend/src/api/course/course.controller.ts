@@ -21,8 +21,8 @@ import { CursorOptionsDto } from '@/common/pagination/cursor/cursor-options.dto'
 import {
   CreateSectionDto,
   UpdateSectionDto,
-  CreateLectureDto,
-  UpdateLectureDto,
+  CreateLessonDto,
+  UpdateLessonDto,
 } from './dto/course-content.dto';
 import { CreateReviewDto } from './dto/review.dto';
 
@@ -96,27 +96,28 @@ export class CourseController {
     return this.courseService.deleteSection(sectionId);
   }
 
-  @Post('sections/:sectionId/lectures')
+  @Post('sections/:sectionId/lessons')
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
-  createLecture(
+  createLesson(
     @Param('sectionId') sectionId: string,
-    @Body() dto: CreateLectureDto,
+    @Body() dto: CreateLessonDto,
   ) {
-    return this.courseService.createLecture(sectionId, dto);
+    return this.courseService.createLesson(sectionId, dto);
   }
 
-  @Put('lectures/:lectureId')
+  @Put('lessons/:lessonId')
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
-  updateLecture(
-    @Param('lectureId') lectureId: string,
-    @Body() dto: UpdateLectureDto,
+  updateLesson(
+    @Param('lessonId') lessonId: string,
+    @Body() dto: UpdateLessonDto,
   ) {
-    return this.courseService.updateLecture(lectureId, dto);
+    return this.courseService.updateLesson(lessonId, dto);
   }
 
-  @Delete('lectures/:lectureId')
+  @Delete('lessons/:lessonId')
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
-  deleteLecture(@Param('lectureId') lectureId: string) {
-    return this.courseService.deleteLecture(lectureId);
+  deleteLesson(@Param('lessonId') lessonId: string) {
+    return this.courseService.deleteLesson(lessonId);
   }
+
 }

@@ -1,37 +1,39 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
-
-export enum CourseStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED',
-}
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
+import { CourseStatus } from '@/common/types/course-status.enum';
+import { CourseLevel } from '@/common/types/course-level.enum';
 
 @Schema({ timestamps: true })
 export class CourseDocument extends Document {
   @Prop({ required: true })
   title: string;
 
-  @Prop()
-  subtitle: string;
+  @Prop({ required: true, unique: true })
+  slug: string;
 
   @Prop({ required: true })
   description: string;
 
-  @Prop({ type: String, required: true })
-  instructorId: string;
+  @Prop({ type: Types.Decimal128, required: true, default: 0.0 })
+  price: Types.Decimal128;
 
-  @Prop({ required: true, type: Number })
-  priceTier: number;
+  @Prop()
+  thumbnailUrl?: string;
+
+  @Prop({ type: String, enum: CourseLevel, default: CourseLevel.BEGINNER })
+  level: CourseLevel;
+
+  @Prop({ default: 'Vietnamese' })
+  language: string;
 
   @Prop({ type: String, enum: CourseStatus, default: CourseStatus.DRAFT })
   status: CourseStatus;
 
-  @Prop({ type: Number, default: 70 })
-  minPassScore: number;
+  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'UserDocument' })
+  instructorId: string;
 
-  @Prop({ default: false })
-  isPublished: boolean;
+  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'CategoryDocument' })
+  categoryId: string;
 }
 
-export const CourseSchema: MongooseSchema = SchemaFactory.createForClass(CourseDocument);
+export const CourseSchema = SchemaFactory.createForClass(CourseDocument);
