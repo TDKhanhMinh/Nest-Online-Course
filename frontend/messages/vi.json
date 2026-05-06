@@ -6,6 +6,7 @@
     "search": "Tìm kiếm",
     "loading": "Đang tải...",
     "error": "Đã có lỗi xảy ra.",
+    "instructor_login": "Đăng nhập Giảng viên",
     "register": "Đăng ký",
     "toggle_theme": "Chuyển đổi giao diện",
     "facebook": "Facebook",
@@ -595,5 +596,351 @@
       "graded": "Đã chấm"
     },
     "empty": "Chưa có điểm số nào được ghi nhận."
+  },
+  "HelpCenter": {
+    "hero_badge": "Trung tâm trợ giúp",
+    "hero_title": "Chúng tôi có thể giúp gì cho bạn?",
+    "hero_subtitle": "Tìm kiếm trong cơ sở kiến thức hoặc duyệt qua các câu hỏi thường gặp để tìm câu trả lời bạn cần.",
+    "search_placeholder": "Tìm kiếm câu trả lời...",
+    "browse_topics": "Duyệt theo chủ đề",
+    "show_all": "Hiển thị tất cả chủ đề",
+    "faq_title": "Câu hỏi thường gặp",
+    "no_results": "Không tìm thấy kết quả. Hãy thử từ khóa khác hoặc duyệt tất cả chủ đề.",
+    "cta_title": "Vẫn cần trợ giúp?",
+    "cta_subtitle": "Đội ngũ hỗ trợ của chúng tôi sẵn sàng giúp đỡ bạn với bất kỳ câu hỏi hoặc vấn đề nào.",
+    "cta_button": "Liên hệ hỗ trợ",
+    "categories": {
+      "getting_started": {
+        "title": "Bắt đầu",
+        "q1": "Làm thế nào để tạo tài khoản trên NexLearn?",
+        "a1": "Việc tạo tài khoản rất đơn giản! Nhấp vào nút \"Đăng ký\" ở góc trên bên phải của bất kỳ trang nào. Bạn có thể đăng ký bằng địa chỉ email hoặc sử dụng tài khoản Google hoặc GitHub. Sau khi đăng ký, bạn có thể ngay lập tức duyệt và đăng ký khóa học.",
+        "q2": "Làm thế nào để đăng ký khóa học?",
+        "a2": "Để đăng ký khóa học, hãy truy cập trang khóa học và nhấp vào nút \"Đăng ký ngay\" hoặc \"Thêm vào giỏ\". Các khóa học miễn phí cho phép truy cập ngay lập tức, trong khi khóa học có phí yêu cầu thanh toán. Sau khi đăng ký, khóa học sẽ xuất hiện trong trang \"Khóa học của tôi\".",
+        "q3": "Yêu cầu hệ thống để học là gì?",
+        "a3": "NexLearn hoạt động trên mọi trình duyệt web hiện đại (Chrome, Firefox, Safari, Edge). Chúng tôi khuyên bạn nên có kết nối internet ổn định ít nhất 5 Mbps để xem video mượt mà. Trên di động, bạn có thể truy cập khóa học qua ứng dụng web responsive trên thiết bị iOS và Android."
+      },
+      "courses": {
+        "title": "Khóa học & Học tập",
+        "q1": "Tôi có thể tải video khóa học để xem ngoại tuyến không?",
+        "a1": "Hiện tại, video khóa học chỉ có sẵn để phát trực tuyến. Tuy nhiên, một số giảng viên cung cấp tài liệu bổ sung có thể tải xuống (PDF, file code) mà bạn có thể truy cập ngoại tuyến. Chúng tôi đang phát triển tính năng xem ngoại tuyến trong tương lai.",
+        "q2": "Làm thế nào để theo dõi tiến độ học tập?",
+        "a2": "Tiến độ của bạn được tự động theo dõi khi bạn hoàn thành bài học, bài kiểm tra và bài tập. Truy cập trang \"Khóa học của tôi\" để xem tỷ lệ hoàn thành, và kiểm tra trang \"Điểm số\" để xem kết quả đánh giá chi tiết.",
+        "q3": "Điều gì xảy ra nếu tôi trượt bài kiểm tra?",
+        "a3": "Đừng lo! Hầu hết các bài kiểm tra cho phép nhiều lần thử. Sau khi hoàn thành bài kiểm tra, bạn có thể xem lại câu trả lời để hiểu những câu nào bạn đã sai. Nhấp vào nút \"Làm lại bài kiểm tra\" để thử lại và cải thiện điểm số."
+      },
+      "payments": {
+        "title": "Thanh toán & Hóa đơn",
+        "q1": "Các phương thức thanh toán được chấp nhận là gì?",
+        "a1": "Chúng tôi chấp nhận thẻ tín dụng/ghi nợ chính (Visa, Mastercard, JCB), chuyển khoản ngân hàng và các ví điện tử phổ biến (MoMo, ZaloPay, VNPay). Tất cả giao dịch được xử lý an toàn với mã hóa SSL 256-bit.",
+        "q2": "Tôi có thể được hoàn tiền cho khóa học không?",
+        "a2": "Có! Chúng tôi cung cấp chính sách hoàn tiền 7 ngày cho tất cả các khóa học có phí. Nếu bạn không hài lòng với chất lượng khóa học, hãy liên hệ đội ngũ hỗ trợ trong vòng 7 ngày kể từ ngày mua để được hoàn tiền đầy đủ. Lưu ý: Khóa học đã hoàn thành trên 30% không đủ điều kiện hoàn tiền.",
+        "q3": "Bạn có cung cấp giảm giá hoặc khuyến mãi không?",
+        "a3": "Có! Chúng tôi thường xuyên tổ chức các chương trình khuyến mãi theo mùa và flash sale. Theo dõi các kênh mạng xã hội hoặc đăng ký nhận bản tin của chúng tôi để cập nhật. Chúng tôi cũng cung cấp giảm giá gói khi mua nhiều khóa học và giá ưu đãi cho sinh viên và giáo viên."
+      },
+      "account": {
+        "title": "Tài khoản & Cài đặt",
+        "q1": "Làm thế nào để đặt lại mật khẩu?",
+        "a1": "Nhấp vào \"Quên mật khẩu\" trên trang đăng nhập. Nhập địa chỉ email đã đăng ký và chúng tôi sẽ gửi cho bạn liên kết đặt lại mật khẩu. Liên kết sẽ hết hạn sau 24 giờ vì lý do bảo mật. Nếu bạn không nhận được email, hãy kiểm tra thư mục spam.",
+        "q2": "Tôi có thể thay đổi địa chỉ email không?",
+        "a2": "Có! Vào cài đặt Hồ sơ và nhấp \"Chỉnh sửa hồ sơ\". Bạn có thể cập nhật địa chỉ email tại đó. Một email xác minh sẽ được gửi đến địa chỉ mới để xác nhận thay đổi.",
+        "q3": "Làm thế nào để xóa tài khoản?",
+        "a3": "Để xóa tài khoản, vào Hồ sơ > Cài đặt > Tài khoản. Nhấp \"Xóa tài khoản\" và xác nhận quyết định. Xin lưu ý rằng hành động này không thể hoàn tác — tất cả tiến độ khóa học, chứng chỉ và lịch sử mua hàng sẽ bị xóa vĩnh viễn."
+      },
+      "certificates": {
+        "title": "Chứng chỉ",
+        "q1": "Làm thế nào để nhận chứng chỉ?",
+        "a1": "Chứng chỉ được cấp tự động khi bạn hoàn thành 100% bài học, vượt qua tất cả bài kiểm tra bắt buộc và nộp tất cả bài tập. Sau khi nhận được, chứng chỉ sẽ xuất hiện trên trang \"Chứng chỉ\" trong hồ sơ của bạn.",
+        "q2": "Chứng chỉ NexLearn có được nhà tuyển dụng công nhận không?",
+        "a2": "Chứng chỉ NexLearn thể hiện cam kết học tập và phát triển kỹ năng của bạn. Mặc dù không phải bằng cấp học thuật chính thức, nhiều nhà tuyển dụng đánh giá cao chúng như bằng chứng về kiến thức thực tế. Mỗi chứng chỉ bao gồm URL xác minh duy nhất.",
+        "q3": "Tôi có thể chia sẻ chứng chỉ trên LinkedIn không?",
+        "a3": "Hoàn toàn có thể! Mỗi chứng chỉ có nút \"Chia sẻ\" cho phép bạn đăng trực tiếp lên LinkedIn, Twitter hoặc Facebook. Bạn cũng có thể tải chứng chỉ dưới dạng PDF để đưa vào hồ sơ chuyên môn hoặc CV."
+      },
+      "community": {
+        "title": "Cộng đồng",
+        "q1": "Làm thế nào để tham gia thảo luận khóa học?",
+        "a1": "Mỗi khóa học có Diễn đàn thảo luận tích hợp, có thể truy cập từ trình phát khóa học. Bạn có thể đặt câu hỏi, chia sẻ kiến thức hoặc giúp đỡ các học viên khác. Nhấp vào tab \"Hỏi & Đáp\" khi đang xem khóa học để tham gia cuộc trò chuyện.",
+        "q2": "Tôi có thể nhắn tin trực tiếp cho giảng viên không?",
+        "a2": "Bạn có thể tương tác với giảng viên qua Diễn đàn thảo luận của khóa học. Giảng viên được đánh dấu bằng huy hiệu đặc biệt và thường phản hồi trong vòng 24-48 giờ. Đối với vấn đề khẩn cấp, hãy sử dụng biểu mẫu Liên hệ hỗ trợ.",
+        "q3": "Làm thế nào để báo cáo nội dung không phù hợp?",
+        "a3": "Nếu bạn gặp nội dung không phù hợp trong thảo luận hoặc tài liệu khóa học, hãy nhấp vào nút \"Báo cáo\" bên cạnh nội dung đó. Đội ngũ kiểm duyệt của chúng tôi xem xét tất cả báo cáo trong vòng 24 giờ và thực hiện hành động thích hợp."
+      }
+    }
+  },
+  "ContactSupport": {
+    "back_to_help": "Quay lại Trung tâm trợ giúp",
+    "hero_title": "Liên hệ đội ngũ hỗ trợ",
+    "hero_subtitle": "Chúng tôi luôn sẵn sàng giúp đỡ. Điền vào biểu mẫu bên dưới và chúng tôi sẽ phản hồi sớm nhất có thể.",
+    "form": {
+      "title": "Gửi tin nhắn cho chúng tôi",
+      "subtitle": "Vui lòng cung cấp càng nhiều chi tiết càng tốt để chúng tôi có thể hỗ trợ bạn hiệu quả.",
+      "name_label": "Họ và tên",
+      "name_placeholder": "Nhập họ và tên của bạn",
+      "email_label": "Địa chỉ email",
+      "email_placeholder": "email@cuaban.com",
+      "category_label": "Loại vấn đề",
+      "category_placeholder": "Chọn một danh mục",
+      "categories": {
+        "technical": "Sự cố kỹ thuật",
+        "billing": "Thanh toán & Hóa đơn",
+        "course_content": "Nội dung khóa học",
+        "account": "Tài khoản & Cài đặt",
+        "other": "Khác"
+      },
+      "subject_label": "Tiêu đề",
+      "subject_placeholder": "Mô tả ngắn gọn vấn đề của bạn",
+      "message_label": "Nội dung",
+      "message_placeholder": "Mô tả chi tiết vấn đề của bạn. Bao gồm thông báo lỗi, các bước tái hiện hoặc tên khóa học liên quan...",
+      "attachment_hint": "Bạn có thể gửi kèm ảnh chụp màn hình hoặc file bằng cách dán URL trong tin nhắn.",
+      "submit_button": "Gửi tin nhắn",
+      "sending": "Đang gửi..."
+    },
+    "channels": {
+      "email": {
+        "title": "Hỗ trợ qua Email",
+        "description": "Gửi email trực tiếp cho chúng tôi"
+      },
+      "chat": {
+        "title": "Chat trực tuyến",
+        "description": "Trò chuyện với đội ngũ theo thời gian thực",
+        "value": "Khả dụng 9h-18h"
+      },
+      "hours": {
+        "title": "Giờ làm việc",
+        "description": "Thứ Hai đến Thứ Bảy",
+        "value": "9:00 SA — 18:00 CH (GMT+7)"
+      }
+    },
+    "response_time": {
+      "title": "Thời gian phản hồi dự kiến",
+      "description": "Chúng tôi thường phản hồi trong vòng 2-4 giờ làm việc. Đối với vấn đề khẩn cấp, vui lòng sử dụng tùy chọn chat trực tuyến."
+    },
+    "success": {
+      "title": "Tin nhắn đã gửi thành công!",
+      "message": "Cảm ơn bạn đã liên hệ. Đội ngũ hỗ trợ sẽ xem xét yêu cầu của bạn và phản hồi trong vòng 24 giờ.",
+      "send_another": "Gửi tin nhắn khác",
+      "back_to_help": "Quay lại Trung tâm trợ giúp"
+    }
+  },
+  "InstructorAuth": {
+    "login": {
+      "title": "Đăng nhập Giảng viên",
+      "description": "Truy cập bảng điều khiển giảng dạy và quản lý các khóa học của bạn",
+      "button": "Đăng nhập với tư cách Giảng viên",
+      "no_account": "Bạn muốn giảng dạy trên NexLearn?",
+      "register_link": "Trở thành Giảng viên"
+    }
+  },
+  "InstructorDashboard": {
+    "title": "Bảng điều khiển Giảng viên",
+    "welcome": "Chào mừng trở lại, {name}!",
+    "overview": {
+      "total_students": "Tổng học viên",
+      "total_courses": "Khóa học đang hoạt động",
+      "avg_rating": "Đánh giá trung bình",
+      "revenue": "Tổng doanh thu"
+    },
+    "recent_activity": {
+      "title": "Hoạt động gần đây",
+      "new_enrollment": "{student} đã đăng ký khóa học {course}",
+      "new_question": "{student} đã đặt câu hỏi trong {course}",
+      "new_review": "{student} đã để lại đánh giá {rating}★ cho {course}"
+    },
+    "quick_actions": {
+      "title": "Thao tác nhanh",
+      "create_course": "Tạo khóa học mới",
+      "view_students": "Xem danh sách học viên",
+      "payout_settings": "Cài đặt thanh toán"
+    },
+    "support_requests": {
+      "title": "Yêu cầu hỗ trợ",
+      "unanswered": "Chưa trả lời",
+      "view_all": "Xem tất cả yêu cầu"
+    }
+  },
+  "InstructorSettings": {
+    "title": "Cài đặt Giảng viên",
+    "tabs": {
+      "profile": "Hồ sơ Giảng dạy",
+      "account": "Tài khoản",
+      "payout": "Phương thức thanh toán",
+      "notifications": "Thông báo"
+    },
+    "profile": {
+      "headline": "Tiêu đề chuyên nghiệp",
+      "biography": "Tiểu sử",
+      "expertise": "Chuyên môn",
+      "website": "Trang web",
+      "save": "Lưu hồ sơ giảng dạy"
+    },
+    "payout": {
+      "title": "Cách bạn nhận thanh toán",
+      "description": "Chọn phương thức thanh toán ưu tiên cho doanh thu khóa học.",
+      "bank_transfer": "Chuyển khoản ngân hàng",
+      "paypal": "PayPal",
+      "setup": "Thiết lập phương thức thanh toán"
+    }
+  },
+  "InstructorCourses": {
+    "title": "Khóa học của tôi",
+    "description": "Quản lý các khóa học và số lượng học viên đăng ký",
+    "create_button": "Tạo khóa học mới",
+    "tabs": {
+      "all": "Tất cả khóa học",
+      "active": "Đang hoạt động",
+      "draft": "Bản nháp",
+      "finished": "Đã kết thúc"
+    },
+    "table": {
+      "course": "Khóa học",
+      "students": "Học viên",
+      "revenue": "Doanh thu",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "draft": "Nháp",
+      "finished": "Kết thúc"
+    },
+    "actions": {
+      "edit": "Chỉnh sửa",
+      "preview": "Xem trước",
+      "students": "Học viên",
+      "delete": "Xóa",
+      "duplicate": "Nhân bản"
+    },
+    "stats": {
+      "active_learners": "Học viên đang học",
+      "completion": "Tỷ lệ hoàn thành",
+      "revenue": "Doanh thu tháng",
+      "rating": "Đánh giá TB"
+    },
+    "labels": {
+      "last_updated": "Cập nhật lần cuối",
+      "active": "Hoạt động",
+      "total": "Tổng"
+    },
+    "empty": "Bạn chưa tạo khóa học nào.",
+    "search_placeholder": "Tìm kiếm khóa học..."
+  },
+  "CourseBuilder": {
+    "title": "Trình xây dựng khóa học",
+    "back_to_courses": "Quay lại danh sách",
+    "save_draft": "Lưu nháp",
+    "publish": "Xuất bản khóa học",
+    "sections": {
+      "title": "Chương trình học",
+      "add_section": "Thêm chương",
+      "section_name": "Tên chương",
+      "section_placeholder": "v.d., Giới thiệu về React",
+      "add_lesson": "Thêm bài học",
+      "empty": "Chưa có nội dung nào. Hãy bắt đầu bằng cách thêm chương đầu tiên."
+    },
+    "lesson": {
+      "title": "Chi tiết bài học",
+      "name": "Tiêu đề bài học",
+      "name_placeholder": "v.d., Cài đặt môi trường",
+      "type": "Loại bài học",
+      "type_video": "Video",
+      "type_text": "Văn bản",
+      "type_quiz": "Trắc nghiệm",
+      "type_assignment": "Bài tập",
+      "content": "Nội dung",
+      "upload_video": "Tải lên Video",
+      "upload_doc": "Tải lên tài liệu",
+      "prerequisite": "Bài học tiên quyết",
+      "prerequisite_hint": "Học viên phải hoàn thành bài này trước",
+      "badge": "BÀI GIẢNG"
+    },
+    "saving": "Đang lưu thay đổi...",
+    "saved": "Tất cả thay đổi đã được lưu",
+    "error_saving": "Lỗi khi lưu thay đổi",
+    "welcome_title": "Chào mừng đến với Trình xây dựng khóa học",
+    "welcome_description": "Chọn một phần hoặc bài giảng từ thanh bên để bắt đầu chỉnh sửa nội dung, hoặc thêm nội dung mới để phát triển khóa học của bạn.",
+    "section_badge": "PHẦN",
+    "edit_section": "Chỉnh sửa phần"
+  },
+  "QuestionBank": {
+    "title": "Ngân hàng câu hỏi",
+    "add_question": "Thêm câu hỏi",
+    "categories": "Danh mục",
+    "all_questions": "Tất cả câu hỏi",
+    "search": "Tìm kiếm câu hỏi...",
+    "types": {
+      "mcq": "Trắc nghiệm",
+      "essay": "Tự luận",
+      "matching": "Nối cặp",
+      "true_false": "Đúng/Sai"
+    },
+    "preview": "Xem trước câu hỏi",
+    "edit": "Chỉnh sửa câu hỏi",
+    "duplicate": "Nhân bản câu hỏi",
+    "delete": "Xóa câu hỏi",
+    "difficulty": {
+      "easy": "Dễ",
+      "medium": "Trung bình",
+      "hard": "Khó"
+    },
+    "table": {
+      "question": "Câu hỏi",
+      "type": "Loại",
+      "category": "Danh mục",
+      "difficulty": "Độ khó",
+      "actions": "Thao tác"
+    },
+    "empty": {
+      "title": "Không tìm thấy câu hỏi",
+      "description": "Thử điều chỉnh tìm kiếm hoặc bộ lọc của bạn."
+    },
+    "all_types": "Tất cả các loại",
+    "add_modal": {
+      "title": "Thêm câu hỏi mới",
+      "question_text": "Nội dung câu hỏi",
+      "type": "Loại",
+      "difficulty": "Độ khó",
+      "category": "Danh mục",
+      "save": "Lưu câu hỏi",
+      "cancel": "Hủy"
+    }
+  },
+  "QuizCreator": {
+    "title": "Trình tạo bài kiểm tra",
+    "settings": "Cài đặt bài kiểm tra",
+    "settings_desc": "Cấu hình chung cho bài kiểm tra này",
+    "title_label": "Tiêu đề bài kiểm tra",
+    "title_placeholder": "v.d., Bài kiểm tra cuối kỳ",
+    "category_label": "Danh mục",
+    "category_placeholder": "v.d., Phát triển Frontend",
+    "time_limit": "Thời gian làm bài (phút)",
+    "passing_score": "Điểm đạt (%)",
+    "max_attempts": "Số lần làm tối đa",
+    "randomize": "Trộn câu hỏi",
+    "randomize_desc": "Xáo trộn thứ tự câu hỏi cho mỗi học viên",
+    "show_answers": "Hiển thị đáp án đúng",
+    "show_answers_desc": "Hiển thị đáp án sau khi nộp bài",
+    "select_questions": "Chọn câu hỏi",
+    "selected_count": "Đã thêm {count} câu hỏi",
+    "add_new": "Thêm mới",
+    "from_bank": "Từ ngân hàng câu hỏi",
+    "bank_desc": "Sử dụng lại các câu hỏi hiện có",
+    "search_bank": "Tìm kiếm ngân hàng...",
+    "add_selected": "Thêm vào bài kiểm tra",
+    "review": "Xem lại",
+    "overview": "Tổng quan bài kiểm tra",
+    "overview_desc": "Kiểm tra lần cuối trước khi lưu",
+    "validation_summary": "Tóm tắt kiểm tra",
+    "save_quiz": "Lưu bài kiểm tra",
+    "preview": "Xem trước"
+  }
+}
+    "stat_minutes": "Phút",
+    "stat_pass_score": "Điểm đạt",
+    "ready_title": "Sẵn sàng xuất bản?",
+    "ready_desc": "Sau khi lưu, bài kiểm tra này sẽ có sẵn trong chương trình học của bạn.",
+    "validation_items": {
+      "points": "Tất cả các câu hỏi đã được gán điểm.",
+      "pass_score": "Điểm đạt nằm trong phạm vi hợp lệ.",
+      "title": "Tiêu đề bài kiểm tra đã được cung cấp."
+    }
   }
 }

@@ -107,6 +107,56 @@ export class CourseMongooseRepository implements ICourseRepository {
     return new CursorPageDto(courses, cursorMetaDto);
   }
 
+  async findByInstructorId(
+    instructorId: string,
+    pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<Course>> {
+    const query = { instructorId };
+    const queryBuilder = this.courseModel.find(query);
+
+    queryBuilder.sort({
+      createdAt: pageOptionsDto.order === Order.ASC ? 1 : -1,
+    });
+    queryBuilder.skip(pageOptionsDto.skip).limit(pageOptionsDto.limit ?? 10);
+
+    const itemCount = await this.courseModel.countDocuments(query);
+    const docs = await queryBuilder.lean().exec();
+
+    const courses = docs.map((d) => this.mapper.toDomain(d as CourseDocument));
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(courses, pageMetaDto);
+  }
+
+  async findAdminCourses(
+    pageOptionsDto: any,
+  ): Promise<PageDto<Course>> {
+    const query: Record<string, any> = {};
+    if (pageOptionsDto.status) {
+      query.status = pageOptionsDto.status;
+    }
+
+    const queryBuilder = this.courseModel.find(query);
+
+    queryBuilder.sort({
+      createdAt: pageOptionsDto.order === Order.ASC ? 1 : -1,
+    });
+    queryBuilder.skip(pageOptionsDto.skip).limit(pageOptionsDto.limit ?? 10);
+
+    const itemCount = await this.courseModel.countDocuments(query);
+    const docs = await queryBuilder.lean().exec();
+
+    const courses = docs.map((d) => this.mapper.toDomain(d as CourseDocument));
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(courses, pageMetaDto);
+  }
+
+  async existsBySlug(slug: string): Promise<boolean> {
+    const count = await this.courseModel.countDocuments({ slug });
+    return count > 0;
+  }
+
   async save(course: Course): Promise<void> {
     const data = this.mapper.toPersistence(course);
     await this.courseModel

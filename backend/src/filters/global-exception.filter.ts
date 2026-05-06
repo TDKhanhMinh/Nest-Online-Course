@@ -99,6 +99,23 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   private handleHttpException(exception: HttpException): ErrorDto {
     const statusCode = exception.getStatus();
+    const exceptionResponse = exception.getResponse();
+
+    // Extract the human-readable message from the exception
+    let message: string | undefined;
+    if (typeof exceptionResponse === 'string') {
+      message = exceptionResponse;
+    } else if (
+      typeof exceptionResponse === 'object' &&
+      exceptionResponse !== null
+    ) {
+      const res = exceptionResponse as Record<string, any>;
+      if (typeof res.message === 'string') {
+        message = res.message;
+      } else if (Array.isArray(res.message)) {
+        message = res.message.join(', ');
+      }
+    }
 
     // Map HTTP status to message code
     let messageCode: string;
@@ -124,6 +141,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       statusCode,
       error: STATUS_CODES[statusCode] || 'Error',
       message_code: messageCode,
+      message,
     };
 
     this.logger.debug(exception);

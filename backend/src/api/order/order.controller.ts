@@ -14,7 +14,12 @@ export class OrderController {
 
   @Post()
   async create(@CurrentUser() user: JwtPayload, @Body() dto: CreateOrderDto) {
-    return this.orderService.createOrder(user.sub, dto);
+    return this.orderService.createOrder(user.sub, user.email, dto);
+  }
+
+  @Post('checkout')
+  async checkout(@CurrentUser() user: JwtPayload) {
+    return this.orderService.checkout(user.sub, user.email);
   }
 
   @Get()

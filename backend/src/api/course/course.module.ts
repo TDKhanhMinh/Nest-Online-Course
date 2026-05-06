@@ -23,6 +23,7 @@ import { CategoryMapper } from '@/api/course/category.mapper';
 import { CategoryRepository } from '@/api/course/category.repository';
 import { MuxVideoStreamingAdapter } from '@/libs/video/mux-video.service';
 import { CourseController } from '@/api/course/course.controller';
+import { AdminCourseController } from '@/api/course/admin-course.controller';
 import { CourseService } from '@/api/course/course.service';
 import { OnLessonCompletedHandler } from '@/api/course/events/on-lesson-completed.handler';
 import { COURSE_REPOSITORY } from '@/common/abstractions/repositories/i-course.repository';
@@ -46,7 +47,7 @@ import { CertificateModule } from '@/api/certificate/certificate.module';
     forwardRef(() => EnrollmentModule),
     forwardRef(() => CertificateModule),
   ],
-  controllers: [CourseController],
+  controllers: [CourseController, AdminCourseController],
   providers: [
     { provide: COURSE_REPOSITORY, useClass: CourseMongooseRepository },
     { provide: ISectionRepository, useClass: SectionRepository },

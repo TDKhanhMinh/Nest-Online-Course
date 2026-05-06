@@ -6,6 +6,7 @@
     "search": "Search",
     "loading": "Loading...",
     "error": "An error occurred.",
+    "instructor_login": "Instructor Login",
     "register": "Register",
     "toggle_theme": "Toggle theme",
     "facebook": "Facebook",
@@ -595,5 +596,351 @@
       "graded": "Graded"
     },
     "empty": "No grades recorded yet."
+  },
+  "HelpCenter": {
+    "hero_badge": "Help Center",
+    "hero_title": "How can we help you?",
+    "hero_subtitle": "Search our knowledge base or browse frequently asked questions to find the answers you need.",
+    "search_placeholder": "Search for answers...",
+    "browse_topics": "Browse by Topic",
+    "show_all": "Show all topics",
+    "faq_title": "Frequently Asked Questions",
+    "no_results": "No results found. Try a different search term or browse all topics.",
+    "cta_title": "Still need help?",
+    "cta_subtitle": "Our support team is ready to assist you with any questions or issues you may have.",
+    "cta_button": "Contact Support",
+    "categories": {
+      "getting_started": {
+        "title": "Getting Started",
+        "q1": "How do I create an account on NexLearn?",
+        "a1": "Creating an account is simple! Click the \"Sign up\" button on the top right of any page. You can register with your email address or sign up using your Google or GitHub account. Once registered, you can immediately start browsing and enrolling in courses.",
+        "q2": "How do I enroll in a course?",
+        "a2": "To enroll in a course, navigate to the course page and click the \"Enroll Now\" or \"Add to Cart\" button. Free courses allow instant access, while paid courses require checkout. After enrollment, the course will appear in your \"My Courses\" dashboard.",
+        "q3": "What are the system requirements for taking courses?",
+        "a3": "NexLearn works on any modern web browser (Chrome, Firefox, Safari, Edge). We recommend a stable internet connection of at least 5 Mbps for smooth video streaming. For mobile, you can access courses through our responsive web app on iOS and Android devices."
+      },
+      "courses": {
+        "title": "Courses & Learning",
+        "q1": "Can I download course videos for offline viewing?",
+        "a1": "Currently, course videos are available for streaming only. However, some instructors provide downloadable supplementary materials (PDFs, code files) that you can access offline. We are working on an offline viewing feature for the future.",
+        "q2": "How do I track my learning progress?",
+        "a2": "Your progress is automatically tracked as you complete lessons, quizzes, and assignments. Visit your \"My Courses\" page to see completion percentages, and check the \"Grades\" page for detailed assessment results.",
+        "q3": "What happens if I fail a quiz?",
+        "a3": "Don't worry! Most quizzes allow multiple attempts. After completing a quiz, you can review your answers to understand which questions you missed. Click the \"Retake Quiz\" button to try again and improve your score."
+      },
+      "payments": {
+        "title": "Payments & Billing",
+        "q1": "What payment methods do you accept?",
+        "a1": "We accept major credit/debit cards (Visa, Mastercard, JCB), bank transfers, and popular e-wallets (MoMo, ZaloPay, VNPay). All transactions are processed securely with 256-bit SSL encryption.",
+        "q2": "Can I get a refund for a course?",
+        "a2": "Yes! We offer a 7-day money-back guarantee for all paid courses. If you're not satisfied with the course quality, contact our support team within 7 days of purchase for a full refund. Note: Courses with more than 30% completion are not eligible for refund.",
+        "q3": "Do you offer any discounts or promotions?",
+        "a3": "Yes! We regularly run seasonal promotions and flash sales. Follow our social media channels or subscribe to our newsletter to stay updated. We also offer bundle discounts when purchasing multiple courses and special pricing for students and educators."
+      },
+      "account": {
+        "title": "Account & Settings",
+        "q1": "How do I reset my password?",
+        "a1": "Click \"Forgot Password\" on the login page. Enter your registered email address, and we'll send you a password reset link. The link expires after 24 hours for security. If you don't receive the email, check your spam folder.",
+        "q2": "Can I change my email address?",
+        "a2": "Yes! Go to your Profile settings and click \"Edit Profile\". You can update your email address there. A verification email will be sent to your new address to confirm the change.",
+        "q3": "How do I delete my account?",
+        "a3": "To delete your account, go to Profile > Settings > Account. Click \"Delete Account\" and confirm your decision. Please note that this action is irreversible — all your course progress, certificates, and purchase history will be permanently removed."
+      },
+      "certificates": {
+        "title": "Certificates",
+        "q1": "How do I earn a certificate?",
+        "a1": "Certificates are automatically issued when you complete 100% of a course's lessons, pass all required quizzes, and submit all assignments. Once earned, your certificate will appear on the \"Certificates\" page in your profile.",
+        "q2": "Are NexLearn certificates recognized by employers?",
+        "a2": "NexLearn certificates demonstrate your commitment to learning and skill development. While they are not formal academic credentials, many employers value them as proof of practical knowledge. Each certificate includes a unique verification URL.",
+        "q3": "Can I share my certificate on LinkedIn?",
+        "a3": "Absolutely! Each certificate has a \"Share\" button that allows you to directly post it to LinkedIn, Twitter, or Facebook. You can also download the certificate as a PDF to include in your professional portfolio or resume."
+      },
+      "community": {
+        "title": "Community",
+        "q1": "How do I participate in course discussions?",
+        "a1": "Each course has a built-in Discussion Forum accessible from the course player. You can ask questions, share insights, or help fellow learners. Click the \"Q&A\" tab while viewing a course to join the conversation.",
+        "q2": "Can I message an instructor directly?",
+        "a2": "You can interact with instructors through the course Discussion Forum. Instructors are indicated by a special badge and typically respond within 24-48 hours. For urgent matters, use the Contact Support form.",
+        "q3": "How do I report inappropriate content?",
+        "a3": "If you encounter inappropriate content in discussions or course materials, click the \"Report\" button next to the content. Our moderation team reviews all reports within 24 hours and takes appropriate action."
+      }
+    }
+  },
+  "ContactSupport": {
+    "back_to_help": "Back to Help Center",
+    "hero_title": "Contact Our Support Team",
+    "hero_subtitle": "We're here to help. Fill out the form below and we'll get back to you as soon as possible.",
+    "form": {
+      "title": "Send us a message",
+      "subtitle": "Please provide as much detail as possible so we can help you effectively.",
+      "name_label": "Full Name",
+      "name_placeholder": "Enter your full name",
+      "email_label": "Email Address",
+      "email_placeholder": "your@email.com",
+      "category_label": "Issue Category",
+      "category_placeholder": "Select a category",
+      "categories": {
+        "technical": "Technical Issue",
+        "billing": "Billing & Payments",
+        "course_content": "Course Content",
+        "account": "Account & Settings",
+        "other": "Other"
+      },
+      "subject_label": "Subject",
+      "subject_placeholder": "Brief description of your issue",
+      "message_label": "Message",
+      "message_placeholder": "Describe your issue in detail. Include any error messages, steps to reproduce, or relevant course names...",
+      "attachment_hint": "You can include screenshots or files by pasting URLs in your message.",
+      "submit_button": "Send Message",
+      "sending": "Sending..."
+    },
+    "channels": {
+      "email": {
+        "title": "Email Support",
+        "description": "Send us an email directly"
+      },
+      "chat": {
+        "title": "Live Chat",
+        "description": "Chat with our team in real-time",
+        "value": "Available 9AM-6PM"
+      },
+      "hours": {
+        "title": "Business Hours",
+        "description": "Monday to Saturday",
+        "value": "9:00 AM — 6:00 PM (GMT+7)"
+      }
+    },
+    "response_time": {
+      "title": "Expected Response Time",
+      "description": "We typically respond within 2-4 business hours during working days. For urgent issues, please use the live chat option."
+    },
+    "success": {
+      "title": "Message Sent Successfully!",
+      "message": "Thank you for reaching out. Our support team will review your request and get back to you within 24 hours.",
+      "send_another": "Send Another Message",
+      "back_to_help": "Back to Help Center"
+    }
+  },
+  "InstructorAuth": {
+    "login": {
+      "title": "Instructor Login",
+      "description": "Access your teaching dashboard and manage your courses",
+      "button": "Login as Instructor",
+      "no_account": "Want to teach on NexLearn?",
+      "register_link": "Become an Instructor"
+    }
+  },
+  "InstructorDashboard": {
+    "title": "Instructor Dashboard",
+    "welcome": "Welcome back, {name}!",
+    "overview": {
+      "total_students": "Total Students",
+      "total_courses": "Active Courses",
+      "avg_rating": "Avg Rating",
+      "revenue": "Total Revenue"
+    },
+    "recent_activity": {
+      "title": "Recent Activity",
+      "new_enrollment": "{student} enrolled in {course}",
+      "new_question": "{student} asked a question in {course}",
+      "new_review": "{student} left a {rating}★ review for {course}"
+    },
+    "quick_actions": {
+      "title": "Quick Actions",
+      "create_course": "Create New Course",
+      "view_students": "View All Students",
+      "payout_settings": "Payout Settings"
+    },
+    "support_requests": {
+      "title": "Support Requests",
+      "unanswered": "Unanswered",
+      "view_all": "View all requests"
+    }
+  },
+  "InstructorSettings": {
+    "title": "Instructor Settings",
+    "tabs": {
+      "profile": "Teaching Profile",
+      "account": "Account",
+      "payout": "Payout Methods",
+      "notifications": "Notifications"
+    },
+    "profile": {
+      "headline": "Professional Headline",
+      "biography": "Biography",
+      "expertise": "Expertise",
+      "website": "Website",
+      "save": "Save Teaching Profile"
+    },
+    "payout": {
+      "title": "How you get paid",
+      "description": "Choose your preferred payment method for course revenue.",
+      "bank_transfer": "Bank Transfer",
+      "paypal": "PayPal",
+      "setup": "Set up payment method"
+    }
+  },
+  "InstructorCourses": {
+    "title": "My Courses",
+    "description": "Manage your courses and student enrollment",
+    "create_button": "Create New Course",
+    "tabs": {
+      "all": "All Courses",
+      "active": "Active",
+      "draft": "Draft",
+      "finished": "Finished"
+    },
+    "table": {
+      "course": "Course",
+      "students": "Students",
+      "revenue": "Revenue",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "draft": "Draft",
+      "finished": "Finished"
+    },
+    "actions": {
+      "edit": "Edit",
+      "preview": "Preview",
+      "students": "Students",
+      "delete": "Delete",
+      "duplicate": "Duplicate"
+    },
+    "stats": {
+      "active_learners": "Active Learners",
+      "completion": "Course Completion",
+      "revenue": "Monthly Revenue",
+      "rating": "Avg. Rating"
+    },
+    "labels": {
+      "last_updated": "Last updated",
+      "active": "Active",
+      "total": "Total"
+    },
+    "empty": "You haven't created any courses yet.",
+    "search_placeholder": "Search courses..."
+  },
+  "CourseBuilder": {
+    "title": "Course Builder",
+    "back_to_courses": "Back to Courses",
+    "save_draft": "Save Draft",
+    "publish": "Publish Course",
+    "sections": {
+      "title": "Curriculum",
+      "add_section": "Add Section",
+      "section_name": "Section Name",
+      "section_placeholder": "e.g., Introduction to React",
+      "add_lesson": "Add Lesson",
+      "empty": "No sections added yet. Start by adding your first section."
+    },
+    "lesson": {
+      "title": "Lesson Details",
+      "name": "Lesson Title",
+      "name_placeholder": "e.g., Setting up Environment",
+      "type": "Lesson Type",
+      "type_video": "Video",
+      "type_text": "Text",
+      "type_quiz": "Quiz",
+      "type_assignment": "Assignment",
+      "content": "Content",
+      "upload_video": "Upload Video",
+      "upload_doc": "Upload Document",
+      "prerequisite": "Prerequisite Lesson",
+      "prerequisite_hint": "Student must complete this lesson first",
+      "badge": "LESSON"
+    },
+    "saving": "Saving changes...",
+    "saved": "All changes saved",
+    "error_saving": "Error saving changes",
+    "welcome_title": "Welcome to Course Builder",
+    "welcome_description": "Select a section or lesson from the sidebar to start editing its content, or add a new one to grow your course.",
+    "section_badge": "SECTION",
+    "edit_section": "Edit Section"
+  },
+  "QuestionBank": {
+    "title": "Question Bank",
+    "add_question": "Add Question",
+    "categories": "Categories",
+    "all_questions": "All Questions",
+    "search": "Search questions...",
+    "types": {
+      "mcq": "Multiple Choice",
+      "essay": "Essay",
+      "matching": "Matching",
+      "true_false": "True/False"
+    },
+    "preview": "Preview Question",
+    "edit": "Edit Question",
+    "duplicate": "Duplicate Question",
+    "delete": "Delete Question",
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "table": {
+      "question": "Question",
+      "type": "Type",
+      "category": "Category",
+      "difficulty": "Difficulty",
+      "actions": "Actions"
+    },
+    "empty": {
+      "title": "No questions found",
+      "description": "Try adjusting your search or filters."
+    },
+    "all_types": "All Types",
+    "add_modal": {
+      "title": "Add New Question",
+      "question_text": "Question Text",
+      "type": "Type",
+      "difficulty": "Difficulty",
+      "category": "Category",
+      "save": "Save Question",
+      "cancel": "Cancel"
+    }
+  },
+  "QuizCreator": {
+    "title": "Quiz Creator",
+    "settings": "Quiz Settings",
+    "settings_desc": "General configuration for this quiz",
+    "title_label": "Quiz Title",
+    "title_placeholder": "e.g., Final Assessment",
+    "category_label": "Category",
+    "category_placeholder": "e.g., Frontend Development",
+    "time_limit": "Time Limit (minutes)",
+    "passing_score": "Passing Score (%)",
+    "max_attempts": "Max Attempts",
+    "randomize": "Randomize Questions",
+    "randomize_desc": "Shuffle question order for each student",
+    "show_answers": "Show Correct Answers",
+    "show_answers_desc": "Display answers after quiz submission",
+    "select_questions": "Select Questions",
+    "selected_count": "{count} questions added",
+    "add_new": "Add New",
+    "from_bank": "From Question Bank",
+    "bank_desc": "Reuse existing questions",
+    "search_bank": "Search bank...",
+    "add_selected": "Add Selected to Quiz",
+    "review": "Review",
+    "overview": "Quiz Overview",
+    "overview_desc": "Final check before saving",
+    "validation_summary": "Validation Summary",
+    "save_quiz": "Save Quiz",
+    "preview": "Preview"
+  }
+}
+    "stat_minutes": "Minutes",
+    "stat_pass_score": "Pass Score",
+    "ready_title": "Ready to publish?",
+    "ready_desc": "Once saved, this quiz will be available in your course curriculum.",
+    "validation_items": {
+      "points": "All questions have point values assigned.",
+      "pass_score": "Passing score is within valid range.",
+      "title": "Quiz title is provided."
+    }
   }
 }

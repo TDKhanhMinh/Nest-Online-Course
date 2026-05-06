@@ -1,4 +1,5 @@
 import { AuthModule } from '@/api/auth/auth.module';
+import { CartModule } from '@/api/cart/cart.module';
 import { CertificateModule } from '@/api/certificate/certificate.module';
 import { CourseModule } from '@/api/course/course.module';
 import { EnrollmentModule } from '@/api/enrollment/enrollment.module';
@@ -46,6 +47,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     UserModule,
     AuthModule,
     OrderModule,
+    CartModule,
     StudentFeaturesModule,
   ],
 })

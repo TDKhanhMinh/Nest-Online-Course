@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { RegisterDto } from './register.dto';
 
 export class RegisterInstructorDto extends RegisterDto {
@@ -11,18 +11,14 @@ export class RegisterInstructorDto extends RegisterDto {
   headline: string;
 
   @IsOptional()
-  @IsUrl()
   website?: string;
 
   @IsOptional()
-  @IsUrl()
   twitter?: string;
 
   @IsOptional()
-  @IsUrl()
   linkedin?: string;
 
   @IsOptional()
-  @IsUrl()
   youtube?: string;
 }

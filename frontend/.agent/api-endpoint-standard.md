@@ -10,12 +10,16 @@ Mô tả: Quy trình bắt buộc khi thêm mới hoặc cập nhật một API 
    - **Infrastructure:** Nơi chứa logic gọi API thuần túy và định nghĩa DTO (Data Transfer Object).
    - **Application (Optional but recommended):** Chứa Use Case để xử lý business logic, mapping dữ liệu trước khi trả về Presentation.
    - **Presentation (Hooks):** Chứa custom hooks bọc TanStack Query.
+4. **Global Error Handling:** Hệ thống đã cấu hình `MutationCache` và `QueryCache` toàn cục tại `QueryProvider`.
+   - **Không viết `onError` dư thừa:** Các lỗi API chuẩn (được bọc bởi `ApiErrorResponse`) sẽ tự động hiển thị Toast thông báo lỗi từ Backend.
+   - **Chỉ viết `onError` khi cần logic đặc thù:** Ví dụ như thực hiện một hành động khác khi lỗi (analytics, fallback đặc biệt).
 
 ---
 
 ## Quy trình triển khai (4 bước)
 
 ### Bước 1: Định nghĩa Type & API Function (Infrastructure)
+
 Viết tại thư mục `infrastructure` của feature.
 
 ```typescript
@@ -39,6 +43,7 @@ export const yourApi = {
 ```
 
 ### Bước 2: Viết Use Case (Application)
+
 Kết nối Infrastructure với Application logic.
 
 ```typescript
@@ -55,6 +60,7 @@ export const getDataUseCase = new GetDataUseCase();
 ```
 
 ### Bước 3: Đăng ký Query Keys (Global)
+
 Cập nhật bộ khóa tại `@/lib/query-keys.ts` để quản lý cache hiệu quả.
 
 ```typescript
@@ -69,6 +75,7 @@ export const queryKeys = {
 ```
 
 ### Bước 4: Viết Custom Hook (Presentation)
+
 Cung cấp dữ liệu cho UI thông qua TanStack Query.
 
 ```typescript
@@ -84,13 +91,29 @@ export const useYourData = (params: any) => {
     // Thêm các options như staleTime, cacheTime nếu cần
   });
 };
+
+export const useCreateYourData = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (data: CreateDTO) => createDataUseCase.execute(data),
+    onSuccess: () => {
+      toast.success("Tạo mới thành công!");
+      queryClient.invalidateQueries({ queryKey: queryKeys.yourFeature.all });
+    },
+    // Lưu ý: Không cần viết onError nếu chỉ để hiện thông báo lỗi từ Backend
+  });
+};
 ```
 
 ---
 
 ## Checklist Kiểm tra
+
 - [ ] Dữ liệu API đã có interface/type tương ứng chưa?
 - [ ] Hàm gọi API có nằm trong tầng `infrastructure` không?
 - [ ] Đã sử dụng `useQuery` hoặc `useMutation` chưa?
 - [ ] Query Key có được định nghĩa tập trung trong `queryKeys` không?
 - [ ] Custom hook có xử lý các trạng thái `isLoading`, `isError`, `data` một cách sạch sẽ không?
+- [ ] Có lạm dụng `onError` trong hook không? (Nên tận dụng Global Error Toast).
+- [ ] Dữ liệu lỗi có được bọc bởi `ApiErrorResponse` thông qua axios interceptor chưa?

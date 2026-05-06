@@ -10,6 +10,8 @@ export class OrderItemMapper {
       {
         orderId: new UniqueId(doc.orderId),
         courseId: new UniqueId(doc.courseId),
+        courseTitle: doc.courseTitle,
+        courseThumbnail: doc.courseThumbnail,
         price: doc.price,
       },
       new UniqueId((doc._id as any).toString()),
@@ -21,6 +23,8 @@ export class OrderItemMapper {
       _id: domain.id.value as any,
       orderId: domain.orderId.value,
       courseId: domain.courseId.value,
+      courseTitle: domain.courseTitle,
+      courseThumbnail: domain.courseThumbnail,
       price: domain.price,
     };
   }

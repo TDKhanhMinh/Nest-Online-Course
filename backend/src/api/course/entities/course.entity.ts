@@ -53,7 +53,21 @@ export class Course extends AggregateRoot<CourseProps> {
     return false;
   }
 
+  update(props: Partial<Omit<CourseProps, 'instructorId' | 'slug' | 'status'>>): void {
+    if (props.title) this.props.title = props.title;
+    if (props.description) this.props.description = props.description;
+    if (props.price !== undefined) this.props.price = props.price;
+    if (props.categoryId) this.props.categoryId = props.categoryId;
+    if (props.thumbnailUrl) this.props.thumbnailUrl = props.thumbnailUrl;
+    if (props.level) this.props.level = props.level;
+    if (props.language) this.props.language = props.language;
+  }
+
   updateStatus(status: CourseStatus): void {
+    // Business rule: Cannot publish a course without a thumbnail (example)
+    if (status === CourseStatus.PUBLISHED && !this.props.thumbnailUrl) {
+      throw new Error('Cannot publish course without a thumbnail');
+    }
     this.props.status = status;
   }
 

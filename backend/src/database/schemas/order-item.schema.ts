@@ -9,6 +9,12 @@ export class OrderItemDocument extends Document {
   @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'CourseDocument' })
   courseId: string;
 
+  @Prop({ required: true })
+  courseTitle: string;
+
+  @Prop()
+  courseThumbnail?: string;
+
   @Prop({ required: true, type: Number })
   price: number;
 }

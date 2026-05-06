@@ -1,13 +1,13 @@
+import { DomainException } from '@/exceptions/domain-exception.base';
+import { ErrorCode } from '@/exceptions/error-codes.enum';
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpStatus,
   Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { DomainException } from '@/exceptions/domain-exception.base';
-import { ErrorCode } from '@/exceptions/error-codes.enum';
 
 @Catch(DomainException)
 export class DomainExceptionFilter implements ExceptionFilter {
@@ -25,6 +25,10 @@ export class DomainExceptionFilter implements ExceptionFilter {
       [ErrorCode.CERTIFICATE_ALREADY_ISSUED]: HttpStatus.CONFLICT,
       [ErrorCode.LESSON_ALREADY_COMPLETED]: HttpStatus.CONFLICT,
       [ErrorCode.VALIDATION_ERROR]: HttpStatus.BAD_REQUEST,
+      [ErrorCode.USER_NOT_FOUND]: HttpStatus.NOT_FOUND,
+      [ErrorCode.CATEGORY_NOT_FOUND]: HttpStatus.NOT_FOUND,
+      [ErrorCode.COURSE_ALREADY_EXISTS]: HttpStatus.CONFLICT,
+      [ErrorCode.COURSE_HAS_CONTENT]: HttpStatus.BAD_REQUEST,
     };
 
     const status = statusMap[exception.code] ?? HttpStatus.BAD_REQUEST;

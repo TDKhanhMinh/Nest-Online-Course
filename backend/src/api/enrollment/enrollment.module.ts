@@ -13,6 +13,7 @@ import { ENROLLMENT_REPOSITORY } from '@/common/abstractions/repositories/i-enro
 import { ILESSON_PROGRESS_REPOSITORY } from '@/common/abstractions/repositories/i-lesson-progress.repository';
 import { EMAIL_NOTIFICATION_SERVICE } from '@/common/abstractions/services/i-email-notification.service';
 import { CourseModule } from '../course/course.module';
+import { OnOrderSuccessHandler } from './handlers/on-order-success.handler';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { CourseModule } from '../course/course.module';
     EnrollmentMapper,
     LessonProgressMapper,
     EnrollmentService,
+    OnOrderSuccessHandler,
   ],
-  exports: [ENROLLMENT_REPOSITORY, ILESSON_PROGRESS_REPOSITORY, EMAIL_NOTIFICATION_SERVICE],
+  exports: [ENROLLMENT_REPOSITORY, ILESSON_PROGRESS_REPOSITORY, EMAIL_NOTIFICATION_SERVICE, EnrollmentService],
 })
 export class EnrollmentModule { }

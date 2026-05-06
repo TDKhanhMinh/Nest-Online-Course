@@ -10,7 +10,7 @@ export interface User {
   id: string;
   fullName: string;
   email: string;
-  role: Role;
+  roles: Role[];
   avatar?: string;
 }
 

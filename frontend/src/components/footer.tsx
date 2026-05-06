@@ -29,8 +29,8 @@ export default function Footer() {
     {
       title: t("Nav.support"),
       links: [
-        { label: t("Footer.help_center"), href: "#" },
-        { label: t("Footer.contact"), href: "#" },
+        { label: t("Footer.help_center"), href: "/help" },
+        { label: t("Footer.contact"), href: "/support" },
         { label: t("Footer.privacy_policy"), href: "#" },
         { label: t("Footer.terms_of_use"), href: "#" },
       ],

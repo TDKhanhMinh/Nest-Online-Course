@@ -1,10 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { loginUseCase, registerUseCase, registerInstructorUseCase } from "../../application/auth.use-cases";
 import { queryKeys } from "@/lib/query-keys";
-import { LoginDTO, RegisterDTO, RegisterInstructorDTO, User } from "../../infrastructure/auth.api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ApiErrorResponse } from "@/types/api";
+import { loginUseCase, registerInstructorUseCase, registerUseCase } from "../../application/auth.use-cases";
+import { LoginDTO, RegisterDTO, RegisterInstructorDTO, Role, User } from "../../infrastructure/auth.api";
+
+const handleRoleBasedRedirect = (user: User, router: ReturnType<typeof useRouter>) => {
+  if (user.roles?.includes(Role.ADMIN)) {
+    router.push("/admin");
+  } else if (user.roles?.includes(Role.INSTRUCTOR)) {
+    router.push("/instructor/dashboard");
+  } else {
+    router.push("/dashboard");
+  }
+};
 
 export const useLogin = () => {
   const router = useRouter();
@@ -19,10 +28,7 @@ export const useLogin = () => {
       queryClient.setQueryData(queryKeys.auth.me(), response.user);
       
       toast.success("Login successful!");
-      router.push("/");
-    },
-    onError: (error: ApiErrorResponse) => {
-      toast.error(error.message || "Login failed");
+      handleRoleBasedRedirect(response.user, router);
     },
   });
 };
@@ -40,16 +46,7 @@ export const useRegister = () => {
       queryClient.setQueryData(queryKeys.auth.me(), response.user);
       
       toast.success("Registration successful!");
-      router.push("/");
-    },
-    onError: (error: ApiErrorResponse) => {
-      if (error.details && Array.isArray(error.details)) {
-        error.details.forEach((detail) => {
-          toast.error(`${detail.property}: ${detail.message}`);
-        });
-      } else {
-        toast.error(error.message || "Registration failed");
-      }
+      handleRoleBasedRedirect(response.user, router);
     },
   });
 };
@@ -67,16 +64,7 @@ export const useRegisterInstructor = () => {
       queryClient.setQueryData(queryKeys.auth.me(), response.user);
       
       toast.success("Instructor registration successful!");
-      router.push("/");
-    },
-    onError: (error: ApiErrorResponse) => {
-      if (error.details && Array.isArray(error.details)) {
-        error.details.forEach((detail) => {
-          toast.error(`${detail.property}: ${detail.message}`);
-        });
-      } else {
-        toast.error(error.message || "Registration failed");
-      }
+      handleRoleBasedRedirect(response.user, router);
     },
   });
 };
@@ -88,7 +76,11 @@ export const useLogout = () => {
   const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
+    
+    // Immediately clear the user query data to update UI
+    queryClient.setQueryData(queryKeys.auth.me(), null);
     queryClient.removeQueries({ queryKey: queryKeys.auth.all });
+    
     toast.success("Logged out successfully");
     router.push("/auth/login");
   };

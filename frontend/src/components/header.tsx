@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Role } from "@/features/auth/infrastructure/auth.api";
 import { useLogout, useMe } from "@/features/auth/presentation/hooks/use-auth-hooks";
 import { Link } from "@/i18n/navigation";
 import { Award, BookOpen, GraduationCap, LayoutDashboard, LogOut, Menu, Receipt, Settings, ShoppingBag, User, UserCircle, X } from "lucide-react";
@@ -23,6 +24,13 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: user } = useMe();
   const { logout } = useLogout();
+
+  const getDashboardLink = () => {
+    if (!user) return "/dashboard";
+    if (user.roles?.includes(Role.ADMIN)) return "/admin";
+    if (user.roles?.includes(Role.INSTRUCTOR)) return "/instructor/dashboard";
+    return "/dashboard";
+  };
 
   const navLinks = [
     { label: t("Nav.courses"), href: "#courses" },
@@ -70,7 +78,7 @@ export default function Header() {
           </Link>
           {user ? (
             <DropdownMenu>
-              <DropdownMenuTrigger render={
+              <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-brand-bg2 hover:bg-brand-bg3 p-0 overflow-hidden border border-brand-border cursor-pointer">
                   {user.avatar ? (
                     <img src={user.avatar} alt={user.fullName} className="h-full w-full object-cover" />
@@ -78,7 +86,7 @@ export default function Header() {
                     <User className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                   )}
                 </Button>
-              } />
+              </DropdownMenuTrigger>
               <DropdownMenuContent className="w-60 mt-2 border-brand-border bg-brand-bg/95 backdrop-blur-md" align="end">
                 <div className="px-3 py-2.5">
                   <div className="flex items-center gap-3">
@@ -137,7 +145,7 @@ export default function Header() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="focus:bg-brand-bg2 cursor-pointer px-3 py-2">
-                    <Link href="/dashboard" className="flex items-center w-full no-underline text-inherit">
+                    <Link href={getDashboardLink()} className="flex items-center w-full no-underline text-inherit">
                       <LayoutDashboard className="mr-2.5 h-4 w-4 text-slate-500" />
                       <span>{t("UserMenu.dashboard")}</span>
                     </Link>
@@ -165,21 +173,29 @@ export default function Header() {
           ) : (
             <>
               <Button
+                asChild
+                variant="ghost"
+                size="sm"
+                className="hidden lg:inline-flex text-slate-600 hover:text-brand-amber dark:text-slate-400"
+              >
+                <Link href="/auth/instructor-login">
+                  {t("Common.instructor_login")}
+                </Link>
+              </Button>
+              <Button
+                asChild
                 variant="outline"
                 size="sm"
                 className="border-brand-border bg-transparent text-slate-600 hover:border-brand-amber hover:bg-transparent hover:text-brand-amber dark:text-slate-400"
-                render={<Link href="/auth/login" />}
-                nativeButton={false}
               >
-                {t("Common.login")}
+                <Link href="/auth/login">{t("Common.login")}</Link>
               </Button>
               <Button
+                asChild
                 size="sm"
                 className="bg-brand-amber font-semibold text-black hover:bg-brand-amber2"
-                render={<Link href="/auth/signup" />}
-                nativeButton={false}
               >
-                {t("Common.start_free")}
+                <Link href="/auth/signup">{t("Common.start_free")}</Link>
               </Button>
             </>
           )}
@@ -284,7 +300,7 @@ export default function Header() {
                   {t("UserMenu.orders")}
                 </Link>
                 <Link
-                  href="/dashboard"
+                  href={getDashboardLink()}
                   className="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-brand-bg3 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white no-underline"
                   onClick={() => setMenuOpen(false)}
                 >
@@ -318,20 +334,30 @@ export default function Header() {
               </Button>
             ) : (
               <>
+                <Link
+                  href="/auth/instructor-login"
+                  className="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-brand-bg3 hover:text-brand-amber dark:text-slate-400 dark:hover:text-white no-underline"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <UserCircle className="mr-3 h-4 w-4" />
+                  {t("Common.instructor_login")}
+                </Link>
                 <Button
+                  asChild
                   variant="outline"
                   className="w-full border-brand-border bg-transparent text-slate-600 hover:border-brand-amber hover:text-brand-amber dark:text-slate-400"
-                  render={<Link href="/auth/login" onClick={() => setMenuOpen(false)} />}
-                  nativeButton={false}
                 >
-                  {t("Common.login")}
+                  <Link href="/auth/login" onClick={() => setMenuOpen(false)}>
+                    {t("Common.login")}
+                  </Link>
                 </Button>
                 <Button
+                  asChild
                   className="w-full bg-brand-amber font-semibold text-black hover:bg-brand-amber2"
-                  render={<Link href="/auth/signup" onClick={() => setMenuOpen(false)} />}
-                  nativeButton={false}
                 >
-                  {t("Common.start_free")}
+                  <Link href="/auth/signup" onClick={() => setMenuOpen(false)}>
+                    {t("Common.start_free")}
+                  </Link>
                 </Button>
               </>
             )}
