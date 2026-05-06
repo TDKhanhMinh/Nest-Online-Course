@@ -3,6 +3,7 @@
 Mô tả: Bộ kỹ năng và nguyên tắc dành cho Front-end Engineer chuyên trách UI/UX và Responsive Design, tập trung vào Next.js, Tailwind CSS và shadcn/ui.
 
 ## Công nghệ cốt lõi
+
 - **Framework:** Next.js (App Router)
 - **Styling:** Tailwind CSS v3+ (utility-first)
 - **Component library:** shadcn/ui (Radix UI primitives)
@@ -54,17 +55,20 @@ Thiết kế đồng thời trên cả 3 nền tảng (Mobile, Tablet, Desktop).
 ## Quy tắc Touch, Pointer & Accessibility
 
 ### Mobile & Tablet (Touch)
+
 - **Touch target:** Tối thiểu `min-h-[44px] min-w-[44px]`.
 - **Tap spacing:** Khoảng cách giữa các interactive elements ít nhất `gap-2` (8px).
 - **Font size:** Không nhỏ hơn `text-sm` (14px).
 - **Scroll:** Sử dụng `touch-pan-y` / `touch-pan-x` phù hợp.
 
 ### Desktop (Pointer/Hover)
+
 - **Hover states:** Luôn thêm variant `hover:` cho các phần tử tương tác.
 - **Cursor:** `cursor-pointer` (click) và `cursor-not-allowed` (disabled).
 - **Tooltip:** Hiển thị ở `lg:` trở lên cho các icon-only button.
 
 ### Chung
+
 - **Contrast ratio:** ≥ 4.5:1 (text thường), ≥ 3:1 (large text).
 - **Focus:** Luôn giữ `focus-visible:ring-2`, không xóa outline.
 - **Animation:** Dùng `motion-safe:` cho các hiệu ứng chuyển động.
@@ -72,6 +76,7 @@ Thiết kế đồng thời trên cả 3 nền tảng (Mobile, Tablet, Desktop).
 ## Responsive Scales
 
 ### Typography Scale
+
 ```css
 Heading 1: text-2xl sm:text-3xl lg:text-4xl font-bold
 Heading 2: text-xl sm:text-2xl lg:text-3xl font-semibold
@@ -81,6 +86,7 @@ Caption: text-xs sm:text-sm text-muted-foreground
 ```
 
 ### Spacing Scale
+
 ```css
 Section padding: py-8 sm:py-12 lg:py-16
 Container padding: px-4 sm:px-6 lg:px-8
@@ -88,7 +94,14 @@ Card padding: p-4 sm:p-5 lg:p-6
 Gap items: gap-3 sm:gap-4 lg:gap-6
 ```
 
+## Quy tắc Tích hợp Đa ngôn ngữ (i18n)
+
+- **Mặc định hỗ trợ i18n:** Mỗi khi tạo một feature mới, component mới hoặc trang mới, LUÔN LUÔN kiểm tra và tích hợp sẵn tính năng đa ngôn ngữ (`next-intl`). Tuyệt đối không hardcode văn bản tĩnh trực tiếp trong component.
+- **Lưu trữ bản dịch:** Tất cả các chuỗi văn bản mới phải được thêm đồng thời vào các file cấu hình chuyển ngữ (ví dụ: `en.json`, `vi.json`) nằm trong thư mục `d:\OnlineCourse\frontend\messages`.
+- **Cấu trúc Key:** Sử dụng namespace rõ ràng theo tên component hoặc tính năng để tránh trùng lặp (ví dụ: `[FeatureName].[key_name]`).
+
 ## Anti-patterns — Tuyệt đối KHÔNG làm
+
 - Dùng `w-[375px]` hoặc hardcode width bằng pixel.
 - Dùng `overflow: hidden` bọc toàn trang làm chặn cuộn ngang.
 - Set font size dưới 12px (`text-[10px]`) trên màn hình nhỏ.
