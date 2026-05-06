@@ -18,9 +18,9 @@ export class LessonCompletedEvent extends DomainEvent {
 
   constructor(props: LessonCompletedEventProps) {
     super(props.occurredAt);
-    this.courseId  = props.courseId;
-    this.lessonId  = props.lessonId;
+    this.courseId = props.courseId;
+    this.lessonId = props.lessonId;
     this.studentId = props.studentId;
-    this.score     = props.score;
+    this.score = props.score;
   }
 }

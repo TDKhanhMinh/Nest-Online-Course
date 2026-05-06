@@ -31,7 +31,11 @@ export class CourseMongooseRepository implements ICourseRepository {
 
   async findByIdOrThrow(id: UniqueId): Promise<Course> {
     const course = await this.findById(id);
-    if (!course) throw new DomainException(ErrorCode.COURSE_NOT_FOUND, `Course ${id.value} not found`);
+    if (!course)
+      throw new DomainException(
+        ErrorCode.COURSE_NOT_FOUND,
+        `Course ${id.value} not found`,
+      );
     return course;
   }
 
@@ -40,30 +44,41 @@ export class CourseMongooseRepository implements ICourseRepository {
     return docs.map((d) => this.mapper.toDomain(d as CourseDocument));
   }
 
-  async findAllWithOffset(pageOptionsDto: PageOptionsDto): Promise<PageDto<Course>> {
+  async findAllWithOffset(
+    pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<Course>> {
     const queryBuilder = this.courseModel.find();
-    
-    queryBuilder.sort({ createdAt: pageOptionsDto.order === Order.ASC ? 1 : -1 });
+
+    queryBuilder.sort({
+      createdAt: pageOptionsDto.order === Order.ASC ? 1 : -1,
+    });
     queryBuilder.skip(pageOptionsDto.skip).limit(pageOptionsDto.limit ?? 10);
 
     const itemCount = await this.courseModel.countDocuments();
     const docs = await queryBuilder.lean().exec();
-    
+
     const courses = docs.map((d) => this.mapper.toDomain(d as CourseDocument));
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
-    
+
     return new PageDto(courses, pageMetaDto);
   }
 
-  async findAllWithCursor(cursorOptionsDto: CursorOptionsDto): Promise<CursorPageDto<Course>> {
+  async findAllWithCursor(
+    cursorOptionsDto: CursorOptionsDto,
+  ): Promise<CursorPageDto<Course>> {
     const limit = cursorOptionsDto.limit ?? 10;
     const order = cursorOptionsDto.order === Order.ASC ? 1 : -1;
     let query: Record<string, any> = {};
 
     if (cursorOptionsDto.cursor) {
       // Decode base64 cursor to get _id
-      const cursorDecoded = Buffer.from(cursorOptionsDto.cursor, 'base64').toString('utf8');
-      query = { _id: order === 1 ? { $gt: cursorDecoded } : { $lt: cursorDecoded } };
+      const cursorDecoded = Buffer.from(
+        cursorOptionsDto.cursor,
+        'base64',
+      ).toString('utf8');
+      query = {
+        _id: order === 1 ? { $gt: cursorDecoded } : { $lt: cursorDecoded },
+      };
     }
 
     const docs = await this.courseModel
@@ -80,7 +95,7 @@ export class CourseMongooseRepository implements ICourseRepository {
     }
 
     const courses = docs.map((d) => this.mapper.toDomain(d as CourseDocument));
-    
+
     let nextCursor: string | null = null;
     if (hasNextPage && docs.length > 0) {
       const lastDoc = docs[docs.length - 1];

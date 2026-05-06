@@ -11,16 +11,28 @@ export interface EnrollmentProps {
 }
 
 export class Enrollment extends AggregateRoot<EnrollmentProps> {
-  get studentId(): UniqueId       { return this.props.studentId; }
-  get courseId(): UniqueId        { return this.props.courseId; }
-  get status(): EnrollmentStatus  { return this.props.status; }
-  get enrolledAt(): Date          { return this.props.enrolledAt; }
-  get completedLectureIds(): UniqueId[] { return this.props.completedLectureIds; }
+  get studentId(): UniqueId {
+    return this.props.studentId;
+  }
+  get courseId(): UniqueId {
+    return this.props.courseId;
+  }
+  get status(): EnrollmentStatus {
+    return this.props.status;
+  }
+  get enrolledAt(): Date {
+    return this.props.enrolledAt;
+  }
+  get completedLectureIds(): UniqueId[] {
+    return this.props.completedLectureIds;
+  }
 
-  isActive(): boolean { return this.props.status.isActive(); }
+  isActive(): boolean {
+    return this.props.status.isActive();
+  }
 
   markLectureAsComplete(lectureId: UniqueId): void {
-    if (!this.props.completedLectureIds.some(id => id.equals(lectureId))) {
+    if (!this.props.completedLectureIds.some((id) => id.equals(lectureId))) {
       this.props.completedLectureIds.push(lectureId);
     }
   }
@@ -33,14 +45,18 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
     this.props.status = EnrollmentStatus.cancelled();
   }
 
-  static create(studentId: UniqueId, courseId: UniqueId, id?: UniqueId): Enrollment {
+  static create(
+    studentId: UniqueId,
+    courseId: UniqueId,
+    id?: UniqueId,
+  ): Enrollment {
     return new Enrollment(
-      { 
-        studentId, 
-        courseId, 
-        status: EnrollmentStatus.active(), 
+      {
+        studentId,
+        courseId,
+        status: EnrollmentStatus.active(),
         enrolledAt: new Date(),
-        completedLectureIds: []
+        completedLectureIds: [],
       },
       id ?? UniqueId.generate(),
     );

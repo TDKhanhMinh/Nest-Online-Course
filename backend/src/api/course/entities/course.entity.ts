@@ -21,14 +21,30 @@ export interface CourseProps {
 }
 
 export class Course extends AggregateRoot<CourseProps> {
-  get title(): CourseTitle { return this.props.title; }
-  get subtitle(): string | undefined { return this.props.subtitle; }
-  get description(): string { return this.props.description; }
-  get instructorId(): UniqueId { return this.props.instructorId; }
-  get priceTier(): number { return this.props.priceTier; }
-  get status(): CourseStatus { return this.props.status; }
-  get minPassScore(): QuizScore { return this.props.minPassScore; }
-  get isPublished(): boolean { return this.props.isPublished; }
+  get title(): CourseTitle {
+    return this.props.title;
+  }
+  get subtitle(): string | undefined {
+    return this.props.subtitle;
+  }
+  get description(): string {
+    return this.props.description;
+  }
+  get instructorId(): UniqueId {
+    return this.props.instructorId;
+  }
+  get priceTier(): number {
+    return this.props.priceTier;
+  }
+  get status(): CourseStatus {
+    return this.props.status;
+  }
+  get minPassScore(): QuizScore {
+    return this.props.minPassScore;
+  }
+  get isPublished(): boolean {
+    return this.props.isPublished;
+  }
 
   isEligibleForCertificate(): boolean {
     return false;

@@ -1,7 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { LessonCompletedEvent } from '@/api/course/events/lesson-completed.event';
-import { ICourseRepository, COURSE_REPOSITORY } from '@/common/abstractions/repositories/i-course.repository';
+import {
+  ICourseRepository,
+  COURSE_REPOSITORY,
+} from '@/common/abstractions/repositories/i-course.repository';
 import { CertificateService } from '@/api/certificate/certificate.service';
 
 @Injectable()
@@ -20,7 +23,7 @@ export class OnLessonCompletedHandler {
     if (course.isEligibleForCertificate()) {
       await this.certificateService.issueCertificate({
         studentId: event.studentId.value,
-        courseId:  event.courseId.value,
+        courseId: event.courseId.value,
       });
     }
   }

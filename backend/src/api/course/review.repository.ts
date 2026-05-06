@@ -9,7 +9,8 @@ import { ReviewMapper } from '@/api/course/review.mapper';
 @Injectable()
 export class ReviewRepository implements IReviewRepository {
   constructor(
-    @InjectModel(ReviewDocument.name) private readonly model: Model<ReviewDocument>,
+    @InjectModel(ReviewDocument.name)
+    private readonly model: Model<ReviewDocument>,
     private readonly mapper: ReviewMapper,
   ) {}
 
@@ -19,13 +20,18 @@ export class ReviewRepository implements IReviewRepository {
   }
 
   async findByCourseId(courseId: string): Promise<Review[]> {
-    const docs = await this.model.find({ courseId }).sort({ createdAt: -1 }).exec();
-    return docs.map(doc => this.mapper.toDomain(doc));
+    const docs = await this.model
+      .find({ courseId })
+      .sort({ createdAt: -1 })
+      .exec();
+    return docs.map((doc) => this.mapper.toDomain(doc));
   }
 
   async save(review: Review): Promise<void> {
     const persistence = this.mapper.toPersistence(review);
-    await this.model.findByIdAndUpdate(persistence._id, persistence, { upsert: true }).exec();
+    await this.model
+      .findByIdAndUpdate(persistence._id, persistence, { upsert: true })
+      .exec();
   }
 
   async delete(id: string): Promise<void> {

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Section } from '@/api/course/entities/section.entity';
 import { SectionDocument } from '@/database/schemas/section.schema';
-import { UniqueId } from '@/common/types/unique-id.vo';
 
 @Injectable()
 export class SectionMapper {

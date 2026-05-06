@@ -18,7 +18,12 @@ import { Role } from '@/common/types/role.enum';
 import { CurrentUser, JwtPayload } from '@/decorators/current-user.decorator';
 import { PageOptionsDto } from '@/common/pagination/offset/page-options.dto';
 import { CursorOptionsDto } from '@/common/pagination/cursor/cursor-options.dto';
-import { CreateSectionDto, UpdateSectionDto, CreateLectureDto, UpdateLectureDto } from './dto/course-content.dto';
+import {
+  CreateSectionDto,
+  UpdateSectionDto,
+  CreateLectureDto,
+  UpdateLectureDto,
+} from './dto/course-content.dto';
 import { CreateReviewDto } from './dto/review.dto';
 
 @Controller({
@@ -27,12 +32,13 @@ import { CreateReviewDto } from './dto/review.dto';
 })
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CourseController {
-  constructor(
-    private readonly courseService: CourseService,
-  ) {}
+  constructor(private readonly courseService: CourseService) {}
 
   @Post('reviews')
-  async createReview(@CurrentUser() user: JwtPayload, @Body() dto: CreateReviewDto) {
+  async createReview(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: CreateReviewDto,
+  ) {
     return this.courseService.createReview(user.sub, dto);
   }
 
@@ -45,14 +51,16 @@ export class CourseController {
 
   @Get('offset')
   getCoursesWithOffset(
-    @Query(new ValidationPipe({ transform: true })) pageOptionsDto: PageOptionsDto,
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: PageOptionsDto,
   ) {
     return this.courseService.getAllWithOffset(pageOptionsDto);
   }
 
   @Get('cursor')
   getCoursesWithCursor(
-    @Query(new ValidationPipe({ transform: true })) cursorOptionsDto: CursorOptionsDto,
+    @Query(new ValidationPipe({ transform: true }))
+    cursorOptionsDto: CursorOptionsDto,
   ) {
     return this.courseService.getAllWithCursor(cursorOptionsDto);
   }
@@ -66,13 +74,19 @@ export class CourseController {
 
   @Post(':courseId/sections')
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
-  createSection(@Param('courseId') courseId: string, @Body() dto: CreateSectionDto) {
+  createSection(
+    @Param('courseId') courseId: string,
+    @Body() dto: CreateSectionDto,
+  ) {
     return this.courseService.createSection(courseId, dto);
   }
 
   @Put('sections/:sectionId')
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
-  updateSection(@Param('sectionId') sectionId: string, @Body() dto: UpdateSectionDto) {
+  updateSection(
+    @Param('sectionId') sectionId: string,
+    @Body() dto: UpdateSectionDto,
+  ) {
     return this.courseService.updateSection(sectionId, dto);
   }
 
@@ -84,13 +98,19 @@ export class CourseController {
 
   @Post('sections/:sectionId/lectures')
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
-  createLecture(@Param('sectionId') sectionId: string, @Body() dto: CreateLectureDto) {
+  createLecture(
+    @Param('sectionId') sectionId: string,
+    @Body() dto: CreateLectureDto,
+  ) {
     return this.courseService.createLecture(sectionId, dto);
   }
 
   @Put('lectures/:lectureId')
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
-  updateLecture(@Param('lectureId') lectureId: string, @Body() dto: UpdateLectureDto) {
+  updateLecture(
+    @Param('lectureId') lectureId: string,
+    @Body() dto: UpdateLectureDto,
+  ) {
     return this.courseService.updateLecture(lectureId, dto);
   }
 

@@ -1,8 +1,14 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CourseDocument, CourseSchema } from '@/database/schemas/course.schema';
-import { SectionDocument, SectionSchema } from '@/database/schemas/section.schema';
-import { LectureDocument, LectureSchema } from '@/database/schemas/lecture.schema';
+import {
+  SectionDocument,
+  SectionSchema,
+} from '@/database/schemas/section.schema';
+import {
+  LectureDocument,
+  LectureSchema,
+} from '@/database/schemas/lecture.schema';
 import { ReviewDocument, ReviewSchema } from '@/database/schemas/review.schema';
 import { CourseMongooseRepository } from '@/api/course/course.repository';
 import { SectionRepository } from '@/api/course/section.repository';
@@ -37,10 +43,10 @@ import { CertificateModule } from '@/api/certificate/certificate.module';
   ],
   controllers: [CourseController],
   providers: [
-    { provide: COURSE_REPOSITORY,       useClass: CourseMongooseRepository },
-    { provide: ISectionRepository,      useClass: SectionRepository },
-    { provide: ILectureRepository,      useClass: LectureRepository },
-    { provide: IReviewRepository,       useClass: ReviewRepository },
+    { provide: COURSE_REPOSITORY, useClass: CourseMongooseRepository },
+    { provide: ISectionRepository, useClass: SectionRepository },
+    { provide: ILectureRepository, useClass: LectureRepository },
+    { provide: IReviewRepository, useClass: ReviewRepository },
     { provide: VIDEO_STREAMING_SERVICE, useClass: MuxVideoStreamingAdapter },
     CourseMapper,
     SectionMapper,
@@ -49,6 +55,11 @@ import { CertificateModule } from '@/api/certificate/certificate.module';
     CourseService,
     OnLessonCompletedHandler,
   ],
-  exports: [COURSE_REPOSITORY, ISectionRepository, ILectureRepository, IReviewRepository],
+  exports: [
+    COURSE_REPOSITORY,
+    ISectionRepository,
+    ILectureRepository,
+    IReviewRepository,
+  ],
 })
 export class CourseModule {}

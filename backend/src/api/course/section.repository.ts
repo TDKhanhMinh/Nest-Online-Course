@@ -9,7 +9,8 @@ import { SectionMapper } from '@/api/course/section.mapper';
 @Injectable()
 export class SectionRepository implements ISectionRepository {
   constructor(
-    @InjectModel(SectionDocument.name) private readonly model: Model<SectionDocument>,
+    @InjectModel(SectionDocument.name)
+    private readonly model: Model<SectionDocument>,
     private readonly mapper: SectionMapper,
   ) {}
 
@@ -19,13 +20,18 @@ export class SectionRepository implements ISectionRepository {
   }
 
   async findByCourseId(courseId: string): Promise<Section[]> {
-    const docs = await this.model.find({ courseId }).sort({ orderIndex: 1 }).exec();
-    return docs.map(doc => this.mapper.toDomain(doc));
+    const docs = await this.model
+      .find({ courseId })
+      .sort({ orderIndex: 1 })
+      .exec();
+    return docs.map((doc) => this.mapper.toDomain(doc));
   }
 
   async save(section: Section): Promise<void> {
     const persistence = this.mapper.toPersistence(section);
-    await this.model.findByIdAndUpdate(persistence._id, persistence, { upsert: true }).exec();
+    await this.model
+      .findByIdAndUpdate(persistence._id, persistence, { upsert: true })
+      .exec();
   }
 
   async delete(id: string): Promise<void> {

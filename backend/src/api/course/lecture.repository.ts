@@ -9,7 +9,8 @@ import { LectureMapper } from '@/api/course/lecture.mapper';
 @Injectable()
 export class LectureRepository implements ILectureRepository {
   constructor(
-    @InjectModel(LectureDocument.name) private readonly model: Model<LectureDocument>,
+    @InjectModel(LectureDocument.name)
+    private readonly model: Model<LectureDocument>,
     private readonly mapper: LectureMapper,
   ) {}
 
@@ -19,13 +20,18 @@ export class LectureRepository implements ILectureRepository {
   }
 
   async findBySectionId(sectionId: string): Promise<Lecture[]> {
-    const docs = await this.model.find({ sectionId }).sort({ orderIndex: 1 }).exec();
-    return docs.map(doc => this.mapper.toDomain(doc));
+    const docs = await this.model
+      .find({ sectionId })
+      .sort({ orderIndex: 1 })
+      .exec();
+    return docs.map((doc) => this.mapper.toDomain(doc));
   }
 
   async save(lecture: Lecture): Promise<void> {
     const persistence = this.mapper.toPersistence(lecture);
-    await this.model.findByIdAndUpdate(persistence._id, persistence, { upsert: true }).exec();
+    await this.model
+      .findByIdAndUpdate(persistence._id, persistence, { upsert: true })
+      .exec();
   }
 
   async delete(id: string): Promise<void> {

@@ -11,14 +11,14 @@ export class CourseMapper {
   toDomain(doc: CourseDocument): Course {
     return Course.reconstitute(
       {
-        title:        new CourseTitle(doc.title),
-        subtitle:     doc.subtitle,
-        description:  doc.description,
+        title: new CourseTitle(doc.title),
+        subtitle: doc.subtitle,
+        description: doc.description,
         instructorId: new UniqueId(doc.instructorId),
-        priceTier:    doc.priceTier,
-        status:       doc.status as CourseStatus,
+        priceTier: doc.priceTier,
+        status: doc.status as CourseStatus,
         minPassScore: new QuizScore(doc.minPassScore),
-        isPublished:  doc.isPublished,
+        isPublished: doc.isPublished,
       },
       new UniqueId((doc._id as any).toString()),
     );
@@ -27,15 +27,15 @@ export class CourseMapper {
   /** Domain Aggregate → plain object for Mongoose save */
   toPersistence(domain: Course): any {
     return {
-      _id:         domain.id.value as any,
-      title:       domain.title.value,
-      subtitle:    domain.subtitle,
+      _id: domain.id.value as any,
+      title: domain.title.value,
+      subtitle: domain.subtitle,
       description: domain.description,
       instructorId: domain.instructorId.value,
-      priceTier:    domain.priceTier,
-      status:       domain.status,
+      priceTier: domain.priceTier,
+      status: domain.status,
       minPassScore: domain.minPassScore.value,
-      isPublished:  domain.isPublished,
+      isPublished: domain.isPublished,
     };
   }
 }

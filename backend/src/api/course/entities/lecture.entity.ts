@@ -60,11 +60,17 @@ export class Lecture extends Entity<LectureProps> {
     if (props.isPreview !== undefined) this.props.isPreview = props.isPreview;
   }
 
-  public static create(props: Omit<LectureProps, 'isPreview'> & { isPreview?: boolean }, id?: string): Lecture {
-    return new Lecture({
-      ...props,
-      isPreview: props.isPreview ?? false,
-    }, id ? new UniqueId(id) : UniqueId.generate());
+  public static create(
+    props: Omit<LectureProps, 'isPreview'> & { isPreview?: boolean },
+    id?: string,
+  ): Lecture {
+    return new Lecture(
+      {
+        ...props,
+        isPreview: props.isPreview ?? false,
+      },
+      id ? new UniqueId(id) : UniqueId.generate(),
+    );
   }
 
   public static reconstitute(props: LectureProps, id: string): Lecture {
