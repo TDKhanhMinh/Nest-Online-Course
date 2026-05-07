@@ -2,9 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { DomainExceptionFilter } from '@/filters/domain-exception.filter';
-import { GlobalExceptionFilter } from '@/filters/global-exception.filter';
-import { TransformInterceptor } from '@/interceptors/transform.interceptor';
+import { DomainExceptionFilter } from '@presentation/web/shared/filters/domain-exception.filter';
+import { GlobalExceptionFilter } from '@presentation/web/shared/filters/global-exception.filter';
+import { TransformInterceptor } from '@presentation/web/shared/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -37,3 +37,6 @@ async function bootstrap() {
 }
 
 bootstrap();
+
+
+

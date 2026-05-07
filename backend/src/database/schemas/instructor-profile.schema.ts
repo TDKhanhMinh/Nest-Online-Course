@@ -29,3 +29,6 @@ export class InstructorProfileDocument extends Document {
 }
 
 export const InstructorProfileSchema = SchemaFactory.createForClass(InstructorProfileDocument);
+
+
+

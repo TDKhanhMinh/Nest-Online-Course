@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   IVideoStreamingService,
   VideoUploadResult,
-} from '@/common/abstractions/services/i-video-streaming.service';
+} from '@shared/abstractions/services/i-video-streaming.service';
 
 /**
  * Adapter for Mux video platform.
@@ -30,3 +30,6 @@ export class MuxVideoStreamingAdapter implements IVideoStreamingService {
     this.logger.log(`[Mux] Deleting video asset: ${assetId}`);
   }
 }
+
+
+

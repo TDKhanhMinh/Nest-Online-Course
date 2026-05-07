@@ -13,3 +13,6 @@ export class WishlistDocument extends Document {
 export const WishlistSchema = SchemaFactory.createForClass(WishlistDocument);
 
 WishlistSchema.index({ userId: 1, courseId: 1 }, { unique: true });
+
+
+

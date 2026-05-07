@@ -14,7 +14,13 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@domain/*": ["src/core/domain/*"],
+      "@application/*": ["src/core/application/*"],
+      "@shared/*": ["src/core/shared/*"],
+      "@infra/*": ["src/infrastructure/*"],
+      "@presentation/*": ["src/presentation/*"],
+      "@/common/*": ["src/core/shared/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

@@ -14,8 +14,14 @@ export class LessonProgressDocument extends Document {
 
   @Prop({ type: Date, default: null })
   completedAt?: Date;
+
+  @Prop({ type: Date, default: Date.now })
+  lastAccessedAt: Date;
 }
 
 export const LessonProgressSchema = SchemaFactory.createForClass(LessonProgressDocument);
 
 LessonProgressSchema.index({ enrollmentId: 1, lessonId: 1 }, { unique: true });
+
+
+

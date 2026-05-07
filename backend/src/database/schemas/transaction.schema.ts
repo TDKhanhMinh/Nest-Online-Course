@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema, Types } from 'mongoose';
-import { TransactionStatus } from '@/common/types/transaction-status.enum';
+import { TransactionStatus } from '@shared/types/transaction-status.enum';
 
 @Schema({ timestamps: true })
 export class TransactionDocument extends Document {
@@ -24,3 +24,6 @@ export class TransactionDocument extends Document {
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(TransactionDocument);
+
+
+

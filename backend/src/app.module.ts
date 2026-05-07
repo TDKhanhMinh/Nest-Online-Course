@@ -1,18 +1,19 @@
-import { AuthModule } from '@/api/auth/auth.module';
-import { CartModule } from '@/api/cart/cart.module';
-import { CertificateModule } from '@/api/certificate/certificate.module';
-import { CourseModule } from '@/api/course/course.module';
-import { EnrollmentModule } from '@/api/enrollment/enrollment.module';
-import { OrderModule } from '@/api/order/order.module';
-import { StudentFeaturesModule } from '@/api/student-features/student-features.module';
-import { UserModule } from '@/api/user/user.module';
-import databaseConfig from '@/database/config/database.config';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { JwtModule } from '@nestjs/jwt';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import databaseConfig from '@/database/config/database.config';
+import { InfrastructureModule } from '@/infrastructure/infrastructure.module';
+import { AuthWebModule } from '@presentation/web/controllers/auth/auth.web.module';
+import { CartWebModule } from '@presentation/web/controllers/cart/cart.web.module';
+import { CertificateWebModule } from '@presentation/web/controllers/certificate/certificate.web.module';
+import { CourseWebModule } from '@presentation/web/controllers/course/course.web.module';
+import { EnrollmentWebModule } from '@presentation/web/controllers/enrollment/enrollment.web.module';
+import { OrderWebModule } from '@presentation/web/controllers/order/order.web.module';
+import { StudentFeaturesWebModule } from '@presentation/web/controllers/student-features/student-features.web.module';
+import { UserWebModule } from '@presentation/web/controllers/user/user.web.module';
+
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -21,7 +22,6 @@ import { ScheduleModule } from '@nestjs/schedule';
       load: [databaseConfig],
     }),
 
-    // ── MongoDB via Mongoose ──────────────────────────────────────────────────
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -29,26 +29,22 @@ import { ScheduleModule } from '@nestjs/schedule';
       }),
     }),
 
+    InfrastructureModule,
+
     EventEmitterModule.forRoot({ wildcard: false }),
     ScheduleModule.forRoot(),
 
-    JwtModule.registerAsync({
-      global: true,
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET', 'dev-secret'),
-        signOptions: { expiresIn: '7d' },
-      }),
-    }),
-
-    CourseModule,
-    EnrollmentModule,
-    CertificateModule,
-    UserModule,
-    AuthModule,
-    OrderModule,
-    CartModule,
-    StudentFeaturesModule,
+    CourseWebModule,
+    EnrollmentWebModule,
+    CertificateWebModule,
+    UserWebModule,
+    AuthWebModule,
+    OrderWebModule,
+    CartWebModule,
+    StudentFeaturesWebModule,
   ],
 })
 export class AppModule { }
+
+
+

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IEmailNotificationService } from '@/common/abstractions/services/i-email-notification.service';
+import { IEmailNotificationService } from '@shared/abstractions/services/i-email-notification.service';
 
 /**
  * AWS SES adapter implementing IEmailNotificationService.
@@ -19,3 +19,6 @@ export class SesEmailNotificationAdapter implements IEmailNotificationService {
     // TODO: ses.sendEmail({ ... })
   }
 }
+
+
+

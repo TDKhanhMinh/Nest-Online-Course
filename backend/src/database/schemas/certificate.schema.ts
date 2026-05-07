@@ -23,3 +23,6 @@ export const CertificateSchema: MongooseSchema = SchemaFactory.createForClass(Ce
 
 // Compound index ngăn cấp chứng chỉ trùng
 CertificateSchema.index({ studentId: 1, courseId: 1 }, { unique: true });
+
+
+

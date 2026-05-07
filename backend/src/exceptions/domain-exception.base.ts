@@ -9,3 +9,6 @@ export class DomainException extends Error {
     this.name = 'DomainException';
   }
 }
+
+
+

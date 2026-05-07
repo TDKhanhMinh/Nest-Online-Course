@@ -1,11 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 
-export enum OrderStatus {
-  PENDING = 'PENDING',
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
-}
+import { OrderStatus } from '@shared/types/order-status.enum';
 
 @Schema({ timestamps: true })
 export class OrderDocument extends Document {
@@ -20,3 +16,6 @@ export class OrderDocument extends Document {
 }
 
 export const OrderSchema = SchemaFactory.createForClass(OrderDocument);
+
+
+

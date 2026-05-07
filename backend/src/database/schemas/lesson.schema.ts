@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { LessonType } from '@/common/types/lesson-type.enum';
+import { LessonType } from '@shared/types/lesson-type.enum';
 
 @Schema({ timestamps: true })
 export class LessonDocument extends Document {
@@ -30,3 +30,6 @@ export class LessonDocument extends Document {
 }
 
 export const LessonSchema = SchemaFactory.createForClass(LessonDocument);
+
+
+
