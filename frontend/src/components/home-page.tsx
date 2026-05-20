@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Course, CourseLevel } from "@/features/course/domain/course.types";
+import { CourseLevel } from "@/features/course/domain/course.types";
 import { CourseCard } from "@/features/course/presentation/components/course-card";
 import { useRouter } from "@/i18n/navigation";
 import {
@@ -73,7 +73,7 @@ export default function HomePage() {
     { icon: "💼", name: t("categories.business"), count: 89, key: "Business" },
   ];
 
-  const featuredCourses: Course[] = [
+  const featuredCourses: any[] = [
     {
       id: "react-1",
       title: t("course_data.react.title"),

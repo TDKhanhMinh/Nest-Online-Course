@@ -12,6 +12,7 @@ import { EnrollmentWebModule } from '@presentation/web/controllers/enrollment/en
 import { OrderWebModule } from '@presentation/web/controllers/order/order.web.module';
 import { StudentFeaturesWebModule } from '@presentation/web/controllers/student-features/student-features.web.module';
 import { UserWebModule } from '@presentation/web/controllers/user/user.web.module';
+import { UploadWebModule } from '@presentation/web/controllers/upload/upload.web.module';
 
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -42,6 +43,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     OrderWebModule,
     CartWebModule,
     StudentFeaturesWebModule,
+    UploadWebModule,
   ],
 })
 export class AppModule { }

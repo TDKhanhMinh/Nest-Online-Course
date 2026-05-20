@@ -172,6 +172,18 @@ export const courseApi = {
   deleteLesson: async (courseId: string, lessonId: string): Promise<void> => {
     await api.delete(`/courses/${courseId}/lessons/${lessonId}`);
   },
+
+  uploadVideo: async (file: File): Promise<{ assetId: string; playbackUrl: string }> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.post("/upload/video", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 120000,
+    });
+    return response.data;
+  },
 };
 
 

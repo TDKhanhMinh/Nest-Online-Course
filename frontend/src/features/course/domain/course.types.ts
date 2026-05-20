@@ -50,6 +50,7 @@ export interface Lesson {
   isPreview: boolean;
   createdAt: string;
   updatedAt: string;
+  contentUrl?: string;
 }
 
 export interface Section {

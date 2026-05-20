@@ -1,8 +1,8 @@
-import { Course } from "@/features/course/domain/course.types";
+import { Course, CourseLevel } from "@/features/course/domain/course.types";
 import { CourseDetailView } from "@/features/course/presentation/components/course-detail-view";
 import { notFound } from "next/navigation";
 
-const MOCK_COURSES: Course[] = [
+const MOCK_COURSES: any[] = [
   {
     id: "react-1",
     title: "React & Next.js 14 — Complete from Zero to Hero",
@@ -17,7 +17,7 @@ const MOCK_COURSES: Course[] = [
     duration: 42,
     lessons: 186,
     students: 12400,
-    level: "intermediate",
+    level: CourseLevel.INTERMEDIATE,
     isBestseller: true,
   },
   {
@@ -34,7 +34,7 @@ const MOCK_COURSES: Course[] = [
     duration: 28,
     lessons: 124,
     students: 8700,
-    level: "advanced",
+    level: CourseLevel.ADVANCED,
     isNew: true,
   },
   {
@@ -51,7 +51,7 @@ const MOCK_COURSES: Course[] = [
     duration: 36,
     lessons: 158,
     students: 5200,
-    level: "beginner",
+    level: CourseLevel.BEGINNER,
     isHot: true,
   },
 ];

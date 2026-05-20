@@ -38,6 +38,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { courseApi } from "@/features/course/infrastructure/course.api";
 import { CourseSettingsForm } from "@/features/course/presentation/components/course-settings-form";
 import { useCourseCurriculum } from "@/features/course/presentation/hooks/use-course-curriculum";
 import { useCourseDetail } from "@/features/course/presentation/hooks/use-course-detail";
@@ -52,6 +53,7 @@ import {
   FileUp,
   GripVertical,
   HelpCircle,
+  Loader2,
   MoreVertical,
   Plus,
   Rocket,
@@ -62,7 +64,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -92,8 +94,6 @@ const InstructorCourseBuilderView = () => {
 
   const { data: course, isLoading: isLoadingCourse, isError: isErrorCourse } = useCourseDetail(courseId);
   const { data: curriculum, isLoading: isLoadingCurriculum } = useCourseCurriculum(courseId);
-  console.log("Copuser", course);
-
   const { createSection, updateSection, deleteSection } = useSectionMutations(courseId);
   const { createLesson, updateLesson, deleteLesson } = useLessonMutations(courseId);
 
@@ -193,6 +193,8 @@ const InstructorCourseBuilderView = () => {
   const activeLesson = sections
     .flatMap(s => s.lessons)
     .find(l => l.id === activeLessonId);
+  console.log("activeLesson", activeLesson);
+  console.log("sectionnn", sections);
 
   const activeSection = sections.find(s => s.id === activeSectionId);
 
@@ -632,6 +634,10 @@ interface LessonEditorProps {
 
 const LessonEditor = ({ lesson, onUpdate, isUpdating, sections }: LessonEditorProps) => {
   const t = useTranslations("CourseBuilder");
+  console.log("lessonn", lesson);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<LessonFormValues>({
     resolver: zodResolver(lessonSchema),
@@ -639,10 +645,45 @@ const LessonEditor = ({ lesson, onUpdate, isUpdating, sections }: LessonEditorPr
       title: lesson.title || "",
       type: lesson.type || "text",
       content: lesson.content || "",
-      video_url: lesson.videoUrl || "",
+      video_url: lesson.videoUrl || lesson.contentUrl || "",
       is_preview: lesson.isPreview ?? false,
     },
   });
+  const previewUrl = lesson?.contentUrl || form.watch("video_url");
+  const handleVideoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("video/")) {
+      toast.error("Please select a valid video file.");
+      return;
+    }
+    if (file.size > 1024 * 1024 * 1024 * 200) {
+      toast.error("Video size must be less than 200MB.");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      setUploadError(null);
+      const result = await courseApi.uploadVideo(file);
+      form.setValue("video_url", result.playbackUrl, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      toast.success("Video uploaded successfully!");
+    } catch (error: any) {
+      console.error("Error uploading video:", error);
+      const errMsg = error?.response?.data?.message || "Failed to upload video. Please try again.";
+      setUploadError(errMsg);
+      toast.error(errMsg);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
 
   return (
@@ -731,21 +772,81 @@ const LessonEditor = ({ lesson, onUpdate, isUpdating, sections }: LessonEditorPr
                   <FormItem>
                     <FormLabel>Video URL</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="https://..." />
+                      <Input {...field} placeholder="https://..." disabled={isUploading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="border-2 border-dashed rounded-xl p-12 text-center space-y-4 hover:border-primary/50 transition-colors cursor-pointer group">
-                <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <FileUp className="h-6 w-6 text-primary" />
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="video/*"
+                onChange={handleVideoFileChange}
+                disabled={isUploading}
+              />
+
+              {isUploading ? (
+                <div className="border-2 border-dashed border-primary rounded-xl p-12 text-center space-y-4 bg-primary/5 animate-pulse">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Loader2 className="h-6 w-6 text-primary animate-spin" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-semibold text-primary">Uploading Video...</p>
+                    <p className="text-xs text-muted-foreground">This may take a moment depending on the file size.</p>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <p className="font-medium">{t("lesson.upload_video")}</p>
-                  <p className="text-sm text-muted-foreground">MP4, MOV, WEBM (Max 2GB)</p>
+              ) : previewUrl ? (
+                <div className="space-y-4">
+                  <Label>Video Preview</Label>
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-border">
+                    <video
+                      key={previewUrl}
+                      src={previewUrl}
+                      controls
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground truncate max-w-[70%]">
+                      {lesson?.contentUrl ? (
+                        <span className="text-green-600 font-medium">✓ Video đã được xử lý</span>
+                      ) : (
+                        `Playback URL: ${previewUrl}`
+                      )}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <FileUp className="h-4 w-4 mr-2" />
+                      Change Video
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                // ✅ Chưa có video nào
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed rounded-xl p-12 text-center space-y-4 hover:border-primary/50 transition-colors cursor-pointer group"
+                >
+                  <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <FileUp className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-medium">{t("lesson.upload_video")}</p>
+                    <p className="text-sm text-muted-foreground">MP4, MOV, WEBM (Max 2GB)</p>
+                  </div>
+                </div>
+              )}
+
+              {uploadError && (
+                <p className="text-sm font-medium text-destructive mt-2">{uploadError}</p>
+              )}
             </div>
           )}
 

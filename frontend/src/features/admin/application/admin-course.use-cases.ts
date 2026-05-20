@@ -1,10 +1,9 @@
-import { 
-  adminCourseApi, 
-  AdminCourseDTO, 
-  AdminCourseQuery, 
-  PaginatedAdminCourses as PaginatedAdminCoursesDTO 
-} from "../infrastructure/admin-course.api";
 import { Course, CourseStatus } from "@/features/course/domain/course.types";
+import {
+  adminCourseApi,
+  AdminCourseDTO,
+  AdminCourseQuery
+} from "../infrastructure/admin-course.api";
 
 export interface Pagination {
   itemCount: number;
@@ -39,14 +38,13 @@ export class GetAdminCoursesUseCase {
       title: dto.title,
       slug: dto.slug,
       description: dto.description,
-      shortDescription: "", // Not returned in Admin DTO for now
       price: dto.price,
       level: dto.level,
       status: dto.status,
       thumbnailUrl: dto.thumbnailUrl,
       instructorId: dto.instructorId,
       categoryId: dto.categoryId,
-      category: "", // Will be populated if needed
+      // category: "", // Will be populated if needed
       language: dto.language,
       avgRating: 0,
       totalReviews: 0,

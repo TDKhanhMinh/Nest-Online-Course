@@ -93,7 +93,7 @@ const InstructorCoursesView = () => {
   // @ts-ignore
   const courses = res?.courses.data || [];
   // @ts-ignore
-  const meta = res?.courses.meta;
+  const meta = res?.courses.pagination;
   console.log("courses", courses)
 
   useEffect(() => {

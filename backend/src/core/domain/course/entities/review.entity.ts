@@ -1,7 +1,7 @@
-import { Entity } from '@shared/abstractions/aggregate-root.base';
-import { UniqueId } from '@shared/types/unique-id.vo';
 import { DomainException } from '@/exceptions/domain-exception.base';
 import { ErrorCode } from '@/exceptions/error-codes.enum';
+import { Entity } from '@shared/abstractions/aggregate-root.base';
+import { UniqueId } from '@shared/types/unique-id.vo';
 
 export interface ReviewProps {
   studentId: UniqueId;
