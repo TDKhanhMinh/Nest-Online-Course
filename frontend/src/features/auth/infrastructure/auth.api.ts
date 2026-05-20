@@ -42,15 +42,15 @@ export interface RegisterInstructorDTO extends RegisterDTO {
 
 export const authApi = {
   login: async (data: LoginDTO): Promise<AuthResponse> => {
-    const response = await api.post("/v1/auth/login", data);
+    const response = await api.post("/auth/login", data);
     return response.data;
   },
   register: async (data: RegisterDTO): Promise<AuthResponse> => {
-    const response = await api.post("/v1/auth/register", data);
+    const response = await api.post("/auth/register", data);
     return response.data;
   },
   registerInstructor: async (data: RegisterInstructorDTO): Promise<AuthResponse> => {
-    const response = await api.post("/v1/auth/register-instructor", data);
+    const response = await api.post("/auth/register-instructor", data);
     return response.data;
   },
 };

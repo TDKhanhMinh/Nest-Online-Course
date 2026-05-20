@@ -755,6 +755,17 @@
       "title": "Yêu cầu hỗ trợ",
       "unanswered": "Chưa trả lời",
       "view_all": "Xem tất cả yêu cầu"
+    },
+    "performance_overview": "Tổng quan hiệu suất",
+    "performance_subtitle": "Theo dõi hiệu suất khóa học theo thời gian",
+    "sidebar": {
+      "dashboard": "Bảng điều khiển",
+      "my_courses": "Khóa học của tôi",
+      "question_bank": "Ngân hàng câu hỏi",
+      "quizzes": "Bài kiểm tra",
+      "settings": "Cài đặt",
+      "communications": "Trao đổi",
+      "payouts": "Thanh toán"
     }
   },
   "InstructorSettings": {
@@ -792,10 +803,16 @@
     },
     "table": {
       "course": "Khóa học",
+      "level":"Trình độ",
       "students": "Học viên",
-      "revenue": "Doanh thu",
+      "price": "Giá",
       "status": "Trạng thái",
-      "actions": "Hành động"
+      "actions": "Hành động",
+      "published": "Đã xuất bản",
+      "closed": "Đã đóng",
+      "all": "Tất cả",
+      "active": "Hoạt động",
+      "finished": "Kết thúc"
     },
     "status": {
       "active": "Hoạt động",
@@ -821,7 +838,16 @@
       "total": "Tổng"
     },
     "empty": "Bạn chưa tạo khóa học nào.",
-    "search_placeholder": "Tìm kiếm khóa học..."
+    "search_placeholder": "Tìm kiếm khóa học...",
+    "pagination": {
+      "showing": "Hiển thị {start} đến {end} trong tổng số {total} khóa học",
+      "previous": "Trước",
+      "next": "Tiếp"
+    },
+    "delete_title": "Xóa khóa học",
+    "delete_description": "Bạn có chắc chắn muốn xóa khóa học này? Hành động này không thể hoàn tác.",
+    "deleting": "Đang xóa...",
+    "cancel": "Hủy"
   },
   "CourseBuilder": {
     "title": "Trình xây dựng khóa học",
@@ -831,10 +857,13 @@
     "sections": {
       "title": "Chương trình học",
       "add_section": "Thêm chương",
+      "add_section_description": "Cung cấp tiêu đề cho chương này để tổ chức chương trình học của bạn.",
       "section_name": "Tên chương",
       "section_placeholder": "v.d., Giới thiệu về React",
       "add_lesson": "Thêm bài học",
-      "empty": "Chưa có nội dung nào. Hãy bắt đầu bằng cách thêm chương đầu tiên."
+      "empty": "Chưa có nội dung nào. Hãy bắt đầu bằng cách thêm chương đầu tiên.",
+      "delete_title": "Xóa chương",
+      "delete_description": "Bạn có chắc chắn muốn xóa chương này cùng với tất cả bài giảng bên trong? Hành động này không thể hoàn tác."
     },
     "lesson": {
       "title": "Chi tiết bài học",
@@ -850,7 +879,9 @@
       "upload_doc": "Tải lên tài liệu",
       "prerequisite": "Bài học tiên quyết",
       "prerequisite_hint": "Học viên phải hoàn thành bài này trước",
-      "badge": "BÀI GIẢNG"
+      "badge": "BÀI GIẢNG",
+      "delete_title": "Xóa bài học",
+      "delete_description": "Bạn có chắc chắn muốn xóa bài học này? Hành động này không thể hoàn tác."
     },
     "saving": "Đang lưu thay đổi...",
     "saved": "Tất cả thay đổi đã được lưu",
@@ -858,7 +889,12 @@
     "welcome_title": "Chào mừng đến với Trình xây dựng khóa học",
     "welcome_description": "Chọn một phần hoặc bài giảng từ thanh bên để bắt đầu chỉnh sửa nội dung, hoặc thêm nội dung mới để phát triển khóa học của bạn.",
     "section_badge": "PHẦN",
-    "edit_section": "Chỉnh sửa phần"
+    "edit_section": "Chỉnh sửa phần",
+    "cancel": "Hủy",
+    "create": "Tạo",
+    "creating": "Đang tạo...",
+    "delete": "Xóa",
+    "deleting": "Đang xóa..."
   },
   "QuestionBank": {
     "title": "Ngân hàng câu hỏi",
@@ -930,9 +966,7 @@
     "overview_desc": "Kiểm tra lần cuối trước khi lưu",
     "validation_summary": "Tóm tắt kiểm tra",
     "save_quiz": "Lưu bài kiểm tra",
-    "preview": "Xem trước"
-  }
-}
+    "preview": "Xem trước",
     "stat_minutes": "Phút",
     "stat_pass_score": "Điểm đạt",
     "ready_title": "Sẵn sàng xuất bản?",

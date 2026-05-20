@@ -1,18 +1,18 @@
+import { CourseDocument } from '@/database/schemas/course.schema';
+import { Course } from '@domain/course/entities/course.entity';
+import { ICourseRepository } from '@domain/course/ports/i-course.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Course } from '@domain/course/entities/course.entity';
-import { CourseDocument } from '@/database/schemas/course.schema';
-import { ICourseRepository } from '@domain/course/ports/i-course.repository';
-import { CourseMapper } from '../mappers/course.mapper';
-import { UniqueId } from '@shared/types/unique-id.vo';
-import { PageOptionsDto } from '@shared/pagination/offset/page-options.dto';
-import { PageDto } from '@shared/pagination/offset/page.dto';
-import { PageMetaDto } from '@shared/pagination/offset/page-meta.dto';
+import { CursorMetaDto } from '@shared/pagination/cursor/cursor-meta.dto';
 import { CursorOptionsDto } from '@shared/pagination/cursor/cursor-options.dto';
 import { CursorPageDto } from '@shared/pagination/cursor/cursor-page.dto';
-import { CursorMetaDto } from '@shared/pagination/cursor/cursor-meta.dto';
+import { PageMetaDto } from '@shared/pagination/offset/page-meta.dto';
+import { PageOptionsDto } from '@shared/pagination/offset/page-options.dto';
+import { PageDto } from '@shared/pagination/offset/page.dto';
 import { Order } from '@shared/pagination/order.enum';
+import { UniqueId } from '@shared/types/unique-id.vo';
+import { Model } from 'mongoose';
+import { CourseMapper } from '../mappers/course.mapper';
 
 @Injectable()
 export class MongooseCourseRepository implements ICourseRepository {
@@ -51,17 +51,25 @@ export class MongooseCourseRepository implements ICourseRepository {
   }
 
   async findAllWithOffset(pageOptionsDto: PageOptionsDto): Promise<PageDto<Course>> {
-    const query = this.courseModel.find();
+    const query: any = {};
+    
+    if (pageOptionsDto.search) {
+      query.$or = [
+        { title: { $regex: pageOptionsDto.search, $options: 'i' } },
+        { description: { $regex: pageOptionsDto.search, $options: 'i' } },
+      ];
+    }
+
     const limit = pageOptionsDto.limit ?? 10;
     const skip = pageOptionsDto.skip ?? 0;
     
     const [docs, total] = await Promise.all([
-      query
+      this.courseModel.find(query)
         .sort({ createdAt: pageOptionsDto.order === 'ASC' ? 1 : -1 })
         .skip(skip)
         .limit(limit)
         .exec(),
-      this.courseModel.countDocuments().exec(),
+      this.courseModel.countDocuments(query).exec(),
     ]);
 
     const courses = docs.map((doc) => CourseMapper.toDomain(doc));
@@ -74,6 +82,13 @@ export class MongooseCourseRepository implements ICourseRepository {
     const limit = cursorOptionsDto.limit ?? 10;
     const order = cursorOptionsDto.order === Order.ASC ? 1 : -1;
     const query: any = {};
+
+    if (cursorOptionsDto.search) {
+      query.$or = [
+        { title: { $regex: cursorOptionsDto.search, $options: 'i' } },
+        { description: { $regex: cursorOptionsDto.search, $options: 'i' } },
+      ];
+    }
 
     if (cursorOptionsDto.cursor) {
       query._id = cursorOptionsDto.order === Order.ASC 
@@ -99,15 +114,27 @@ export class MongooseCourseRepository implements ICourseRepository {
     }));
   }
 
-  async findByInstructorId(instructorId: string, pageOptionsDto: PageOptionsDto): Promise<PageDto<Course>> {
-    const query = { instructorId };
-    const limit = pageOptionsDto.limit ?? 10;
-    const skip = pageOptionsDto.skip ?? 0;
+  async findByInstructorId(instructorId: string, queryDto: any): Promise<PageDto<Course>> {
+    const query: any = { instructorId };
+    
+    if (queryDto.status) {
+      query.status = queryDto.status;
+    }
+    
+    if (queryDto.search) {
+      query.$or = [
+        { title: { $regex: queryDto.search, $options: 'i' } },
+        { description: { $regex: queryDto.search, $options: 'i' } },
+      ];
+    }
+
+    const limit = queryDto.limit ?? 10;
+    const skip = queryDto.skip ?? 0;
 
     const [docs, total] = await Promise.all([
       this.courseModel
         .find(query)
-        .sort({ createdAt: pageOptionsDto.order === 'ASC' ? 1 : -1 })
+        .sort({ createdAt: queryDto.order === 'ASC' ? 1 : -1 })
         .skip(skip)
         .limit(limit)
         .exec(),
@@ -115,13 +142,51 @@ export class MongooseCourseRepository implements ICourseRepository {
     ]);
 
     const courses = docs.map((doc) => CourseMapper.toDomain(doc));
-    const pageMetaDto = new PageMetaDto({ itemCount: total, pageOptionsDto });
+    const pageMetaDto = new PageMetaDto({ itemCount: total, pageOptionsDto: queryDto });
 
     return new PageDto(courses, pageMetaDto);
   }
 
-  async findAdminCourses(pageOptionsDto: any): Promise<PageDto<Course>> {
-    return this.findAllWithOffset(pageOptionsDto);
+  async findAdminCourses(queryDto: any): Promise<PageDto<Course>> {
+    const query: any = {};
+    
+    if (queryDto.status) {
+      query.status = queryDto.status;
+    }
+    
+    if (queryDto.categoryId) {
+      query.categoryId = queryDto.categoryId;
+    }
+    
+    if (queryDto.instructorId) {
+      query.instructorId = queryDto.instructorId;
+    }
+    
+    if (queryDto.search) {
+      query.$or = [
+        { title: { $regex: queryDto.search, $options: 'i' } },
+        { description: { $regex: queryDto.search, $options: 'i' } },
+      ];
+    }
+
+    const limit = queryDto.limit ?? 10;
+    const skip = queryDto.skip ?? 0;
+
+    const [docs, total] = await Promise.all([
+      this.courseModel
+        .find(query)
+        .sort({ createdAt: queryDto.order === 'ASC' ? 1 : -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.courseModel.countDocuments(query).exec(),
+    ]);
+
+    const courses = docs.map((doc) => CourseMapper.toDomain(doc));
+    
+    const pageMetaDto = new PageMetaDto({ itemCount: total, pageOptionsDto: queryDto });
+
+    return new PageDto(courses, pageMetaDto);
   }
 
   async save(course: Course): Promise<void> {
@@ -129,7 +194,7 @@ export class MongooseCourseRepository implements ICourseRepository {
     await this.courseModel
       .findByIdAndUpdate(course.id.value, persistenceData, {
         upsert: true,
-        new: true,
+        returnDocument: 'after',
       })
       .exec();
   }
@@ -138,4 +203,3 @@ export class MongooseCourseRepository implements ICourseRepository {
     await this.courseModel.findByIdAndDelete(id.value).exec();
   }
 }
-

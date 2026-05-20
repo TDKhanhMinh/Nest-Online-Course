@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
 import { LessonType } from '@shared/types/lesson-type.enum';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class LessonDocument extends Document {
@@ -10,7 +10,7 @@ export class LessonDocument extends Document {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true, enum: LessonType })
+  @Prop({ required: true, type: String, enum: LessonType })
   type: LessonType;
 
   @Prop()

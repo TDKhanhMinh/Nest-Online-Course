@@ -20,11 +20,15 @@ export class Category extends Entity<CategoryProps> {
     return this.props.parentId;
   }
 
-  public update(props: Partial<CategoryProps>): void {
+  public update(props: { name?: string; slug?: string; parentId?: UniqueId | null }): void {
     if (props.name !== undefined) this.props.name = props.name;
     if (props.slug !== undefined) this.props.slug = props.slug;
-    if (props.parentId !== undefined) this.props.parentId = props.parentId;
+    if (props.parentId !== undefined) {
+      this.props.parentId = props.parentId === null ? undefined : props.parentId;
+    }
   }
+
+
 
   public static create(props: CategoryProps, id?: UniqueId): Category {
     return new Category(

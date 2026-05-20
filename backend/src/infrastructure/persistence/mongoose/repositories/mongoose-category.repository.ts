@@ -30,6 +30,19 @@ export class MongooseCategoryRepository implements ICategoryRepository {
     return docs.map((doc) => CategoryMapper.toDomain(doc));
   }
 
+  async findWithOffset(options: { page: number; limit: number }): Promise<{ items: Category[]; total: number }> {
+    const skip = (options.page - 1) * options.limit;
+    const [docs, total] = await Promise.all([
+      this.categoryModel.find().sort({ name: 1 }).skip(skip).limit(options.limit).exec(),
+      this.categoryModel.countDocuments().exec(),
+    ]);
+
+    return {
+      items: docs.map((doc) => CategoryMapper.toDomain(doc)),
+      total,
+    };
+  }
+
   async save(category: Category): Promise<void> {
     const persistenceData = CategoryMapper.toPersistence(category);
     await this.categoryModel

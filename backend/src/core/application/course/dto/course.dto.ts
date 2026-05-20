@@ -1,6 +1,6 @@
-import { IsString, IsNumber, IsOptional, IsEnum, IsUrl, MinLength } from 'class-validator';
 import { CourseLevel } from '@shared/types/course-level.enum';
 import { CourseStatus } from '@shared/types/course-status.enum';
+import { IsEnum, IsNumber, IsOptional, IsString, IsUrl, MinLength } from 'class-validator';
 
 export class CreateCourseDto {
   @IsString()

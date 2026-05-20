@@ -1,10 +1,11 @@
-import { NestFactory } from '@nestjs/core';
+import { createAdminIfNotExist } from '@/database/seeding/admin-seeding';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 import { DomainExceptionFilter } from '@presentation/web/shared/filters/domain-exception.filter';
 import { GlobalExceptionFilter } from '@presentation/web/shared/filters/global-exception.filter';
 import { TransformInterceptor } from '@presentation/web/shared/interceptors/transform.interceptor';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,6 +31,9 @@ async function bootstrap() {
   );
 
   app.enableCors();
+
+  // Run database seeder for admin user
+  await createAdminIfNotExist(app);
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);

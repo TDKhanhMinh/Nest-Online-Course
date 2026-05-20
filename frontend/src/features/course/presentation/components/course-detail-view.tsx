@@ -63,7 +63,7 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
             <div className="flex items-center gap-2 text-sm text-slate-400">
               <span>{t("tabs.overview")}</span>
               <ChevronRight className="h-3 w-3" />
-              <span className="text-brand-amber">{course.category}</span>
+              <span className="text-brand-amber">{course.categoryName || course.categoryId}</span>
             </div>
 
             <h1 className="font-sora text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight">
@@ -78,23 +78,23 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
               <div className="flex items-center gap-1.5">
                 <div className="flex text-amber-400">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4" fill={i < Math.floor(course.rating) ? "currentColor" : "none"} />
+                    <Star key={i} className="h-4 w-4" fill={i < Math.floor(course.avgRating) ? "currentColor" : "none"} />
                   ))}
                 </div>
-                <span className="font-bold text-amber-400">{course.rating}</span>
-                <span className="text-slate-400">({course.reviewCount.toLocaleString()} reviews)</span>
+                <span className="font-bold text-amber-400">{course.avgRating}</span>
+                <span className="text-slate-400">({course.totalReviews.toLocaleString()} reviews)</span>
               </div>
               <div className="text-slate-300">
-                Created by <span className="text-brand-amber font-semibold underline underline-offset-4 cursor-pointer">{course.author}</span>
+                Created by <span className="text-brand-amber font-semibold underline underline-offset-4 cursor-pointer">{course.instructorName || "Instructor"}</span>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-6 text-sm text-slate-300">
               <span className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" /> {t("hero.last_updated")} 12/2023
+                <Calendar className="h-4 w-4" /> {t("hero.last_updated")} {new Date(course.updatedAt).toLocaleDateString()}
               </span>
               <span className="flex items-center gap-2">
-                <Globe className="h-4 w-4" /> {t("hero.language")}
+                <Globe className="h-4 w-4" /> {course.language}
               </span>
             </div>
           </div>
@@ -110,7 +110,9 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
             
             {/* Mobile Video Preview (Only on mobile/tablet) */}
             <div className="lg:hidden relative aspect-video rounded-xl overflow-hidden border border-brand-border bg-black mb-8">
-               <Image src={course.thumbnail} alt="Preview" fill className="object-cover opacity-60" />
+               {course.thumbnailUrl && (
+                 <Image src={course.thumbnailUrl} alt="Preview" fill className="object-cover opacity-60" />
+               )}
                <div className="absolute inset-0 flex items-center justify-center">
                   <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center text-slate-900 pl-1 shadow-2xl">
                     <Play className="h-8 w-8 fill-current" />
@@ -164,29 +166,34 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
                     <li>Passion for learning and building real-world projects.</li>
                   </ul>
                   <h3 className="font-sora text-xl font-bold mt-8 mb-4">{t("overview.description")}</h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    This course is built based on years of industry experience. You will not only learn the syntax but also the mindset of a professional developer. We cover everything from the basic setup to advanced optimization techniques.
-                  </p>
+                  <div 
+                    className="text-slate-600 dark:text-slate-400"
+                    dangerouslySetInnerHTML={{ __html: course.description }}
+                  />
                 </TabsContent>
 
                 <TabsContent value="instructor" className="mt-0">
                    <div className="flex flex-col sm:flex-row gap-6 items-start">
                       <Avatar className="h-24 w-24 border-2 border-brand-amber">
                         <AvatarImage src="" />
-                        <AvatarFallback className="bg-brand-amber/10 text-brand-amber text-2xl font-bold">KN</AvatarFallback>
+                        <AvatarFallback className="bg-brand-amber/10 text-brand-amber text-2xl font-bold">
+                          {course.instructorName?.substring(0, 2).toUpperCase() || "IN"}
+                        </AvatarFallback>
                       </Avatar>
                       <div className="space-y-4">
                         <div>
-                          <h3 className="font-sora text-xl font-bold text-slate-900 dark:text-white">{course.author}</h3>
+                          <h3 className="font-sora text-xl font-bold text-slate-900 dark:text-white">
+                            {course.instructorName || "Instructor"}
+                          </h3>
                           <p className="text-slate-500">Senior Software Engineer & Tech Educator</p>
                         </div>
                         <div className="flex gap-6 text-sm">
                            <div className="flex flex-col">
-                              <span className="font-bold text-slate-900 dark:text-white">4.9★</span>
+                              <span className="font-bold text-slate-900 dark:text-white">{course.avgRating}★</span>
                               <span className="text-slate-500">{t("instructor.reviews")}</span>
                            </div>
                            <div className="flex flex-col">
-                              <span className="font-bold text-slate-900 dark:text-white">15,200</span>
+                              <span className="font-bold text-slate-900 dark:text-white">{course.totalStudents.toLocaleString()}</span>
                               <span className="text-slate-500">{t("instructor.students")}</span>
                            </div>
                            <div className="flex flex-col">
@@ -204,7 +211,7 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
                 <TabsContent value="reviews" className="mt-0">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                      <div className="text-center md:text-left">
-                        <div className="text-5xl font-extrabold text-brand-amber mb-2">{course.rating}</div>
+                        <div className="text-5xl font-extrabold text-brand-amber mb-2">{course.avgRating}</div>
                         <div className="flex justify-center md:justify-start text-brand-amber mb-2">
                            {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4" fill="currentColor" />)}
                         </div>
@@ -236,7 +243,9 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
                <Card className="overflow-hidden border-brand-border bg-brand-card shadow-2xl">
                   {/* Desktop Video Preview */}
                   <div className="hidden lg:block relative aspect-video border-b border-brand-border group cursor-pointer">
-                    <Image src={course.thumbnail} alt="Preview" fill className="object-cover" />
+                    {course.thumbnailUrl && (
+                      <Image src={course.thumbnailUrl} alt="Preview" fill className="object-cover" />
+                    )}
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center text-slate-900 pl-1">
                         <Play className="h-6 w-6 fill-current" />
@@ -249,12 +258,16 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
                       <span className="font-sora text-3xl font-extrabold text-slate-900 dark:text-white">
                         {course.price.toLocaleString()}đ
                       </span>
-                      <span className="text-slate-500 line-through">
-                        {course.originalPrice.toLocaleString()}đ
-                      </span>
-                      <Badge className="bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 border-none">
-                        -{(100 - Math.round(course.price/course.originalPrice*100))}%
-                      </Badge>
+                      {(course.originalPrice || 0) > course.price && (
+                        <>
+                          <span className="text-slate-500 line-through">
+                            {course.originalPrice?.toLocaleString()}đ
+                          </span>
+                          <Badge className="bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 border-none">
+                            -{100 - Math.round((course.price / (course.originalPrice || 1)) * 100)}%
+                          </Badge>
+                        </>
+                      )}
                     </div>
 
                     <div className="grid gap-3">

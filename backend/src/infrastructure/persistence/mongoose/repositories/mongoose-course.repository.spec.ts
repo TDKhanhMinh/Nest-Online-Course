@@ -51,6 +51,18 @@ describe('MongooseCourseRepository', () => {
       level: CourseLevel.BEGINNER,
       language: 'English',
       status: CourseStatus.PUBLISHED,
+      totalEnrolled: 0,
+      totalReview: 0,
+      averageRating: 0,
+      isPublished: false,
+      totalView: 0,
+      totalLike: 0,
+      totalContent: 0,
+      totalSection: 0,
+      totalLesson: 0,
+      totalQuiz: 0,
+      totalAssignment: 0,
+      totalLecture: 0,
     });
   };
 
@@ -92,7 +104,7 @@ describe('MongooseCourseRepository', () => {
 
       const result = await repository.findAllWithOffset(pageOptionsDto);
       expect(result.data.length).toBe(1);
-      expect(result.meta.itemCount).toBe(2);
+      expect(result.pagination.itemCount).toBe(2);
     });
   });
 

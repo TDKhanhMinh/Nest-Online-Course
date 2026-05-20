@@ -19,6 +19,7 @@ export class GetAllCategoriesUseCase {
       id: cat.id.value,
       name: cat.name,
       slug: cat.slug,
+      parentId: cat.parentId?.value,
     }));
   }
 }

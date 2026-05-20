@@ -1,8 +1,8 @@
-import { AggregateRoot } from '@shared/abstractions/aggregate-root.base';
-import { UniqueId } from '@shared/types/unique-id.vo';
 import { CourseTitle } from '@domain/course/value-objects/course-title.vo';
-import { CourseStatus } from '@shared/types/course-status.enum';
+import { AggregateRoot } from '@shared/abstractions/aggregate-root.base';
 import { CourseLevel } from '@shared/types/course-level.enum';
+import { CourseStatus } from '@shared/types/course-status.enum';
+import { UniqueId } from '@shared/types/unique-id.vo';
 
 export interface CourseProps {
   title: CourseTitle;
@@ -15,6 +15,20 @@ export interface CourseProps {
   level: CourseLevel;
   language: string;
   status: CourseStatus;
+  totalEnrolled: number;
+  totalReview: number;
+  averageRating: number;
+  isPublished: boolean;
+  totalView: number;
+  totalLike: number;
+  totalContent: number;
+  totalSection: number;
+  totalLesson: number;
+  totalQuiz: number;
+  totalAssignment: number;
+  totalLecture: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export class Course extends AggregateRoot<CourseProps> {
@@ -48,6 +62,48 @@ export class Course extends AggregateRoot<CourseProps> {
   get status(): CourseStatus {
     return this.props.status;
   }
+  get totalEnrolled(): number {
+    return this.props.totalEnrolled;
+  }
+  get totalReview(): number {
+    return this.props.totalReview;
+  }
+  get averageRating(): number {
+    return this.props.averageRating;
+  }
+  get isPublished(): boolean {
+    return this.props.isPublished;
+  }
+  get totalView(): number {
+    return this.props.totalView;
+  }
+  get totalLike(): number {
+    return this.props.totalLike;
+  }
+  get totalContent(): number {
+    return this.props.totalContent;
+  }
+  get totalSection(): number {
+    return this.props.totalSection;
+  }
+  get totalLesson(): number {
+    return this.props.totalLesson;
+  }
+  get totalQuiz(): number {
+    return this.props.totalQuiz;
+  }
+  get totalAssignment(): number {
+    return this.props.totalAssignment;
+  }
+  get totalLecture(): number {
+    return this.props.totalLecture;
+  }
+  get createdAt(): Date | undefined {
+    return this.props.createdAt;
+  }
+  get updatedAt(): Date | undefined {
+    return this.props.updatedAt;
+  }
 
   isEligibleForCertificate(): boolean {
     return false;
@@ -61,6 +117,34 @@ export class Course extends AggregateRoot<CourseProps> {
     if (props.thumbnailUrl) this.props.thumbnailUrl = props.thumbnailUrl;
     if (props.level) this.props.level = props.level;
     if (props.language) this.props.language = props.language;
+    if (props.totalSection !== undefined) this.props.totalSection = props.totalSection;
+    if (props.totalLesson !== undefined) this.props.totalLesson = props.totalLesson;
+    if (props.updatedAt) this.props.updatedAt = props.updatedAt;
+  }
+
+  addSection(): void {
+    this.props.totalSection = (this.props.totalSection ?? 0) + 1;
+    this.props.updatedAt = new Date();
+  }
+
+  removeSection(lessonLength: number): void {
+    this.props.totalSection = Math.max(0, (this.props.totalSection ?? 0) - 1);
+    this.props.totalLesson = Math.max(0, (this.props.totalLesson ?? 0) - lessonLength);
+    this.props.updatedAt = new Date();
+  }
+
+  addLesson(): void {
+    this.props.totalLesson = (this.props.totalLesson ?? 0) + 1;
+    this.props.updatedAt = new Date();
+  }
+
+  removeLesson(): void {
+    this.props.totalLesson = Math.max(0, (this.props.totalLesson ?? 0) - 1);
+    this.props.updatedAt = new Date();
+  }
+
+  touch(): void {
+    this.props.updatedAt = new Date();
   }
 
   updateStatus(status: CourseStatus): void {

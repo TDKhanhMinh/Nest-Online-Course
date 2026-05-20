@@ -27,7 +27,7 @@ export function CourseCard({ course }: CourseCardProps) {
           {/* Thumbnail */}
           <div className="relative aspect-video w-full overflow-hidden">
             <Image
-              src={course.thumbnail}
+              src={course.thumbnailUrl || "/images/placeholder.png"}
               alt={course.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -57,26 +57,26 @@ export function CourseCard({ course }: CourseCardProps) {
           <CardContent className="p-4 flex flex-col h-[calc(100%-aspect-video)]">
             <div className="flex-1">
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-brand-amber">
-                {course.category}
+                {course.categoryName || course.categoryId}
               </p>
               <h3 className="mb-1.5 font-sora text-[15px] font-bold leading-snug text-slate-900 dark:text-white line-clamp-2">
                 {course.title}
               </h3>
-              <p className="mb-3 text-xs text-slate-600 dark:text-slate-400">{course.author}</p>
+              <p className="mb-3 text-xs text-slate-600 dark:text-slate-400">{course.instructorName || course.instructorId}</p>
 
               {/* Meta Stats */}
               <div className="mb-3 flex flex-wrap gap-x-4 gap-y-2 text-[11px] text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
-                  {t("duration", { count: course.duration })}
+                  {t("duration", { count: course.duration || 0 })}
                 </span>
                 <span className="flex items-center gap-1">
                   <BookOpen className="h-3 w-3" />
-                  {t("lessons", { count: course.lessons })}
+                  {t("lessons", { count: course.lessonsCount || 0 })}
                 </span>
                 <span className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
-                  {t("students", { count: course.students })}
+                  {t("students", { count: course.totalStudents || 0 })}
                 </span>
               </div>
 
@@ -87,12 +87,12 @@ export function CourseCard({ course }: CourseCardProps) {
                     <Star
                       key={i}
                       className="h-3 w-3"
-                      fill={i < Math.floor(course.rating) ? "currentColor" : "none"}
+                      fill={i < Math.floor(course.avgRating) ? "currentColor" : "none"}
                     />
                   ))}
                 </div>
-                <span className="text-xs font-semibold text-slate-900 dark:text-white">{course.rating}</span>
-                <span className="text-xs text-slate-500">({course.reviewCount.toLocaleString()})</span>
+                <span className="text-xs font-semibold text-slate-900 dark:text-white">{course.avgRating}</span>
+                <span className="text-xs text-slate-500">({(course.totalReviews || 0).toLocaleString()})</span>
               </div>
             </div>
 
@@ -102,7 +102,7 @@ export function CourseCard({ course }: CourseCardProps) {
                 <span className="font-sora text-lg font-extrabold text-brand-amber">
                   {course.price.toLocaleString()}đ
                 </span>
-                {course.originalPrice > course.price && (
+                {course.originalPrice && course.originalPrice > course.price && (
                   <span className="text-xs text-slate-500 line-through">
                     {course.originalPrice.toLocaleString()}đ
                   </span>

@@ -348,11 +348,4 @@ const InstructorQuizCreatorView = () => {
 };
 
 export default InstructorQuizCreatorView;
-          </motion.div >
-        </TabsContent >
-      </Tabs >
-    </div >
-  );
-};
 
-export default InstructorQuizCreatorView;

@@ -47,6 +47,7 @@ export class UserController {
         fullName: u.fullName,
         email: u.email,
         roles: u.roles,
+        isActive: u.isActive,
       })),
       total,
       limit: pagination.limit,
@@ -64,6 +65,7 @@ export class UserController {
       fullName: user.fullName,
       email: user.email,
       roles: user.roles,
+      isActive: user.isActive,
     };
   }
 

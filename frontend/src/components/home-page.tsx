@@ -1,18 +1,22 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { Course, CourseLevel } from "@/features/course/domain/course.types";
+import { CourseCard } from "@/features/course/presentation/components/course-card";
 import { useRouter } from "@/i18n/navigation";
 import {
-  Search, Star, Clock, BookOpen, Users, Award, Smartphone,
-  MessageSquare, TrendingUp, ChevronRight,
+  Award,
+  ChevronRight,
+  MessageSquare,
+  Search,
+  Smartphone,
+  Star,
+  TrendingUp
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { CourseCard } from "@/features/course/presentation/components/course-card";
-import { Course } from "@/features/course/domain/course.types";
+import { useState } from "react";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -60,13 +64,13 @@ export default function HomePage() {
 
   const categories = [
     { icon: "💻", name: t("categories.programming"), count: 284, key: "Frontend" },
-    { icon: "🎨", name: t("categories.design"),      count: 156, key: "Design" },
-    { icon: "📊", name: t("categories.data_ai"),     count: 203, key: "AI & Data Science" },
-    { icon: "📱", name: t("categories.mobile_dev"),  count: 98,  key: "Mobile" },
+    { icon: "🎨", name: t("categories.design"), count: 156, key: "Design" },
+    { icon: "📊", name: t("categories.data_ai"), count: 203, key: "AI & Data Science" },
+    { icon: "📱", name: t("categories.mobile_dev"), count: 98, key: "Mobile" },
     { icon: "☁️", name: t("categories.cloud_devops"), count: 112, key: "DevOps" },
-    { icon: "🔐", name: t("categories.security"),     count: 67,  key: "Cybersecurity" },
-    { icon: "📢", name: t("categories.marketing"),    count: 145, key: "Marketing" },
-    { icon: "💼", name: t("categories.business"),     count: 89,  key: "Business" },
+    { icon: "🔐", name: t("categories.security"), count: 67, key: "Cybersecurity" },
+    { icon: "📢", name: t("categories.marketing"), count: 145, key: "Marketing" },
+    { icon: "💼", name: t("categories.business"), count: 89, key: "Business" },
   ];
 
   const featuredCourses: Course[] = [
@@ -84,7 +88,7 @@ export default function HomePage() {
       duration: 42,
       lessons: 186,
       students: 12400,
-      level: "intermediate",
+      level: CourseLevel.INTERMEDIATE,
       isBestseller: true,
     },
     {
@@ -101,7 +105,7 @@ export default function HomePage() {
       duration: 28,
       lessons: 124,
       students: 8700,
-      level: "advanced",
+      level: CourseLevel.ADVANCED,
       isNew: true,
     },
     {
@@ -118,7 +122,7 @@ export default function HomePage() {
       duration: 36,
       lessons: 158,
       students: 5200,
-      level: "beginner",
+      level: CourseLevel.BEGINNER,
       isHot: true,
     },
   ];
@@ -193,7 +197,7 @@ export default function HomePage() {
         </p>
 
         {/* Search */}
-        <form 
+        <form
           onSubmit={handleSearch}
           className="mx-auto mb-12 flex max-w-[560px] overflow-hidden rounded-xl border border-brand-border bg-brand-card2 focus-within:border-brand-amber transition-colors"
         >
@@ -261,8 +265,8 @@ export default function HomePage() {
             title={t("featured.title")}
             subtitle={t("featured.subtitle")}
           />
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="mb-9 text-sm text-brand-amber hover:text-brand-amber2"
             onClick={() => router.push("/courses")}
           >

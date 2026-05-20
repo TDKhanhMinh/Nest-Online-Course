@@ -1,10 +1,12 @@
-import { CursorOptionsDto } from '@shared/pagination/cursor/cursor-options.dto';
-import { PageOptionsDto } from '@shared/pagination/offset/page-options.dto';
-import { Role } from '@shared/types/role.enum';
-import { CurrentUser, JwtPayload } from '@presentation/web/shared/decorators/current-user.decorator';
-import { Roles } from '@presentation/web/shared/decorators/roles.decorator';
-import { JwtAuthGuard } from '@presentation/web/shared/guards/jwt-auth.guard';
-import { RolesGuard } from '@presentation/web/shared/guards/roles.guard';
+import {
+  CreateLessonDto,
+  CreateSectionDto,
+  UpdateLessonDto,
+  UpdateSectionDto,
+} from '@application/course/dto/course-content.dto';
+import { CreateCourseDto, UpdateCourseDto } from '@application/course/dto/course.dto';
+import { InstructorCourseQueryDto } from '@application/course/dto/instructor-course-query.dto';
+import { CreateReviewDto } from '@application/course/dto/review.dto';
 import {
   Body,
   Controller,
@@ -17,31 +19,30 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import {
-  CreateLessonDto,
-  CreateSectionDto,
-  UpdateLessonDto,
-  UpdateSectionDto,
-} from '@application/course/dto/course-content.dto';
-import { CreateCourseDto, UpdateCourseDto } from '@application/course/dto/course.dto';
-import { CreateReviewDto } from '@application/course/dto/review.dto';
+import { CurrentUser, JwtPayload } from '@presentation/web/shared/decorators/current-user.decorator';
+import { Roles } from '@presentation/web/shared/decorators/roles.decorator';
+import { JwtAuthGuard } from '@presentation/web/shared/guards/jwt-auth.guard';
+import { RolesGuard } from '@presentation/web/shared/guards/roles.guard';
+import { CursorOptionsDto } from '@shared/pagination/cursor/cursor-options.dto';
+import { PageOptionsDto } from '@shared/pagination/offset/page-options.dto';
+import { Role } from '@shared/types/role.enum';
 
 // Use Cases
-import { CreateReviewUseCase } from '@application/course/use-cases/create-review.use-case';
-import { GetCourseReviewsUseCase } from '@application/course/use-cases/get-course-reviews.use-case';
-import { GetAllCoursesOffsetUseCase } from '@application/course/use-cases/get-all-courses-offset.use-case';
-import { GetAllCoursesCursorUseCase } from '@application/course/use-cases/get-all-courses-cursor.use-case';
-import { GetCourseFullContentUseCase } from '@application/course/use-cases/get-course-full-content.use-case';
 import { CreateCourseUseCase } from '@application/course/use-cases/create-course.use-case';
+import { CreateLessonUseCase } from '@application/course/use-cases/create-lesson.use-case';
+import { CreateReviewUseCase } from '@application/course/use-cases/create-review.use-case';
+import { CreateSectionUseCase } from '@application/course/use-cases/create-section.use-case';
+import { DeleteCourseUseCase } from '@application/course/use-cases/delete-course.use-case';
+import { DeleteLessonUseCase } from '@application/course/use-cases/delete-lesson.use-case';
+import { DeleteSectionUseCase } from '@application/course/use-cases/delete-section.use-case';
+import { GetAllCoursesCursorUseCase } from '@application/course/use-cases/get-all-courses-cursor.use-case';
+import { GetAllCoursesOffsetUseCase } from '@application/course/use-cases/get-all-courses-offset.use-case';
+import { GetCourseFullContentUseCase } from '@application/course/use-cases/get-course-full-content.use-case';
+import { GetCourseReviewsUseCase } from '@application/course/use-cases/get-course-reviews.use-case';
 import { GetInstructorCoursesUseCase } from '@application/course/use-cases/get-instructor-courses.use-case';
 import { UpdateCourseUseCase } from '@application/course/use-cases/update-course.use-case';
-import { DeleteCourseUseCase } from '@application/course/use-cases/delete-course.use-case';
-import { CreateSectionUseCase } from '@application/course/use-cases/create-section.use-case';
-import { UpdateSectionUseCase } from '@application/course/use-cases/update-section.use-case';
-import { DeleteSectionUseCase } from '@application/course/use-cases/delete-section.use-case';
-import { CreateLessonUseCase } from '@application/course/use-cases/create-lesson.use-case';
 import { UpdateLessonUseCase } from '@application/course/use-cases/update-lesson.use-case';
-import { DeleteLessonUseCase } from '@application/course/use-cases/delete-lesson.use-case';
+import { UpdateSectionUseCase } from '@application/course/use-cases/update-section.use-case';
 
 @Controller({
   path: 'courses',
@@ -119,9 +120,9 @@ export class CourseController {
   getMyCourses(
     @CurrentUser() user: JwtPayload,
     @Query(new ValidationPipe({ transform: true }))
-    pageOptionsDto: PageOptionsDto,
+    query: InstructorCourseQueryDto,
   ) {
-    return this.getInstructorCoursesUseCase.execute(user.sub, pageOptionsDto);
+    return this.getInstructorCoursesUseCase.execute(user.sub, query);
   }
 
   @Put(':courseId')
@@ -131,7 +132,7 @@ export class CourseController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: UpdateCourseDto,
   ) {
-    return this.updateCourseUseCase.execute(user.sub, courseId, dto);
+    return this.updateCourseUseCase.execute(user.sub, user.roles, courseId, dto);
   }
 
   @Delete(':courseId')
@@ -162,7 +163,7 @@ export class CourseController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: CreateSectionDto,
   ) {
-    return this.createSectionUseCase.execute(courseId, user.sub, dto);
+    return this.createSectionUseCase.execute(user.sub, courseId, dto);
   }
 
   @Put(':courseId/sections/:sectionId')
@@ -173,7 +174,7 @@ export class CourseController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: UpdateSectionDto,
   ) {
-    return this.updateSectionUseCase.execute(courseId, user.sub, sectionId, dto);
+    return this.updateSectionUseCase.execute(user.sub, courseId, sectionId, dto);
   }
 
   @Delete(':courseId/sections/:sectionId')
@@ -183,7 +184,7 @@ export class CourseController {
     @Param('sectionId') sectionId: string,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.deleteSectionUseCase.execute(courseId, user.sub, sectionId);
+    return this.deleteSectionUseCase.execute(user.sub, courseId, sectionId);
   }
 
   @Post(':courseId/sections/:sectionId/lessons')
@@ -194,7 +195,7 @@ export class CourseController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: CreateLessonDto,
   ) {
-    return this.createLessonUseCase.execute(courseId, user.sub, sectionId, dto);
+    return this.createLessonUseCase.execute(user.sub, courseId, sectionId, dto);
   }
 
   @Put(':courseId/lessons/:lessonId')
@@ -205,7 +206,7 @@ export class CourseController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: UpdateLessonDto,
   ) {
-    return this.updateLessonUseCase.execute(courseId, user.sub, lessonId, dto);
+    return this.updateLessonUseCase.execute(user.sub, courseId, lessonId, dto);
   }
 
   @Delete(':courseId/lessons/:lessonId')
@@ -215,6 +216,6 @@ export class CourseController {
     @Param('lessonId') lessonId: string,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.deleteLessonUseCase.execute(courseId, user.sub, lessonId);
+    return this.deleteLessonUseCase.execute(user.sub, courseId, lessonId);
   }
 }

@@ -2,11 +2,11 @@ import { PageMetaDto } from './page-meta.dto';
 
 export class PageDto<T> {
   readonly data: T[];
-  readonly meta: PageMetaDto;
+  readonly pagination: PageMetaDto;
 
-  constructor(data: T[], meta: PageMetaDto) {
+  constructor(data: T[], pagination: PageMetaDto) {
     this.data = data;
-    this.meta = meta;
+    this.pagination = pagination;
   }
 }
 

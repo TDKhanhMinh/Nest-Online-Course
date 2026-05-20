@@ -1,10 +1,10 @@
 "use client";
 
+import { ApiErrorResponse } from "@/types/api";
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ApiErrorResponse } from "@/types/api";
 
 export default function QueryProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -20,7 +20,13 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
         mutationCache: new MutationCache({
           onError: (error) => {
             if (error instanceof ApiErrorResponse) {
-              toast.error(error.message);
+              if (error.details && error.details.length > 0) {
+                error.details.forEach((detail) => {
+                  toast.error(detail.message);
+                });
+              } else {
+                toast.error(error.message);
+              }
             } else if (error instanceof Error) {
               toast.error(error.message);
             } else {
@@ -30,10 +36,14 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
         }),
         queryCache: new QueryCache({
           onError: (error) => {
-            // Only show toast for queries if explicitly needed, 
-            // usually queries are handled by UI states, but we add it for safety
             if (error instanceof ApiErrorResponse) {
-              toast.error(error.message);
+              if (error.details && error.details.length > 0) {
+                error.details.forEach((detail) => {
+                  toast.error(detail.message);
+                });
+              } else {
+                toast.error(error.message);
+              }
             }
           },
         }),

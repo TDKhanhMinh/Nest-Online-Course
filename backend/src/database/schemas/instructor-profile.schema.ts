@@ -26,6 +26,9 @@ export class InstructorProfileDocument extends Document {
 
   @Prop()
   youtube?: string;
+
+  @Prop({ type: [String], default: [] })
+  expertise: string[];
 }
 
 export const InstructorProfileSchema = SchemaFactory.createForClass(InstructorProfileDocument);

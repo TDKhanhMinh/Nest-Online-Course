@@ -1,11 +1,11 @@
-import { Inject, Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { 
-  ICourseRepository, 
-  ICOURSE_REPOSITORY 
-} from '@domain/course/ports/i-course.repository';
-import { ISectionRepository, ISECTION_REPOSITORY } from '@domain/course/ports/i-section.repository';
-import { ILessonRepository, ILESSON_REPOSITORY } from '@domain/course/ports/i-lesson.repository';
 import { Lesson } from '@domain/course/entities/lesson.entity';
+import {
+  ICOURSE_REPOSITORY,
+  ICourseRepository
+} from '@domain/course/ports/i-course.repository';
+import { ILESSON_REPOSITORY, ILessonRepository } from '@domain/course/ports/i-lesson.repository';
+import { ISECTION_REPOSITORY, ISectionRepository } from '@domain/course/ports/i-section.repository';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UniqueId } from '@shared/types/unique-id.vo';
 import { CreateLessonDto, LessonResponseDto } from '../dto/course-content.dto';
 
@@ -36,6 +36,9 @@ export class CreateLessonUseCase {
     // 2. Validate section exists
     const section = await this.sectionRepo.findById(new UniqueId(sectionId));
     if (!section) throw new NotFoundException('Section not found');
+    if (section.courseId.value !== courseId) {
+      throw new ForbiddenException('You do not have permission to manage this section');
+    }
 
     // 3. Create entity
     const lesson = Lesson.create({
@@ -51,6 +54,8 @@ export class CreateLessonUseCase {
 
     // 4. Save
     await this.lessonRepo.save(lesson);
+    course.addLesson();
+    await this.courseRepo.save(course);
 
     return {
       id: lesson.id.value,

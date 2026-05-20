@@ -34,6 +34,3 @@ export class MongooseWishlistRepository implements IWishlistRepository {
     await this.model.deleteOne({ userId, courseId }).exec();
   }
 }
-
-
-

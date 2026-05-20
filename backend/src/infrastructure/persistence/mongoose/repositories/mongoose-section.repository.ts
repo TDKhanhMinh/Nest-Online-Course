@@ -1,11 +1,11 @@
+import { SectionDocument } from '@/database/schemas/section.schema';
+import { Section } from '@domain/course/entities/section.entity';
+import { ISectionRepository } from '@domain/course/ports/i-section.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Section } from '@domain/course/entities/section.entity';
-import { SectionDocument } from '@/database/schemas/section.schema';
-import { ISectionRepository } from '@domain/course/ports/i-section.repository';
-import { SectionMapper } from '../mappers/section.mapper';
 import { UniqueId } from '@shared/types/unique-id.vo';
+import { Model } from 'mongoose';
+import { SectionMapper } from '../mappers/section.mapper';
 
 @Injectable()
 export class MongooseSectionRepository implements ISectionRepository {
@@ -38,3 +38,4 @@ export class MongooseSectionRepository implements ISectionRepository {
     await this.sectionModel.findByIdAndDelete(id.value).exec();
   }
 }
+

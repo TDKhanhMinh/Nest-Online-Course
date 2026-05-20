@@ -78,15 +78,17 @@ export default function Header() {
           </Link>
           {user ? (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-brand-bg2 hover:bg-brand-bg3 p-0 overflow-hidden border border-brand-border cursor-pointer">
-                  {user.avatar ? (
-                    <img src={user.avatar} alt={user.fullName} className="h-full w-full object-cover" />
-                  ) : (
-                    <User className="h-5 w-5 text-slate-600 dark:text-slate-400" />
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
+              <DropdownMenuTrigger
+                render={
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-brand-bg2 hover:bg-brand-bg3 p-0 overflow-hidden border border-brand-border cursor-pointer">
+                    {user.avatar ? (
+                      <img src={user.avatar} alt={user.fullName} className="h-full w-full object-cover" />
+                    ) : (
+                      <User className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                    )}
+                  </Button>
+                }
+              />
               <DropdownMenuContent className="w-60 mt-2 border-brand-border bg-brand-bg/95 backdrop-blur-md" align="end">
                 <div className="px-3 py-2.5">
                   <div className="flex items-center gap-3">

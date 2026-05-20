@@ -9,8 +9,7 @@ import QueryProvider from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import { MainLayoutWrapper } from "@/components/main-layout-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,9 +58,9 @@ export default async function LocaleLayout({
         >
           <QueryProvider>
             <TooltipProvider>
-              <Header />
-              {children}
-              <Footer />
+              <MainLayoutWrapper>
+                {children}
+              </MainLayoutWrapper>
               <Toaster />
             </TooltipProvider>
           </QueryProvider>

@@ -1,11 +1,11 @@
-import { Inject, Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { 
-  ICourseRepository, 
-  ICOURSE_REPOSITORY 
+import {
+  ICOURSE_REPOSITORY,
+  ICourseRepository
 } from '@domain/course/ports/i-course.repository';
-import { ISectionRepository, ISECTION_REPOSITORY } from '@domain/course/ports/i-section.repository';
+import { ISECTION_REPOSITORY, ISectionRepository } from '@domain/course/ports/i-section.repository';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UniqueId } from '@shared/types/unique-id.vo';
-import { UpdateSectionDto, SectionResponseDto } from '../dto/course-content.dto';
+import { SectionResponseDto, UpdateSectionDto } from '../dto/course-content.dto';
 
 @Injectable()
 export class UpdateSectionUseCase {
@@ -32,12 +32,17 @@ export class UpdateSectionUseCase {
     // 2. Get section
     const section = await this.sectionRepo.findById(new UniqueId(sectionId));
     if (!section) throw new NotFoundException('Section not found');
+    if (section.courseId.value !== courseId) {
+      throw new ForbiddenException('You do not have permission to manage this section');
+    }
 
     // 3. Update
     section.update(dto);
+    course.touch();
 
     // 4. Save
     await this.sectionRepo.save(section);
+    await this.courseRepo.save(course);
 
     return {
       id: section.id.value,

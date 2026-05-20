@@ -1,5 +1,5 @@
-import { Category } from '@domain/course/entities/category.entity';
 import { CategoryDocument } from '@/database/schemas/category.schema';
+import { Category } from '@domain/course/entities/category.entity';
 import { UniqueId } from '@shared/types/unique-id.vo';
 
 export class CategoryMapper {

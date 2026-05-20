@@ -278,3 +278,10 @@ export {
   MenubarSubTrigger,
   MenubarSubContent,
 }
+
+// --- Hybrid Responsive Summary ---
+// mobile  (default / sm):  Usually hidden behind a hamburger or transformed into a bottom navigation/action list.
+// tablet  (md / lg):       Horizontal bar with essential items, icons + labels, optimized for touch spacing.
+// desktop (xl / 2xl):      Full horizontal bar with all menus, dropdowns on click, shortcuts displayed.
+// Interaction:             Delegates to DropdownMenu components; fixed hydration issue with nested triggers.
+

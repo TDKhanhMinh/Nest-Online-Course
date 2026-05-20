@@ -14,5 +14,10 @@ export class AdminUpdateCourseStatusDto {
   status: CourseStatus;
 }
 
+export class AdminUpdateCourseCategoryDto {
+  @IsNotEmpty()
+  categoryId: string;
+}
+
 
 

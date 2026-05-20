@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Course } from "@/features/course/domain/course.types";
+import { Course, CourseLevel, CourseStatus } from "@/features/course/domain/course.types";
 import { Link } from "@/i18n/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, Play, Search, Trophy } from "lucide-react";
@@ -17,6 +17,9 @@ import { useState } from "react";
 interface MyCourse extends Course {
   progress: number;
   lastAccessed: string;
+  author: string; // Instructor name for display
+  category: string; // Category name for display
+  lessons: number; // Total lessons count
 }
 
 const MOCK_MY_COURSES: MyCourse[] = [
@@ -24,55 +27,73 @@ const MOCK_MY_COURSES: MyCourse[] = [
     id: "react-1",
     title: "React & Next.js 14 — Complete from Zero to Hero",
     slug: "react-nextjs-complete",
+    description: "Detailed description",
+    shortDescription: "Short description",
     author: "Khoa Nguyen",
     category: "Frontend",
-    thumbnail: "/images/courses/react.png",
-    rating: 4.9,
-    reviewCount: 3241,
+    categoryId: "frontend",
+    instructorId: "instructor-1",
+    thumbnailUrl: "/images/courses/react.png",
+    avgRating: 4.9,
+    totalReviews: 3241,
     price: 599000,
-    originalPrice: 1299000,
-    duration: 42,
-    lessons: 186,
-    students: 12400,
-    level: "intermediate",
+    totalStudents: 12400,
+    level: CourseLevel.INTERMEDIATE,
+    status: CourseStatus.PUBLISHED,
+    language: "vi",
     progress: 45,
     lastAccessed: "2024-05-20",
+    lessons: 186,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
     id: "ai-1",
     title: "LLM Engineering & Prompt Engineering in Practice",
     slug: "llm-prompt-engineering",
+    description: "Detailed description",
+    shortDescription: "Short description",
     author: "Tuan Tran",
     category: "AI & Data Science",
-    thumbnail: "/images/courses/ai.png",
-    rating: 4.8,
-    reviewCount: 1876,
+    categoryId: "ai",
+    instructorId: "instructor-2",
+    thumbnailUrl: "/images/courses/ai.png",
+    avgRating: 4.8,
+    totalReviews: 1876,
     price: 799000,
-    originalPrice: 1499000,
-    duration: 28,
-    lessons: 124,
-    students: 8700,
-    level: "advanced",
+    totalStudents: 8700,
+    level: CourseLevel.ADVANCED,
+    status: CourseStatus.PUBLISHED,
+    language: "vi",
     progress: 10,
     lastAccessed: "2024-05-18",
+    lessons: 124,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
     id: "security-1",
     title: "Ethical Hacking & Penetration Testing for Beginners",
     slug: "ethical-hacking-beginners",
+    description: "Detailed description",
+    shortDescription: "Short description",
     author: "Dung Le",
     category: "Cybersecurity",
-    thumbnail: "/images/courses/security.png",
-    rating: 4.7,
-    reviewCount: 987,
+    categoryId: "security",
+    instructorId: "instructor-3",
+    thumbnailUrl: "/images/courses/security.png",
+    avgRating: 4.7,
+    totalReviews: 987,
     price: 699000,
-    originalPrice: 1199000,
-    duration: 36,
-    lessons: 158,
-    students: 5200,
-    level: "beginner",
+    totalStudents: 5200,
+    level: CourseLevel.BEGINNER,
+    status: CourseStatus.PUBLISHED,
+    language: "vi",
     progress: 100,
     lastAccessed: "2024-05-10",
+    lessons: 158,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
 ];
 
@@ -149,7 +170,7 @@ export function MyCoursesView() {
                 {/* Thumbnail */}
                 <div className="relative aspect-video w-full overflow-hidden">
                   <Image
-                    src={course.thumbnail}
+                    src={course.thumbnailUrl || "/images/placeholder.png"}
                     alt={course.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"

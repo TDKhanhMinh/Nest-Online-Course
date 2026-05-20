@@ -1,6 +1,6 @@
+import { Course } from "@/features/course/domain/course.types";
 import { CourseDetailView } from "@/features/course/presentation/components/course-detail-view";
 import { notFound } from "next/navigation";
-import { Course } from "@/features/course/domain/course.types";
 
 const MOCK_COURSES: Course[] = [
   {
@@ -59,7 +59,7 @@ const MOCK_COURSES: Course[] = [
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const course = MOCK_COURSES.find(c => c.id === params.id);
   if (!course) return { title: "Course Not Found" };
-  
+
   return {
     title: `${course.title} | NexLearn`,
     description: course.shortDescription || `Learn ${course.title} with expert instructors.`,
@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 
 export default function CourseDetailPage({ params }: { params: { id: string } }) {
   const course = MOCK_COURSES.find(c => c.id === params.id);
-  
+
   if (!course) {
     notFound();
   }

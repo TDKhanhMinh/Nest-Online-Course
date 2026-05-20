@@ -1,9 +1,9 @@
-import { Course } from '@domain/course/entities/course.entity';
 import { CourseDocument } from '@/database/schemas/course.schema';
-import { UniqueId } from '@shared/types/unique-id.vo';
+import { Course } from '@domain/course/entities/course.entity';
 import { CourseTitle } from '@domain/course/value-objects/course-title.vo';
-import { CourseStatus } from '@shared/types/course-status.enum';
 import { CourseLevel } from '@shared/types/course-level.enum';
+import { CourseStatus } from '@shared/types/course-status.enum';
+import { UniqueId } from '@shared/types/unique-id.vo';
 
 export class CourseMapper {
   static toDomain(doc: CourseDocument): Course {
@@ -19,6 +19,20 @@ export class CourseMapper {
         level: doc.level as CourseLevel,
         language: doc.language,
         status: doc.status as CourseStatus,
+        totalEnrolled: doc.totalEnrolled,
+        totalReview: doc.totalReview,
+        averageRating: doc.averageRating,
+        isPublished: doc.isPublished,
+        totalView: doc.totalView,
+        totalLike: doc.totalLike,
+        totalContent: doc.totalContent,
+        totalSection: doc.totalSection,
+        totalLesson: doc.totalLesson,
+        totalQuiz: doc.totalQuiz,
+        totalAssignment: doc.totalAssignment,
+        totalLecture: doc.totalLecture,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
       },
       new UniqueId((doc._id as any).toString()),
     );
@@ -37,6 +51,20 @@ export class CourseMapper {
       level: domain.level,
       language: domain.language,
       status: domain.status,
+      totalEnrolled: domain.totalEnrolled,
+      totalReview: domain.totalReview,
+      averageRating: domain.averageRating,
+      isPublished: domain.isPublished,
+      totalView: domain.totalView,
+      totalLike: domain.totalLike,
+      totalContent: domain.totalContent,
+      totalSection: domain.totalSection,
+      totalLesson: domain.totalLesson,
+      totalQuiz: domain.totalQuiz,
+      totalAssignment: domain.totalAssignment,
+      totalLecture: domain.totalLecture,
+      createdAt: domain.createdAt,
+      updatedAt: domain.updatedAt,
     };
   }
 }

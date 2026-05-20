@@ -755,6 +755,17 @@
       "title": "Support Requests",
       "unanswered": "Unanswered",
       "view_all": "View all requests"
+    },
+    "performance_overview": "Performance Overview",
+    "performance_subtitle": "Track your courses performance over time",
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "my_courses": "My Courses",
+      "question_bank": "Question Bank",
+      "quizzes": "Quizzes",
+      "settings": "Settings",
+      "communications": "Communications",
+      "payouts": "Payouts"
     }
   },
   "InstructorSettings": {
@@ -770,6 +781,10 @@
       "biography": "Biography",
       "expertise": "Expertise",
       "website": "Website",
+      "social_links": "Social Links",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter",
+      "youtube": "YouTube",
       "save": "Save Teaching Profile"
     },
     "payout": {
@@ -792,10 +807,16 @@
     },
     "table": {
       "course": "Course",
+      "level": "Level",
       "students": "Students",
-      "revenue": "Revenue",
+      "price": "Price",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "published": "Published",
+      "closed": "Closed",
+      "all": "All",
+      "active": "Active",
+      "finished": "Finished"
     },
     "status": {
       "active": "Active",
@@ -821,7 +842,16 @@
       "total": "Total"
     },
     "empty": "You haven't created any courses yet.",
-    "search_placeholder": "Search courses..."
+    "search_placeholder": "Search courses...",
+    "pagination": {
+      "showing": "Showing {start} to {end} of {total} courses",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "delete_title": "Delete Course",
+    "delete_description": "Are you sure you want to delete this course? This action cannot be undone.",
+    "deleting": "Deleting...",
+    "cancel": "Cancel"
   },
   "CourseBuilder": {
     "title": "Course Builder",
@@ -831,10 +861,13 @@
     "sections": {
       "title": "Curriculum",
       "add_section": "Add Section",
+      "add_section_description": "Provide a title for this section to organize your curriculum.",
       "section_name": "Section Name",
       "section_placeholder": "e.g., Introduction to React",
       "add_lesson": "Add Lesson",
-      "empty": "No sections added yet. Start by adding your first section."
+      "empty": "No sections added yet. Start by adding your first section.",
+      "delete_title": "Delete Section",
+      "delete_description": "Are you sure you want to delete this section and all its lessons? This action cannot be undone."
     },
     "lesson": {
       "title": "Lesson Details",
@@ -850,7 +883,9 @@
       "upload_doc": "Upload Document",
       "prerequisite": "Prerequisite Lesson",
       "prerequisite_hint": "Student must complete this lesson first",
-      "badge": "LESSON"
+      "badge": "LESSON",
+      "delete_title": "Delete Lesson",
+      "delete_description": "Are you sure you want to delete this lesson? This action cannot be undone."
     },
     "saving": "Saving changes...",
     "saved": "All changes saved",
@@ -858,7 +893,12 @@
     "welcome_title": "Welcome to Course Builder",
     "welcome_description": "Select a section or lesson from the sidebar to start editing its content, or add a new one to grow your course.",
     "section_badge": "SECTION",
-    "edit_section": "Edit Section"
+    "edit_section": "Edit Section",
+    "cancel": "Cancel",
+    "create": "Create",
+    "creating": "Creating...",
+    "delete": "Delete",
+    "deleting": "Deleting..."
   },
   "QuestionBank": {
     "title": "Question Bank",
@@ -930,9 +970,7 @@
     "overview_desc": "Final check before saving",
     "validation_summary": "Validation Summary",
     "save_quiz": "Save Quiz",
-    "preview": "Preview"
-  }
-}
+    "preview": "Preview",
     "stat_minutes": "Minutes",
     "stat_pass_score": "Pass Score",
     "ready_title": "Ready to publish?",

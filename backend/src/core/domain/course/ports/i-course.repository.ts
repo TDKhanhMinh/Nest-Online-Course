@@ -11,8 +11,8 @@ export interface ICourseRepository {
   findAll(): Promise<Course[]>;
   findAllWithOffset(pageOptionsDto: PageOptionsDto): Promise<PageDto<Course>>;
   findAllWithCursor(cursorOptionsDto: CursorOptionsDto): Promise<CursorPageDto<Course>>;
-  findByInstructorId(instructorId: string, pageOptionsDto: PageOptionsDto): Promise<PageDto<Course>>;
-  findAdminCourses(pageOptionsDto: any): Promise<PageDto<Course>>;
+  findByInstructorId(instructorId: string, query: any): Promise<PageDto<Course>>;
+  findAdminCourses(queryDto: any): Promise<PageDto<Course>>;
   existsBySlug(slug: string): Promise<boolean>;
   save(course: Course): Promise<void>;
   delete(id: UniqueId): Promise<void>;

@@ -22,6 +22,10 @@ export class CreateInstructorProfileDto {
   @IsOptional()
   @IsUrl()
   youtube?: string;
+
+  @IsOptional()
+  @IsString({ each: true })
+  expertise?: string[];
 }
 
 export class UpdateInstructorProfileDto {
@@ -48,6 +52,10 @@ export class UpdateInstructorProfileDto {
   @IsOptional()
   @IsUrl()
   youtube?: string;
+
+  @IsOptional()
+  @IsString({ each: true })
+  expertise?: string[];
 }
 
 

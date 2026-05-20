@@ -1,5 +1,5 @@
-import { IsEmail, IsEnum, IsOptional, IsString, IsArray } from 'class-validator';
 import { Role } from '@shared/types/role.enum';
+import { IsArray, IsBoolean, IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -14,6 +14,10 @@ export class UpdateUserDto {
   @IsArray()
   @IsEnum(Role, { each: true })
   roles?: Role[];
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 

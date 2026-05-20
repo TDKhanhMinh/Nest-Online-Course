@@ -65,6 +65,10 @@ export class User extends AggregateRoot<UserProps> {
     this.props.roles = roles;
   }
 
+  updateStatus(isActive: boolean): void {
+    this.props.isActive = isActive;
+  }
+
   public static create(
     props: Omit<UserProps, 'isActive'> & { isActive?: boolean },
     id?: UniqueId,

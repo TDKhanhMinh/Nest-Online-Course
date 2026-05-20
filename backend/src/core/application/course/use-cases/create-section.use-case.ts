@@ -1,10 +1,10 @@
-import { Inject, Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { 
-  ICourseRepository, 
-  ICOURSE_REPOSITORY 
-} from '@domain/course/ports/i-course.repository';
-import { ISectionRepository, ISECTION_REPOSITORY } from '@domain/course/ports/i-section.repository';
 import { Section } from '@domain/course/entities/section.entity';
+import {
+  ICOURSE_REPOSITORY,
+  ICourseRepository
+} from '@domain/course/ports/i-course.repository';
+import { ISECTION_REPOSITORY, ISectionRepository } from '@domain/course/ports/i-section.repository';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UniqueId } from '@shared/types/unique-id.vo';
 import { CreateSectionDto, SectionResponseDto } from '../dto/course-content.dto';
 
@@ -20,21 +20,32 @@ export class CreateSectionUseCase {
   async execute(instructorId: string, courseId: string, dto: CreateSectionDto): Promise<SectionResponseDto> {
     // 1. Validate ownership
     const course = await this.courseRepo.findById(new UniqueId(courseId));
+    console.log('instructorId', instructorId);
+    console.log('courseId', courseId);
     if (!course) throw new NotFoundException('Course not found');
     if (course.instructorId.value !== instructorId) {
       throw new ForbiddenException('You do not have permission to manage this course');
     }
 
-    // 2. Create entity
+    // 2. Determine orderIndex
+    const existingSections = await this.sectionRepo.findByCourseId(new UniqueId(courseId));
+    let orderIndex = 1;
+    if (existingSections && existingSections.length > 0) {
+      const maxOrder = Math.max(...existingSections.map(s => s.orderIndex));
+      orderIndex = maxOrder + 1;
+    }
+
+    // 3. Create entity
     const section = Section.create({
       courseId: new UniqueId(courseId),
       title: dto.title,
-      orderIndex: dto.orderIndex,
+      orderIndex,
     });
 
-    // 3. Save
+    // 4. Save
     await this.sectionRepo.save(section);
-
+    course.addSection();
+    await this.courseRepo.save(course);
     return {
       id: section.id.value,
       courseId: section.courseId.value,

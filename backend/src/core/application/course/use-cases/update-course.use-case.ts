@@ -14,13 +14,14 @@ export class UpdateCourseUseCase {
     private readonly courseRepo: ICourseRepository,
   ) {}
 
-  async execute(instructorId: string, courseId: string, dto: UpdateCourseDto): Promise<CourseResponseDto> {
+  async execute(userId: string, userRoles: string[], courseId: string, dto: UpdateCourseDto): Promise<CourseResponseDto> {
     // 1. Get course
     const course = await this.courseRepo.findById(new UniqueId(courseId));
     if (!course) throw new NotFoundException('Course not found');
 
-    // 2. Validate ownership
-    if (course.instructorId.value !== instructorId) {
+    // 2. Validate ownership or Admin role
+    const isAdmin = userRoles.includes('ADMIN');
+    if (!isAdmin && course.instructorId.value !== userId) {
       throw new ForbiddenException('You do not have permission to manage this course');
     }
 

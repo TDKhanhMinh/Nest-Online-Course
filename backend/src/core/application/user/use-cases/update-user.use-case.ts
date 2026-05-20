@@ -30,7 +30,11 @@ export class UpdateUserUseCase {
     }
 
     if (dto.fullName) {
-      user.props.fullName = dto.fullName;
+      user.updateFullName(dto.fullName);
+    }
+    
+    if (dto.isActive !== undefined) {
+      user.updateStatus(dto.isActive);
     }
 
     await this.userRepository.save(user);

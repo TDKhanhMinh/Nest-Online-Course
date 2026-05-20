@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Eye, EyeOff, Loader2, GraduationCap } from "lucide-react";
-import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
-import { useLogin } from "@/features/auth/presentation/hooks/use-auth-hooks";
+import { Input } from "@/components/ui/input";
 import { loginSchema, LoginValues } from "@/features/auth/application/auth.schemas";
+import { useLogin } from "@/features/auth/presentation/hooks/use-auth-hooks";
+import { Link } from "@/i18n/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, GraduationCap, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -72,7 +72,7 @@ export const InstructorLoginView = () => {
       <Card className="w-full max-w-md border-brand-border bg-brand-card/50 backdrop-blur-xl shadow-2xl relative overflow-hidden">
         {/* Accent glow */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-brand-amber/10 rounded-full blur-3xl" />
-        
+
         <CardHeader className="relative">
           <CardTitle className="text-xl font-bold text-slate-900 dark:text-white">
             {authT("title")}
@@ -81,7 +81,7 @@ export const InstructorLoginView = () => {
             {authT("description")}
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="relative">
           <Form {...form}>
             <motion.form
@@ -108,7 +108,7 @@ export const InstructorLoginView = () => {
                         />
                       </FormControl>
                       <FormMessage>
-                        {fieldState.error?.message && tValidation(fieldState.error.message as any, { 
+                        {fieldState.error?.message && tValidation(fieldState.error.message as any, {
                           field: authT("email_label") || "Email",
                           max: 255
                         })}
@@ -149,7 +149,7 @@ export const InstructorLoginView = () => {
                         </div>
                       </FormControl>
                       <FormMessage>
-                        {fieldState.error?.message && tValidation(fieldState.error.message as any, { 
+                        {fieldState.error?.message && tValidation(fieldState.error.message as any, {
                           field: authT("password_label") || "Password",
                           max: 100
                         })}
@@ -187,9 +187,9 @@ export const InstructorLoginView = () => {
             </Link>
           </p>
           <div className="flex items-center gap-2 text-xs text-slate-400">
-             <span className="h-px flex-1 bg-brand-border" />
-             <span>{commonT("or")}</span>
-             <span className="h-px flex-1 bg-brand-border" />
+            <span className="h-px flex-1 bg-brand-border" />
+            <span>{commonT("or")}</span>
+            <span className="h-px flex-1 bg-brand-border" />
           </div>
           <Link href="/auth/login" className="text-sm text-slate-600 dark:text-slate-400 hover:text-brand-amber transition-colors">
             {authT("title")} (Student)

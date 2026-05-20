@@ -15,8 +15,9 @@ import {
   Users
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -44,7 +46,14 @@ import {
   TabsList,
   TabsTrigger
 } from "@/components/ui/tabs";
+import { CourseStatus } from "@/features/course/domain/course.types";
+import { CreateCourseDialog } from "@/features/course/presentation/components/create-course-dialog";
+import { useDeleteCourse, useUpdateCourseStatus } from "@/features/course/presentation/hooks/use-course-mutations";
+import { useInstructorCourses } from "@/features/course/presentation/hooks/use-instructor-courses";
+import { useDebounce } from "@/hooks/use-debounce";
 import { Link } from "@/i18n/navigation";
+import { formatCurrency } from "@/lib/format-currentcy";
+import { formatDateTime } from "@/lib/format-datetime";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -64,31 +73,54 @@ const itemVariants = {
 const InstructorCoursesView = () => {
   const t = useTranslations("InstructorCourses");
   const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
 
-  // Mock data for courses
-  const courses = [
-    { id: "1", title: "React for Beginners", status: "active", students: 450, revenue: 4500, lastUpdated: "2024-03-15" },
-    { id: "2", title: "Advanced Next.js Architecture", status: "active", students: 120, revenue: 3600, lastUpdated: "2024-04-02" },
-    { id: "3", title: "UI/UX Design Masterclass", status: "draft", students: 0, revenue: 0, lastUpdated: "2024-05-01" },
-    { id: "4", title: "Node.js Backend Deep Dive", status: "active", students: 85, revenue: 2550, lastUpdated: "2024-02-20" },
-    { id: "5", title: "Python for Data Science", status: "finished", students: 300, revenue: 6000, lastUpdated: "2023-12-10" },
-  ];
+  const status = activeTab === "all" ? undefined : activeTab === "active" ? CourseStatus.PUBLISHED : activeTab === "draft" ? CourseStatus.DRAFT : undefined;
 
-  const filteredCourses = activeTab === "all"
-    ? courses
-    : courses.filter(c => c.status === activeTab);
+  const { data: res, isLoading, isError } = useInstructorCourses({
+    page,
+    limit,
+    search: debouncedSearch,
+    status,
+  });
+  const { mutateAsync: deleteCourse, isPending: isDeleting } = useDeleteCourse();
+  const { mutate: updateStatus } = useUpdateCourseStatus();
+  const [courseToDeleteId, setCourseToDeleteId] = useState<string | null>(null);
+
+  // @ts-ignore
+  const courses = res?.courses.data || [];
+  // @ts-ignore
+  const meta = res?.courses.meta;
+  console.log("courses", courses)
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, activeTab]);
+
+  // No longer need client-side filtering as it's handled by the backend
+  const filteredCourses = courses;
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "active":
+    switch (status?.toUpperCase()) {
+      case "PUBLISHED":
         return <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">{t("status.active")}</Badge>;
-      case "draft":
+      case "DRAFT":
         return <Badge variant="outline" className="bg-slate-100 text-slate-500">{t("status.draft")}</Badge>;
-      case "finished":
-        return <Badge variant="secondary" className="bg-blue-500/10 text-blue-500">{t("status.finished")}</Badge>;
       default:
-        return null;
+        return <Badge variant="secondary">{status}</Badge>;
     }
+  };
+
+  const handleDelete = (id: string) => {
+    setCourseToDeleteId(id);
+  };
+
+  const handleToggleStatus = (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === "DRAFT" ? CourseStatus.PUBLISHED : CourseStatus.DRAFT;
+    updateStatus({ id, data: { status: newStatus } });
   };
 
   return (
@@ -108,10 +140,14 @@ const InstructorCoursesView = () => {
             {t("description")}
           </p>
         </div>
-        <Button className="bg-brand-primary hover:bg-brand-primary/90 text-white shadow-lg shadow-brand-primary/20 w-full md:w-auto gap-2 h-11">
-          <Plus size={18} />
-          {t("create_button")}
-        </Button>
+        <CreateCourseDialog
+          trigger={
+            <Button className="bg-brand-primary hover:bg-brand-primary/90 text-black shadow-lg shadow-brand-primary/20 w-full md:w-auto gap-2 h-11">
+              <Plus size={18} />
+              {t("create_button")}
+            </Button>
+          }
+        />
       </div>
 
       {/* Main Content Area */}
@@ -133,6 +169,8 @@ const InstructorCoursesView = () => {
                 <Input
                   placeholder={t("search_placeholder")}
                   className="pl-10 bg-white dark:bg-slate-950 border-brand-border h-11"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <Button variant="outline" size="icon" className="h-11 w-11 shrink-0 border-brand-border">
@@ -147,69 +185,101 @@ const InstructorCoursesView = () => {
             <Table>
               <TableHeader className="bg-slate-50 dark:bg-slate-800/50">
                 <TableRow className="border-brand-border hover:bg-transparent">
-                  <TableHead className="w-[40%] pl-6">{t("table.course")}</TableHead>
+                  <TableHead className="pl-2">{t("table.course")}</TableHead>
+                  <TableHead className="text-center">{t("table.level")}</TableHead>
                   <TableHead className="text-center">{t("table.students")}</TableHead>
-                  <TableHead className="text-center">{t("table.revenue")}</TableHead>
+                  <TableHead className="text-center">{t("table.price")}</TableHead>
                   <TableHead className="text-center">{t("table.status")}</TableHead>
                   <TableHead className="text-right pr-6">{t("table.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredCourses.length > 0 ? (
-                  filteredCourses.map((course) => (
-                    <TableRow key={course.id} className="border-brand-border hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
-                      <TableCell className="pl-6 py-4">
+                {isLoading ? (
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="pl-6 py-4"><Skeleton className="h-12 w-full" /></TableCell>
+                      <TableCell><Skeleton className="h-8 w-12 mx-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-8 w-12 mx-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-8 w-20 mx-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-8 w-12 ml-auto" /></TableCell>
+                    </TableRow>
+                  ))
+                ) : isError ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-64 text-center text-red-500">
+                      Error loading courses. Please try again later.
+                    </TableCell>
+                  </TableRow>
+                ) : filteredCourses.length > 0 ? (
+                  filteredCourses.map((course: any) => (
+                    <TableRow key={course._id.value} className="border-brand-border hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
+                      <TableCell className="pl-2 py-4">
                         <div className="flex items-center gap-4">
                           <div className="h-12 w-20 rounded-md bg-slate-200 dark:bg-slate-800 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-shadow">
-                            <BookOpen className="text-slate-400" size={20} />
+                            {course?.thumbnailUrl ? (
+                              <img src={course?.thumbnailUrl} alt={course?.title?.value} className="w-full h-full object-cover" />
+                            ) : (
+                              <BookOpen className="text-slate-400" size={20} />
+                            )}
                             <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
-                          <div>
+                          <div className="flex flex-col gap-1">
                             <p className="font-semibold text-slate-900 dark:text-white group-hover:text-brand-primary transition-colors">
-                              {course.title}
+                              {course?.props?.title?.value}
                             </p>
                             <p className="text-xs text-slate-400 mt-1 italic">
-                              {t("labels.last_updated")}: {course.lastUpdated}
+                              {t("labels.last_updated")}: {formatDateTime(course?.props?.updatedAt, 'vi-VN')}
                             </p>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">{course.students}</span>
-                          <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{t("labels.active")}</span>
+                          <span className="font-medium text-slate-700 dark:text-slate-300">{course?.props?.level}</span>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">${course.revenue}</span>
-                          <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{t("labels.total")}</span>
+                          <span className="font-medium text-slate-700 dark:text-slate-300">{course?.props?.totalEnrolled}</span>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
-                        {getStatusBadge(course.status)}
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="font-medium text-slate-700 dark:text-slate-300">{formatCurrency(course?.props?.price)}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {getStatusBadge(course?.props?.status)}
                       </TableCell>
                       <TableCell className="text-right pr-6">
                         <div className="flex items-center justify-end gap-2">
                           <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:text-brand-primary hover:bg-brand-primary/10" >
-                            <Link href={`/instructor/courses/${course.id}/builder`}>
+                            <Link href={`/instructor/courses/${course?._id?.value}/builder`}>
                               <Edit size={18} />
                             </Link>
                           </Button>
                           <DropdownMenu>
-                            <DropdownMenuTrigger >
-                              <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400">
-                                <MoreVertical size={18} />
-                              </Button>
-                            </DropdownMenuTrigger>
+                            <DropdownMenuTrigger
+                              render={
+                                <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400">
+                                  <MoreVertical size={18} />
+                                </Button>
+                              }
+                            />
                             <DropdownMenuContent align="end" className="w-48 p-2 border-brand-border">
-                              <DropdownMenuItem className="gap-2 cursor-pointer rounded-md">
-                                <Eye size={16} /> {t("actions.preview")}
+                              <DropdownMenuItem
+                                className="gap-2 cursor-pointer rounded-md"
+                                onClick={() => handleToggleStatus(course._id?.value, course?.props?.status)}
+                              >
+                                <Eye size={16} /> {course?.props?.status === "DRAFT" ? "Publish Course" : "Unpublish Course"}
                               </DropdownMenuItem>
                               <DropdownMenuItem className="gap-2 cursor-pointer rounded-md">
                                 <Users size={16} /> {t("actions.students")}
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="gap-2 cursor-pointer rounded-md text-red-500 focus:text-red-500 focus:bg-red-500/10">
+                              <DropdownMenuItem
+                                className="gap-2 cursor-pointer rounded-md text-red-500 focus:text-red-500 focus:bg-red-500/10"
+                                onClick={() => handleDelete(course?._id?.value || course?.id)}
+                              >
                                 <Trash2 size={16} /> {t("actions.delete")}
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -224,9 +294,13 @@ const InstructorCoursesView = () => {
                       <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
                         <BookOpen size={48} className="opacity-20 mb-2" />
                         <p>{t("empty")}</p>
-                        <Button variant="link" className="text-brand-primary p-0 h-auto">
-                          {t("create_button")}
-                        </Button>
+                        <CreateCourseDialog
+                          trigger={
+                            <Button variant="link" className="text-brand-primary p-0 h-auto">
+                              {t("create_button")}
+                            </Button>
+                          }
+                        />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -234,8 +308,58 @@ const InstructorCoursesView = () => {
               </TableBody>
             </Table>
           </div>
+
+          {/* Pagination Controls */}
+          {meta && meta.totalPages > 1 && (
+            <div className="flex items-center justify-between px-6 py-4 border-t border-brand-border bg-slate-50/50 dark:bg-slate-800/30">
+              <div className="text-sm text-slate-500 dark:text-slate-400">
+                {t("pagination.showing", {
+                  start: (meta.page - 1) * meta.limit + 1,
+                  end: Math.min(meta.page * meta.limit, meta.total),
+                  total: meta.total
+                })}
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={meta.page <= 1}
+                  onClick={() => setPage(prev => prev - 1)}
+                  className="h-9 px-3 border-brand-border"
+                >
+                  {t("pagination.previous")}
+                </Button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
+                    <Button
+                      key={p}
+                      variant={meta.page === p ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setPage(p)}
+                      className={`h-9 w-9 p-0 border-brand-border ${meta.page === p
+                        ? "bg-brand-primary text-white"
+                        : "hover:bg-brand-primary/10 hover:text-brand-primary"
+                        }`}
+                    >
+                      {p}
+                    </Button>
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={meta.page >= meta.totalPages}
+                  onClick={() => setPage(prev => prev + 1)}
+                  className="h-9 px-3 border-brand-border"
+                >
+                  {t("pagination.next")}
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
+
 
       {/* Mini Stats for context */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -263,14 +387,31 @@ const InstructorCoursesView = () => {
           </motion.div>
         ))}
       </div>
+
+      <ConfirmDialog
+        open={courseToDeleteId !== null}
+        onOpenChange={(open) => !open && setCourseToDeleteId(null)}
+        title={t("delete_title")}
+        description={t("delete_description")}
+        confirmText={isDeleting ? t("deleting") : t("actions.delete")}
+        cancelText={t("cancel")}
+        confirmVariant="destructive"
+        isLoading={isDeleting}
+        onConfirm={async () => {
+          if (courseToDeleteId) {
+            try {
+              await deleteCourse(courseToDeleteId);
+            } catch (error) {
+              console.error("Delete course failed:", error);
+            } finally {
+              setCourseToDeleteId(null);
+            }
+          }
+        }}
+      />
     </motion.div>
   );
 };
 
 export default InstructorCoursesView;
 
-// --- Hybrid Responsive Summary ---
-// mobile  (default / sm):  Card-based layout (simulated in table with scroll), full-width search and buttons.
-// tablet  (md / lg):       Table layout with condensed columns, 2-col mini stats.
-// desktop (xl / 2xl):      Full table layout, 4-col mini stats, sticky headers.
-// Interaction:             Touch targets >= 44px, hover states on table rows and action buttons.

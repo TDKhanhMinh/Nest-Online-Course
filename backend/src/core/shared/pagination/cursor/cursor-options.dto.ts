@@ -17,6 +17,10 @@ export class CursorOptionsDto {
   @IsString()
   @IsOptional()
   readonly cursor?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly search?: string;
 }
 
 

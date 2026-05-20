@@ -3,7 +3,7 @@ import {
   ICourseRepository, 
   ICOURSE_REPOSITORY 
 } from '@domain/course/ports/i-course.repository';
-import { PageOptionsDto } from '@shared/pagination/offset/page-options.dto';
+import { InstructorCourseQueryDto } from '../dto/instructor-course-query.dto';
 
 @Injectable()
 export class GetInstructorCoursesUseCase {
@@ -12,7 +12,7 @@ export class GetInstructorCoursesUseCase {
     private readonly courseRepo: ICourseRepository,
   ) {}
 
-  async execute(instructorId: string, pageOptionsDto: PageOptionsDto): Promise<any> {
-    return this.courseRepo.findByInstructorId(instructorId, pageOptionsDto);
+  async execute(instructorId: string, query: InstructorCourseQueryDto): Promise<any> {
+    return this.courseRepo.findByInstructorId(instructorId, query);
   }
 }
