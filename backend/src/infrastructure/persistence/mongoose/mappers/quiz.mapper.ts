@@ -9,7 +9,7 @@ export class QuizMapper {
     return Quiz.reconstitute(
       {
         instructorId: new UniqueId(doc.instructorId.toString()),
-        lessonId: new UniqueId(doc.lessonId.toString()),
+        lessonId: doc.lessonId ? new UniqueId(doc.lessonId.toString()) : null,
         title: doc.title,
         description: doc.description,
         passingScore: doc.passingScore,
@@ -29,7 +29,7 @@ export class QuizMapper {
     return {
       _id: domain.id.value,
       instructorId: domain.instructorId.value,
-      lessonId: domain.lessonId.value,
+      lessonId: domain.lessonId?.value ?? null,
       title: domain.title,
       description: domain.description,
       passingScore: domain.passingScore,

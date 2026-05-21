@@ -1,16 +1,6 @@
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
-export class CreateOrUpdateQuizDto {
-  @IsOptional()
-  @IsString()
-  lessonId: string;
-
+export class UpdateQuizDto {
   @IsString()
   @IsNotEmpty()
   title!: string;

@@ -1,40 +1,42 @@
 import api from "@/lib/axios";
 
-export interface UniqueIdDTO {
-  value: string;
-}
-
-export interface RawQuizQuestionDTO {
-  questionId: UniqueIdDTO | string;
+export interface QuizQuestionDTO {
+  questionId: string;
   points: number;
   orderIndex: number;
 }
 
-export interface RawQuizPropsDTO {
-  instructorId?: UniqueIdDTO | string;
-  lessonId: UniqueIdDTO | string;
+export interface InstructorQuizDTO {
+  id: string;
+  instructorId: string;
+  lessonId: string | null;
   title: string;
-  description?: string;
+  description: string;
   passingScore: number;
   timeLimit: number;
   maxAttempts: number;
-  questions?: RawQuizQuestionDTO[];
+  questions: QuizQuestionDTO[];
 }
 
-export interface RawQuizDTO {
-  _id?: UniqueIdDTO;
-  id?: string;
-  props: RawQuizPropsDTO;
-  _domainEvents?: unknown[];
-}
-
-export interface CreateOrUpdateQuizDTO {
-  lessonId: string;
+export interface CreateQuizDTO {
+  lessonId?: string | null;
   title: string;
   description?: string;
   timeLimit: number;
   passingScore: number;
   maxAttempts: number;
+}
+
+export interface UpdateQuizDTO {
+  title: string;
+  description?: string;
+  timeLimit: number;
+  passingScore: number;
+  maxAttempts: number;
+}
+
+export interface UpdateQuizLessonIdDTO {
+  lessonId: string | null;
 }
 
 export interface AddQuestionToQuizDTO {
@@ -50,24 +52,6 @@ export interface RemoveQuestionFromQuizDTO {
 }
 
 export type QuizOrder = "ASC" | "DESC";
-
-export interface ListedQuizQuestionDTO {
-  questionId: string;
-  points: number;
-  orderIndex: number;
-}
-
-export interface ListedQuizDTO {
-  id: string;
-  instructorId: string;
-  lessonId: string;
-  title: string;
-  description: string;
-  passingScore: number;
-  timeLimit: number;
-  maxAttempts: number;
-  questions: ListedQuizQuestionDTO[];
-}
 
 export interface QuizPaginationMeta {
   page: number;
@@ -86,12 +70,12 @@ export interface GetInstructorQuizzesParams {
 }
 
 export interface InstructorQuizListResponseDTO {
-  data: ListedQuizDTO[];
+  data: InstructorQuizDTO[];
   pagination: QuizPaginationMeta;
 }
 
 export const instructorQuizApi = {
-  getInstructorQuizById: async (quizId: string): Promise<ListedQuizDTO> => {
+  getInstructorQuizById: async (quizId: string): Promise<InstructorQuizDTO> => {
     const response = await api.get(`/instructor/quizzes/${quizId}`);
     return response.data;
   },
@@ -103,16 +87,33 @@ export const instructorQuizApi = {
     return response.data;
   },
 
-  createOrUpdateQuiz: async (
-    data: CreateOrUpdateQuizDTO
-  ): Promise<RawQuizDTO> => {
-    const response = await api.put("/instructor/quizzes", data);
+  createQuiz: async (data: CreateQuizDTO): Promise<InstructorQuizDTO> => {
+    const response = await api.post("/instructor/quizzes", data);
+    return response.data;
+  },
+
+  updateQuiz: async (
+    quizId: string,
+    data: UpdateQuizDTO
+  ): Promise<InstructorQuizDTO> => {
+    const response = await api.put(`/instructor/quizzes/${quizId}`, data);
+    return response.data;
+  },
+
+  updateQuizLessonId: async (
+    quizId: string,
+    data: UpdateQuizLessonIdDTO
+  ): Promise<InstructorQuizDTO> => {
+    const response = await api.patch(
+      `/instructor/quizzes/${quizId}/lesson`,
+      data
+    );
     return response.data;
   },
 
   addQuestionToQuiz: async (
     data: AddQuestionToQuizDTO
-  ): Promise<RawQuizDTO> => {
+  ): Promise<InstructorQuizDTO> => {
     const response = await api.post("/instructor/quizzes/questions/add", data);
     return response.data;
   },

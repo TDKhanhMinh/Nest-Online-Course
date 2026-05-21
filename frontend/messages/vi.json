@@ -870,6 +870,26 @@
       "delete_description": "Bạn có chắc chắn muốn xóa chương này cùng với tất cả bài giảng bên trong? Hành động này không thể hoàn tác."
     },
     "lesson": {
+      "quiz_bank": {
+        "title": "Gan Quiz Cho Bai Hoc",
+        "description": "Chon mot quiz da tao de gan vao bai hoc nay khi luu.",
+        "create_new": "Tao Quiz Moi",
+        "search_placeholder": "Tim quiz theo tieu de, mo ta, hoac lesson ID...",
+        "selected": "Da Chon",
+        "attached": "Dang Gan",
+        "already_attached": "Quiz nay da duoc gan vao bai hoc hien tai.",
+        "will_attach": "Khi luu, quiz nay se duoc chuyen sang bai hoc hien tai.",
+        "question_count": "{count} cau hoi",
+        "lesson_id": "Lesson ID: {id}",
+        "selection_required": "Hay chon quiz truoc khi luu bai hoc loai quiz.",
+        "attach_success": "Gan quiz vao bai hoc thanh cong.",
+        "attach_failed": "Gan quiz vao bai hoc that bai.",
+        "replace_blocked": "Bai hoc nay da co mot quiz khac dang gan. Hay xu ly thay the trong luong quiz rieng.",
+        "replace_blocked_with_title": "Bai hoc nay dang gan voi \"{title}\". Khong the thay the tai day.",
+        "load_error": "Khong the tai danh sach quiz.",
+        "empty": "Khong co quiz nao phu hop voi bo loc hien tai.",
+        "no_description": "Chua co mo ta."
+      },
       "title": "Chi tiết bài học",
       "name": "Tiêu đề bài học",
       "name_placeholder": "v.d., Cài đặt môi trường",

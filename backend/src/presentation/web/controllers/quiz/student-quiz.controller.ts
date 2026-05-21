@@ -36,7 +36,7 @@ export class StudentQuizController {
 
     return {
       id: quiz.id.value,
-      lessonId: quiz.lessonId.value,
+      lessonId: quiz.lessonId?.value ?? null,
       title: quiz.title,
       description: quiz.description,
       passingScore: quiz.passingScore,

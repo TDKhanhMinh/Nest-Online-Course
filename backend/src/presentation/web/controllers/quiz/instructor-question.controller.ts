@@ -14,9 +14,12 @@ import {
   Put,
   Query,
   UseGuards,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
-import { CurrentUser, JwtPayload } from '@presentation/web/shared/decorators/current-user.decorator';
+import {
+  CurrentUser,
+  JwtPayload,
+} from '@presentation/web/shared/decorators/current-user.decorator';
 import { Roles } from '@presentation/web/shared/decorators/roles.decorator';
 import { JwtAuthGuard } from '@presentation/web/shared/guards/jwt-auth.guard';
 import { RolesGuard } from '@presentation/web/shared/guards/roles.guard';
@@ -38,7 +41,10 @@ export class InstructorQuestionController {
   ) {}
 
   @Post()
-  async create(@CurrentUser() user: JwtPayload, @Body() dto: CreateQuestionDto) {
+  async create(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: CreateQuestionDto,
+  ) {
     const question = await this.createQuestionUseCase.execute({
       ...dto,
       instructorId: user.sub,
@@ -49,7 +55,8 @@ export class InstructorQuestionController {
   @Get()
   async getQuestions(
     @CurrentUser() user: JwtPayload,
-    @Query(new ValidationPipe({ transform: true })) pageOptionsDto: PageOptionsDto,
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: PageOptionsDto,
     @Query('courseId') courseId?: string,
   ) {
     const pageDto = await this.getInstructorQuestionsUseCase.execute({
@@ -86,4 +93,3 @@ export class InstructorQuestionController {
     return { success: true, message: 'Question deleted successfully' };
   }
 }
-

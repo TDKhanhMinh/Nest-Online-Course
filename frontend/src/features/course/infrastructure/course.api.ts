@@ -65,6 +65,7 @@ export interface CreateSectionDto {
 
 export interface UpdateSectionDto {
   title: string;
+  orderIndex?: number;
 }
 
 export interface CreateLessonDto {
@@ -77,7 +78,7 @@ export interface CreateLessonDto {
   isFreePreview?: boolean;
 }
 
-export interface UpdateLessonDto extends Partial<CreateLessonDto> {}
+export type UpdateLessonDto = Partial<CreateLessonDto>;
 
 export interface UpdateCourseStatusDto {
   status: CourseStatus;
@@ -185,5 +186,3 @@ export const courseApi = {
     return response.data;
   },
 };
-
-

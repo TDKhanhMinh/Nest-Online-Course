@@ -19,8 +19,8 @@ export class QuizDocument extends Document {
   @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'UserDocument' })
   instructorId: string;
 
-  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'LessonDocument' })
-  lessonId: string;
+  @Prop({ default: null, type: MongooseSchema.Types.ObjectId, ref: 'LessonDocument' })
+  lessonId: string | null;
 
   @Prop({ required: true })
   title: string;
@@ -42,4 +42,10 @@ export class QuizDocument extends Document {
 }
 
 export const QuizSchema = SchemaFactory.createForClass(QuizDocument);
-QuizSchema.index({ lessonId: 1 }, { unique: true }); // One quiz per lesson for now
+QuizSchema.index(
+  { lessonId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { lessonId: { $type: 'objectId' } },
+  },
+);

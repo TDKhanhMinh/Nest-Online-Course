@@ -4,7 +4,7 @@ import {
   type QuizPaginationMeta,
 } from "../infrastructure/instructor-quiz.api";
 import {
-  mapListedInstructorQuiz,
+  mapInstructorQuiz,
   type InstructorQuiz,
 } from "./instructor-quiz.mapper";
 
@@ -20,7 +20,7 @@ export class GetInstructorQuizzesUseCase {
     const response = await instructorQuizApi.getInstructorQuizzes(params);
 
     return {
-      data: response.data.map(mapListedInstructorQuiz),
+      data: response.data.map(mapInstructorQuiz),
       pagination: response.pagination,
     };
   }

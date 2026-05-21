@@ -75,6 +75,3 @@ export class Enrollment extends AggregateRoot<EnrollmentProps> {
     return new Enrollment(props, id);
   }
 }
-
-
-

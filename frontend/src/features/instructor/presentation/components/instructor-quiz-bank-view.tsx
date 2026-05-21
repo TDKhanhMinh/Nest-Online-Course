@@ -213,7 +213,7 @@ const InstructorQuizBankView = () => {
                         </div>
                       </TableCell>
                       <TableCell className="font-mono text-xs">
-                        {quiz.lessonId}
+                        {quiz.lessonId || "-"}
                       </TableCell>
                       <TableCell>
                         <Badge

@@ -9,7 +9,7 @@ export interface QuizQuestionConfig {
 
 export interface QuizProps {
   instructorId: UniqueId;
-  lessonId: UniqueId;
+  lessonId: UniqueId | null;
   title: string;
   description: string;
   passingScore: number;
@@ -23,7 +23,7 @@ export class Quiz extends AggregateRoot<QuizProps> {
     return this.props.instructorId;
   }
 
-  get lessonId(): UniqueId {
+  get lessonId(): UniqueId | null {
     return this.props.lessonId;
   }
 

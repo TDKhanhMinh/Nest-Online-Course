@@ -1,4 +1,4 @@
-import { Section } from "../domain/course.types";
+import type { Lesson, Section } from "../domain/course.types";
 import { courseApi, SectionDTO } from "../infrastructure/course.api";
 
 export interface CreateSectionInput {
@@ -7,6 +7,7 @@ export interface CreateSectionInput {
 
 export interface UpdateSectionInput {
   title: string;
+  orderIndex?: number;
 }
 
 const mapSectionToEntity = (dto: SectionDTO): Section => {
@@ -14,13 +15,14 @@ const mapSectionToEntity = (dto: SectionDTO): Section => {
     id: dto.id,
     courseId: dto.courseId,
     title: dto.title,
+    orderIndex: dto.orderIndex,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
     lessons: (dto.lessons || []).map(lessonDto => ({
       id: lessonDto.id,
       sectionId: lessonDto.sectionId,
       title: lessonDto.title,
-      type: lessonDto.type as any,
+      type: lessonDto.type as Lesson["type"],
       order: lessonDto.orderIndex,
       content: lessonDto.textContent, 
       videoUrl: lessonDto.contentUrl,
@@ -46,6 +48,7 @@ export const updateSectionUseCase = {
     console.log('courseId', courseId);
     const response = await courseApi.updateSection(courseId, sectionId, {
       title: input.title,
+      orderIndex: input.orderIndex,
     });
     return mapSectionToEntity(response);
   },

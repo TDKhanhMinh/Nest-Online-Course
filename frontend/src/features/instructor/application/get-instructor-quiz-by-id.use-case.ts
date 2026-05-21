@@ -1,18 +1,18 @@
 import {
   instructorQuizApi,
-  type ListedQuizDTO,
+  type InstructorQuizDTO,
 } from "../infrastructure/instructor-quiz.api";
 import {
-  mapListedInstructorQuiz,
+  mapInstructorQuiz,
   type InstructorQuiz,
 } from "./instructor-quiz.mapper";
 
 export class GetInstructorQuizByIdUseCase {
   async execute(quizId: string): Promise<InstructorQuiz> {
-    const response: ListedQuizDTO =
+    const response: InstructorQuizDTO =
       await instructorQuizApi.getInstructorQuizById(quizId);
 
-    return mapListedInstructorQuiz(response);
+    return mapInstructorQuiz(response);
   }
 }
 
