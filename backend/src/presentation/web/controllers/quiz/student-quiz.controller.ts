@@ -2,15 +2,11 @@ import { SubmitQuizAttemptDto } from '@application/quiz/dto/submit-quiz-attempt.
 import { GetQuizByLessonUseCase } from '@application/quiz/use-cases/get-quiz-by-lesson.use-case';
 import { StartQuizAttemptUseCase } from '@application/quiz/use-cases/start-quiz-attempt.use-case';
 import { SubmitQuizAttemptUseCase } from '@application/quiz/use-cases/submit-quiz-attempt.use-case';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
-import { CurrentUser, JwtPayload } from '@presentation/web/shared/decorators/current-user.decorator';
+  CurrentUser,
+  JwtPayload,
+} from '@presentation/web/shared/decorators/current-user.decorator';
 import { Roles } from '@presentation/web/shared/decorators/roles.decorator';
 import { JwtAuthGuard } from '@presentation/web/shared/guards/jwt-auth.guard';
 import { RolesGuard } from '@presentation/web/shared/guards/roles.guard';
@@ -36,23 +32,21 @@ export class StudentQuizController {
   ) {
     const quiz = await this.getQuizByLessonUseCase.execute({
       lessonId,
-      studentId: user.sub,
     });
-    
-    // Hide correct answers and explanations from the student
-    const quizJson = quiz.toJSON();
-    const sanitizedQuestions = quizJson.questions.map(q => ({
-      ...q,
-      options: q.options.map(opt => ({
-        id: opt.id,
-        content: opt.content,
-        // Omit isCorrect and explanation
-      }))
-    }));
 
     return {
-      ...quizJson,
-      questions: sanitizedQuestions
+      id: quiz.id.value,
+      lessonId: quiz.lessonId.value,
+      title: quiz.title,
+      description: quiz.description,
+      passingScore: quiz.passingScore,
+      timeLimit: quiz.timeLimit,
+      maxAttempts: quiz.maxAttempts,
+      questions: quiz.questions.map((q) => ({
+        questionId: q.questionId.value,
+        points: q.points,
+        orderIndex: q.orderIndex,
+      })),
     };
   }
 
@@ -79,13 +73,12 @@ export class StudentQuizController {
       studentId: user.sub,
       answers: dto.answers,
     });
-    
+
     return {
       success: true,
       score: attempt.score,
       isPassed: attempt.isPassed,
-      submittedAt: attempt.submittedAt,
+      submittedAt: attempt.endTime,
     };
   }
 }
-

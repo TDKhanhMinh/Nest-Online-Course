@@ -1,5 +1,13 @@
-import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { IQuizRepository, QUIZ_REPOSITORY } from '../../../domain/quiz/ports/i-quiz.repository';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
+import {
+  IQuizRepository,
+  QUIZ_REPOSITORY,
+} from '../../../domain/quiz/ports/i-quiz.repository';
 import { UniqueId } from '../../../shared/types/unique-id.vo';
 
 export interface RemoveQuestionFromQuizCommand {
@@ -12,7 +20,7 @@ export interface RemoveQuestionFromQuizCommand {
 export class RemoveQuestionFromQuizUseCase {
   constructor(
     @Inject(QUIZ_REPOSITORY)
-    private readonly quizRepository: IQuizRepository
+    private readonly quizRepository: IQuizRepository,
   ) {}
 
   async execute(command: RemoveQuestionFromQuizCommand): Promise<void> {
@@ -26,7 +34,9 @@ export class RemoveQuestionFromQuizUseCase {
     }
 
     if (!quiz.instructorId.equals(instructorId)) {
-      throw new ForbiddenException('You do not have permission to modify this quiz');
+      throw new ForbiddenException(
+        'You do not have permission to modify this quiz',
+      );
     }
 
     quiz.removeQuestion(questionId);

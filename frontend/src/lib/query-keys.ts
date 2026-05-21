@@ -2,7 +2,8 @@ export const queryKeys = {
   courses: {
     all: ["courses"] as const,
     lists: () => [...queryKeys.courses.all, "list"] as const,
-    list: (filters: Record<string, any>) => [...queryKeys.courses.lists(), { filters }] as const,
+    list: <T extends object>(filters: T) =>
+      [...queryKeys.courses.lists(), { filters }] as const,
     details: () => [...queryKeys.courses.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.courses.details(), id] as const,
     instructor: () => [...queryKeys.courses.all, "instructor"] as const,
@@ -15,12 +16,14 @@ export const queryKeys = {
     all: ["categories"] as const,
     full: () => [...queryKeys.categories.all, "full"] as const,
     lists: () => [...queryKeys.categories.all, "list"] as const,
-    list: (filters: Record<string, any>) => [...queryKeys.categories.lists(), { filters }] as const,
+    list: <T extends object>(filters: T) =>
+      [...queryKeys.categories.lists(), { filters }] as const,
   },
   admin: {
     all: ["admin"] as const,
     courses: () => [...queryKeys.admin.all, "courses"] as const,
-    courseList: (filters: any) => [...queryKeys.admin.courses(), "list", filters] as const,
+    courseList: (filters: unknown) =>
+      [...queryKeys.admin.courses(), "list", filters] as const,
     courseDetail: (id: string) => [...queryKeys.admin.courses(), "detail", id] as const,
     categories: () => [...queryKeys.admin.all, "categories"] as const,
   },
@@ -32,10 +35,22 @@ export const queryKeys = {
     all: ["instructor"] as const,
     profile: () => [...queryKeys.instructor.all, "profile"] as const,
     me: () => [...queryKeys.instructor.profile(), "me"] as const,
+    quizzes: {
+      all: [...["instructor"], "quizzes"] as const,
+      lists: () => [...queryKeys.instructor.quizzes.all, "list"] as const,
+      list: <T extends object>(filters: T) =>
+        [...queryKeys.instructor.quizzes.lists(), { filters }] as const,
+      lessons: () => [...queryKeys.instructor.quizzes.all, "lesson"] as const,
+      lesson: (lessonId: string) =>
+        [...queryKeys.instructor.quizzes.lessons(), lessonId] as const,
+      details: () => [...queryKeys.instructor.quizzes.all, "detail"] as const,
+      detail: (id: string) =>
+        [...queryKeys.instructor.quizzes.details(), id] as const,
+    },
     questions: {
       all: [...["instructor"], "questions"] as const,
       lists: () => [...queryKeys.instructor.questions.all, "list"] as const,
-      list: (filters: Record<string, any>) =>
+      list: <T extends object>(filters: T) =>
         [...queryKeys.instructor.questions.lists(), { filters }] as const,
       details: () =>
         [...queryKeys.instructor.questions.all, "detail"] as const,

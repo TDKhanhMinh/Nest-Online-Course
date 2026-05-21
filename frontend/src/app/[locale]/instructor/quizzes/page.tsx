@@ -1,11 +1,12 @@
 import { Metadata } from "next";
-import InstructorQuizCreatorView from "@/features/instructor/presentation/components/instructor-quiz-creator-view";
+
+import InstructorQuizBankView from "@/features/instructor/presentation/components/instructor-quiz-bank-view";
 
 export const metadata: Metadata = {
-  title: "Quiz Creator | Instructor Portal",
-  description: "Create and configure assessments",
+  title: "Quiz Bank | Instructor Portal",
+  description: "Browse and manage instructor quizzes",
 };
 
-export default function QuizCreatorPage() {
-  return <InstructorQuizCreatorView />;
+export default function QuizBankPage() {
+  return <InstructorQuizBankView />;
 }

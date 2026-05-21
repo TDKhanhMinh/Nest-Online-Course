@@ -3,7 +3,9 @@ import { AddQuestionToQuizUseCase } from './use-cases/add-question-to-quiz.use-c
 import { CreateOrUpdateQuizUseCase } from './use-cases/create-or-update-quiz.use-case';
 import { CreateQuestionUseCase } from './use-cases/create-question.use-case';
 import { DeleteQuestionUseCase } from './use-cases/delete-question.use-case';
+import { GetAllQuizzesUseCase } from './use-cases/get-all-quizzes.use-case';
 import { GetInstructorQuestionsUseCase } from './use-cases/get-instructor-questions.use-case';
+import { GetQuizByIdUseCase } from './use-cases/get-quiz-by-id.use-case';
 import { GetQuizByLessonUseCase } from './use-cases/get-quiz-by-lesson.use-case';
 import { RemoveQuestionFromQuizUseCase } from './use-cases/remove-question-from-quiz.use-case';
 import { StartQuizAttemptUseCase } from './use-cases/start-quiz-attempt.use-case';
@@ -15,6 +17,8 @@ const useCases = [
   UpdateQuestionUseCase,
   DeleteQuestionUseCase,
   GetInstructorQuestionsUseCase,
+  GetAllQuizzesUseCase,
+  GetQuizByIdUseCase,
   CreateOrUpdateQuizUseCase,
   AddQuestionToQuizUseCase,
   RemoveQuestionFromQuizUseCase,

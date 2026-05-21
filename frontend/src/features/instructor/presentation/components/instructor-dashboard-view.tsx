@@ -3,7 +3,13 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -21,7 +27,7 @@ import {
   Plus,
   Star,
   TrendingUp,
-  Users
+  Users,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
@@ -30,7 +36,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   XAxis,
-  YAxis
+  YAxis,
 } from "recharts";
 
 const containerVariants = {
@@ -75,9 +81,9 @@ export const InstructorDashboardView = () => {
   const { data: coursesData } = useInstructorCourses();
   const courses = coursesData?.courses || [];
 
-  const totalStudentsCount = '0'
+  const totalStudentsCount = "0";
   // courses?.reduce((acc, course) => acc + (course.totalStudents || 0), 0);
-  const totalRevenue = '0'
+  const totalRevenue = "0";
   // = courses?.reduce((acc, course) => acc + ((course.totalStudents || 0) * (course.price || 0)), 0);
 
   const stats = [
@@ -88,16 +94,16 @@ export const InstructorDashboardView = () => {
       color: "text-blue-500",
       bg: "bg-blue-500/10",
       trend: "+12%",
-      description: "Students joined this month"
+      description: "Students joined this month",
     },
     {
       label: t("overview.total_courses"),
-      value: courses.length.toString(),
+      value: courses.length,
       icon: BookOpen,
       color: "text-purple-500",
       bg: "bg-purple-500/10",
       trend: "0%",
-      description: "Active courses on platform"
+      description: "Active courses on platform",
     },
     {
       label: t("overview.avg_rating"),
@@ -106,7 +112,7 @@ export const InstructorDashboardView = () => {
       color: "text-amber-500",
       bg: "bg-amber-500/10",
       trend: "+0.2",
-      description: "Average across all courses"
+      description: "Average across all courses",
     },
     {
       label: t("overview.revenue"),
@@ -115,20 +121,62 @@ export const InstructorDashboardView = () => {
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
       trend: "+18%",
-      description: "Total earnings this month"
+      description: "Total earnings this month",
     },
   ];
 
   const recentActivities = [
-    { id: 1, type: "enrollment", student: "Alex Johnson", course: "React for Beginners", time: "2 hours ago", avatar: "AJ" },
-    { id: 2, type: "question", student: "Maria Garcia", course: "Advanced Next.js", time: "4 hours ago", content: "How do I implement dynamic metadata?", avatar: "MG" },
-    { id: 3, type: "review", student: "John Smith", course: "UI/UX Design Masterclass", time: "6 hours ago", rating: 5, avatar: "JS" },
-    { id: 4, type: "enrollment", student: "Sarah Williams", course: "React for Beginners", time: "1 day ago", avatar: "SW" },
+    {
+      id: 1,
+      type: "enrollment",
+      student: "Alex Johnson",
+      course: "React for Beginners",
+      time: "2 hours ago",
+      avatar: "AJ",
+    },
+    {
+      id: 2,
+      type: "question",
+      student: "Maria Garcia",
+      course: "Advanced Next.js",
+      time: "4 hours ago",
+      content: "How do I implement dynamic metadata?",
+      avatar: "MG",
+    },
+    {
+      id: 3,
+      type: "review",
+      student: "John Smith",
+      course: "UI/UX Design Masterclass",
+      time: "6 hours ago",
+      rating: 5,
+      avatar: "JS",
+    },
+    {
+      id: 4,
+      type: "enrollment",
+      student: "Sarah Williams",
+      course: "React for Beginners",
+      time: "1 day ago",
+      avatar: "SW",
+    },
   ];
 
   const supportRequests = [
-    { id: 1, title: "Video playback issue", priority: "high", status: "unanswered", time: "1 hour ago" },
-    { id: 2, title: "Course material download link", priority: "medium", status: "unanswered", time: "3 hours ago" },
+    {
+      id: 1,
+      title: "Video playback issue",
+      priority: "high",
+      status: "unanswered",
+      time: "1 hour ago",
+    },
+    {
+      id: 2,
+      title: "Course material download link",
+      priority: "medium",
+      status: "unanswered",
+      time: "3 hours ago",
+    },
   ];
 
   return (
@@ -157,7 +205,10 @@ export const InstructorDashboardView = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="flex items-center gap-3"
           >
-            <Button variant="outline" className="glass border-white/10 text-white hover:bg-white/10 transition-all">
+            <Button
+              variant="outline"
+              className="glass border-white/10 text-white hover:bg-white/10 transition-all"
+            >
               <Calendar className="mr-2 h-4 w-4" />
               Schedule
             </Button>
@@ -179,20 +230,33 @@ export const InstructorDashboardView = () => {
         {stats.map((stat, index) => (
           <motion.div key={index} variants={itemVariants}>
             <Card className="glass border-brand-border/50 hover:shadow-xl transition-all cursor-pointer group relative overflow-hidden">
-              <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-bl-full opacity-20 group-hover:scale-125 transition-transform`} />
+              <div
+                className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-bl-full opacity-20 group-hover:scale-125 transition-transform`}
+              />
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color} group-hover:rotate-12 transition-transform shadow-sm`}>
+                  <div
+                    className={`p-3 rounded-2xl ${stat.bg} ${stat.color} group-hover:rotate-12 transition-transform shadow-sm`}
+                  >
                     <stat.icon size={24} />
                   </div>
-                  <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-bold px-2">
+                  <Badge
+                    variant="outline"
+                    className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-bold px-2"
+                  >
                     {stat.trend}
                   </Badge>
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">{stat.value}</h3>
-                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">{stat.label}</p>
-                  <p className="text-[10px] text-slate-400 mt-2 line-clamp-1">{stat.description}</p>
+                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+                    {stat.value}
+                  </h3>
+                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+                    {stat.label}
+                  </p>
+                  <p className="text-[10px] text-slate-400 mt-2 line-clamp-1">
+                    {stat.description}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -214,8 +278,16 @@ export const InstructorDashboardView = () => {
               </CardDescription>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" className="h-8 text-xs">Week</Button>
-              <Button variant="secondary" size="sm" className="h-8 text-xs font-bold">Month</Button>
+              <Button variant="outline" size="sm" className="h-8 text-xs">
+                Week
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-8 text-xs font-bold"
+              >
+                Month
+              </Button>
             </div>
           </CardHeader>
           <CardContent className="pb-4 flex-1">
@@ -226,27 +298,59 @@ export const InstructorDashboardView = () => {
                   margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                 >
                   <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--color-revenue)" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="var(--color-revenue)" stopOpacity={0} />
+                    <linearGradient
+                      id="colorRevenue"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="5%"
+                        stopColor="var(--color-revenue)"
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor="var(--color-revenue)"
+                        stopOpacity={0}
+                      />
                     </linearGradient>
-                    <linearGradient id="colorStudents" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--color-students)" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="var(--color-students)" stopOpacity={0} />
+                    <linearGradient
+                      id="colorStudents"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="5%"
+                        stopColor="var(--color-students)"
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor="var(--color-students)"
+                        stopOpacity={0}
+                      />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="hsl(var(--muted))"
+                  />
                   <XAxis
                     dataKey="month"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                    tick={{
+                      fontSize: 12,
+                      fill: "hsl(var(--muted-foreground))",
+                    }}
                     dy={10}
                   />
-                  <YAxis
-                    hide
-                    domain={['auto', 'auto']}
-                  />
+                  <YAxis hide domain={["auto", "auto"]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <Area
                     type="monotone"
@@ -283,23 +387,39 @@ export const InstructorDashboardView = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-3">
-              <Button variant="outline" className="justify-between h-14 border-brand-border/50 hover:bg-brand-amber/5 group transition-all rounded-xl px-4">
+              <Button
+                variant="outline"
+                className="justify-between h-14 border-brand-border/50 hover:bg-brand-amber/5 group transition-all rounded-xl px-4"
+              >
                 <div className="flex items-center">
                   <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 mr-3 group-hover:bg-brand-amber/20 group-hover:text-brand-amber transition-colors">
                     <Users size={18} />
                   </div>
-                  <span className="font-semibold">{t("quick_actions.view_students")}</span>
+                  <span className="font-semibold">
+                    {t("quick_actions.view_students")}
+                  </span>
                 </div>
-                <ArrowUpRight size={16} className="text-slate-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight
+                  size={16}
+                  className="text-slate-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                />
               </Button>
-              <Button variant="outline" className="justify-between h-14 border-brand-border/50 hover:bg-brand-amber/5 group transition-all rounded-xl px-4">
+              <Button
+                variant="outline"
+                className="justify-between h-14 border-brand-border/50 hover:bg-brand-amber/5 group transition-all rounded-xl px-4"
+              >
                 <div className="flex items-center">
                   <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 mr-3 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
                     <TrendingUp size={18} />
                   </div>
-                  <span className="font-semibold">{t("quick_actions.payout_settings")}</span>
+                  <span className="font-semibold">
+                    {t("quick_actions.payout_settings")}
+                  </span>
                 </div>
-                <ArrowUpRight size={16} className="text-slate-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight
+                  size={16}
+                  className="text-slate-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                />
               </Button>
             </CardContent>
           </Card>
@@ -319,19 +439,29 @@ export const InstructorDashboardView = () => {
             </CardHeader>
             <CardContent className="p-4 space-y-4">
               {supportRequests.map((req) => (
-                <div key={req.id} className="group cursor-pointer p-3 rounded-xl hover:bg-white dark:hover:bg-white/5 border border-transparent hover:border-brand-border transition-all shadow-hover">
+                <div
+                  key={req.id}
+                  className="group cursor-pointer p-3 rounded-xl hover:bg-white dark:hover:bg-white/5 border border-transparent hover:border-brand-border transition-all shadow-hover"
+                >
                   <div className="flex items-center justify-between mb-1">
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${req.priority === 'high' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${req.priority === "high" ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-600"}`}
+                    >
                       {req.priority}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-medium">{req.time}</span>
+                    <span className="text-[10px] text-slate-400 font-medium">
+                      {req.time}
+                    </span>
                   </div>
                   <p className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors line-clamp-1">
                     {req.title}
                   </p>
                 </div>
               ))}
-              <Button variant="ghost" className="w-full text-xs h-9 hover:bg-slate-200/50 dark:hover:bg-white/10 font-bold">
+              <Button
+                variant="ghost"
+                className="w-full text-xs h-9 hover:bg-slate-200/50 dark:hover:bg-white/10 font-bold"
+              >
                 {t("support_requests.view_all")}
               </Button>
             </CardContent>
@@ -346,19 +476,31 @@ export const InstructorDashboardView = () => {
             <Clock className="text-primary" size={20} />
             {t("recent_activity.title")}
           </CardTitle>
-          <Button variant="ghost" size="sm" className="text-primary font-bold text-xs hover:bg-primary/10">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-primary font-bold text-xs hover:bg-primary/10"
+          >
             View Activity Log
           </Button>
         </CardHeader>
         <CardContent className="p-0">
           <div className="divide-y divide-brand-border/30">
             {recentActivities.map((activity) => (
-              <div key={activity.id} className="p-5 flex items-start gap-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
+              <div
+                key={activity.id}
+                className="p-5 flex items-start gap-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group"
+              >
                 <Avatar className="h-10 w-10 border-2 border-white dark:border-slate-800 shadow-sm group-hover:scale-110 transition-transform">
-                  <AvatarFallback className={`${activity.type === 'enrollment' ? 'bg-blue-100 text-blue-600' :
-                    activity.type === 'question' ? 'bg-amber-100 text-amber-600' :
-                      'bg-purple-100 text-purple-600'
-                    } font-bold text-xs`}>
+                  <AvatarFallback
+                    className={`${
+                      activity.type === "enrollment"
+                        ? "bg-blue-100 text-blue-600"
+                        : activity.type === "question"
+                          ? "bg-amber-100 text-amber-600"
+                          : "bg-purple-100 text-purple-600"
+                    } font-bold text-xs`}
+                  >
                     {activity.avatar}
                   </AvatarFallback>
                 </Avatar>
@@ -373,21 +515,37 @@ export const InstructorDashboardView = () => {
                     </span>
                   </div>
                   <p className="text-sm text-slate-600 dark:text-slate-400 mt-0.5">
-                    {activity.type === 'enrollment' ? t("recent_activity.new_enrollment", { student: "", course: activity.course }) :
-                      activity.type === 'question' ? t("recent_activity.new_question", { student: "", course: activity.course }) :
-                        t("recent_activity.new_review", { student: "", course: activity.course, rating: activity.rating ?? 0 })}
+                    {activity.type === "enrollment"
+                      ? t("recent_activity.new_enrollment", {
+                          student: "",
+                          course: activity.course,
+                        })
+                      : activity.type === "question"
+                        ? t("recent_activity.new_question", {
+                            student: "",
+                            course: activity.course,
+                          })
+                        : t("recent_activity.new_review", {
+                            student: "",
+                            course: activity.course,
+                            rating: activity.rating ?? 0,
+                          })}
                     <span className="font-bold text-slate-900 dark:text-white ml-1">
                       {activity.course}
                     </span>
                   </p>
                   {activity.content && (
                     <div className="mt-2 p-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 italic text-xs text-slate-500 dark:text-slate-400 border-l-4 border-brand-amber">
-                      "{activity.content}"
+                      {activity.content}
                     </div>
                   )}
                 </div>
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-primary rounded-full hover:bg-primary/20">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-primary rounded-full hover:bg-primary/20"
+                  >
                     <ArrowUpRight size={18} />
                   </Button>
                 </div>
