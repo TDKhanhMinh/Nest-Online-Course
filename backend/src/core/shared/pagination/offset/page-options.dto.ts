@@ -18,7 +18,7 @@ export class PageOptionsDto {
   @Min(1)
   @Max(100)
   @IsOptional()
-  readonly limit?: number = 10;
+  readonly limit: number = 10;
 
   @IsString()
   @IsOptional()

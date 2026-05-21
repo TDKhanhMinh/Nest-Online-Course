@@ -781,6 +781,10 @@
       "biography": "Tiểu sử",
       "expertise": "Chuyên môn",
       "website": "Trang web",
+      "social_links": "Liên kết mạng xã hội",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter",
+      "youtube": "YouTube",
       "save": "Lưu hồ sơ giảng dạy"
     },
     "payout": {
@@ -803,7 +807,7 @@
     },
     "table": {
       "course": "Khóa học",
-      "level":"Trình độ",
+      "level": "Trình độ",
       "students": "Học viên",
       "price": "Giá",
       "status": "Trạng thái",
@@ -896,49 +900,6 @@
     "delete": "Xóa",
     "deleting": "Đang xóa..."
   },
-  "QuestionBank": {
-    "title": "Ngân hàng câu hỏi",
-    "add_question": "Thêm câu hỏi",
-    "categories": "Danh mục",
-    "all_questions": "Tất cả câu hỏi",
-    "search": "Tìm kiếm câu hỏi...",
-    "types": {
-      "mcq": "Trắc nghiệm",
-      "essay": "Tự luận",
-      "matching": "Nối cặp",
-      "true_false": "Đúng/Sai"
-    },
-    "preview": "Xem trước câu hỏi",
-    "edit": "Chỉnh sửa câu hỏi",
-    "duplicate": "Nhân bản câu hỏi",
-    "delete": "Xóa câu hỏi",
-    "difficulty": {
-      "easy": "Dễ",
-      "medium": "Trung bình",
-      "hard": "Khó"
-    },
-    "table": {
-      "question": "Câu hỏi",
-      "type": "Loại",
-      "category": "Danh mục",
-      "difficulty": "Độ khó",
-      "actions": "Thao tác"
-    },
-    "empty": {
-      "title": "Không tìm thấy câu hỏi",
-      "description": "Thử điều chỉnh tìm kiếm hoặc bộ lọc của bạn."
-    },
-    "all_types": "Tất cả các loại",
-    "add_modal": {
-      "title": "Thêm câu hỏi mới",
-      "question_text": "Nội dung câu hỏi",
-      "type": "Loại",
-      "difficulty": "Độ khó",
-      "category": "Danh mục",
-      "save": "Lưu câu hỏi",
-      "cancel": "Hủy"
-    }
-  },
   "QuizCreator": {
     "title": "Trình tạo bài kiểm tra",
     "settings": "Cài đặt bài kiểm tra",
@@ -975,6 +936,83 @@
       "points": "Tất cả các câu hỏi đã được gán điểm.",
       "pass_score": "Điểm đạt nằm trong phạm vi hợp lệ.",
       "title": "Tiêu đề bài kiểm tra đã được cung cấp."
+    }
+  },
+  "QuestionBank": {
+    "title": "Ngân hàng câu hỏi",
+    "all_questions": "Quản lý tất cả câu hỏi kiểm tra của bạn ở một nơi",
+    "categories": "Danh mục",
+    "add_question": "Thêm câu hỏi",
+    "search": "Tìm kiếm câu hỏi...",
+    "all_types": "Tất cả các loại",
+    "loading": "Đang tải câu hỏi...",
+    "error": "Không thể tải danh sách câu hỏi. Vui lòng thử lại.",
+    "preview": "Xem trước",
+    "edit": "Sửa",
+    "duplicate": "Nhân bản",
+    "delete": "Xóa",
+    "types": {
+      "SINGLE_CHOICE": "Trắc nghiệm chọn một",
+      "MULTIPLE_CHOICE": "Trắc nghiệm chọn nhiều",
+      "TRUE_FALSE": "Đúng / Sai"
+    },
+    "difficulty": {
+      "EASY": "Dễ",
+      "MEDIUM": "Trung bình",
+      "HARD": "Khó"
+    },
+    "table": {
+      "question": "Câu hỏi",
+      "type": "Loại",
+      "tags": "Nhãn",
+      "difficulty": "Độ khó",
+      "actions": "Thao tác"
+    },
+    "empty": {
+      "title": "Không tìm thấy câu hỏi nào",
+      "description": "Thử điều chỉnh từ khóa tìm kiếm hoặc bộ lọc, hoặc tạo một câu hỏi mới."
+    },
+    "pagination": {
+      "showing": "Hiển thị từ {from} đến {to} trong tổng số {total} kết quả",
+      "previous": "Trước",
+      "page": "Trang",
+      "of": "trên",
+      "next": "Tiếp theo"
+    },
+    "add_modal": {
+      "title": "Thêm câu hỏi mới",
+      "edit_title": "Chỉnh sửa câu hỏi",
+      "question_title": "Tiêu đề câu hỏi",
+      "question_title_placeholder": "v.d., Giới thiệu về Javascript - Bài 1",
+      "question_content": "Nội dung câu hỏi",
+      "question_content_placeholder": "Nhập chi tiết câu hỏi tại đây...",
+      "type": "Loại câu hỏi",
+      "difficulty": "Mức độ",
+      "tags": "Nhãn",
+      "tags_placeholder": "v.d. javascript, functions, react",
+      "options_title": "Các phương án trả lời",
+      "add_option": "Thêm phương án",
+      "correct_answer": "Đáp án đúng",
+      "option_placeholder": "Nội dung phương án",
+      "explanation_placeholder": "Giải thích vì sao phương án này đúng/sai (không bắt buộc)",
+      "cancel": "Hủy",
+      "saving": "Đang lưu...",
+      "save": "Lưu"
+    },
+    "confirm_delete": {
+      "title": "Xóa câu hỏi",
+      "description": "Bạn có chắc chắn muốn xóa câu hỏi này không? Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "confirm": "Xóa"
+    },
+    "validation": {
+      "title_required": "Vui lòng nhập tiêu đề",
+      "content_required": "Vui lòng nhập nội dung câu hỏi",
+      "min_options": "Cần tối thiểu 2 phương án trả lời",
+      "max_options_true_false": "Câu hỏi Đúng/Sai chỉ được phép có tối đa 2 phương án",
+      "option_content_required": "Nội dung phương án không được để trống",
+      "single_correct_required": "Vui lòng chọn duy nhất 1 đáp án đúng",
+      "multiple_correct_required": "Vui lòng chọn ít nhất 1 đáp án đúng"
     }
   }
 }

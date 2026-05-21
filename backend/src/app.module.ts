@@ -13,6 +13,7 @@ import { OrderWebModule } from '@presentation/web/controllers/order/order.web.mo
 import { StudentFeaturesWebModule } from '@presentation/web/controllers/student-features/student-features.web.module';
 import { UserWebModule } from '@presentation/web/controllers/user/user.web.module';
 import { UploadWebModule } from '@presentation/web/controllers/upload/upload.web.module';
+import { QuizWebModule } from '@presentation/web/controllers/quiz/quiz.web.module';
 
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -44,6 +45,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     CartWebModule,
     StudentFeaturesWebModule,
     UploadWebModule,
+    QuizWebModule,
   ],
 })
 export class AppModule { }

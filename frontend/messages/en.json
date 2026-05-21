@@ -900,49 +900,6 @@
     "delete": "Delete",
     "deleting": "Deleting..."
   },
-  "QuestionBank": {
-    "title": "Question Bank",
-    "add_question": "Add Question",
-    "categories": "Categories",
-    "all_questions": "All Questions",
-    "search": "Search questions...",
-    "types": {
-      "mcq": "Multiple Choice",
-      "essay": "Essay",
-      "matching": "Matching",
-      "true_false": "True/False"
-    },
-    "preview": "Preview Question",
-    "edit": "Edit Question",
-    "duplicate": "Duplicate Question",
-    "delete": "Delete Question",
-    "difficulty": {
-      "easy": "Easy",
-      "medium": "Medium",
-      "hard": "Hard"
-    },
-    "table": {
-      "question": "Question",
-      "type": "Type",
-      "category": "Category",
-      "difficulty": "Difficulty",
-      "actions": "Actions"
-    },
-    "empty": {
-      "title": "No questions found",
-      "description": "Try adjusting your search or filters."
-    },
-    "all_types": "All Types",
-    "add_modal": {
-      "title": "Add New Question",
-      "question_text": "Question Text",
-      "type": "Type",
-      "difficulty": "Difficulty",
-      "category": "Category",
-      "save": "Save Question",
-      "cancel": "Cancel"
-    }
-  },
   "QuizCreator": {
     "title": "Quiz Creator",
     "settings": "Quiz Settings",
@@ -979,6 +936,83 @@
       "points": "All questions have point values assigned.",
       "pass_score": "Passing score is within valid range.",
       "title": "Quiz title is provided."
+    }
+  },
+  "QuestionBank": {
+    "title": "Question Bank",
+    "all_questions": "Manage all your quiz questions in one place",
+    "categories": "Categories",
+    "add_question": "Add Question",
+    "search": "Search questions...",
+    "all_types": "All Types",
+    "loading": "Loading questions...",
+    "error": "Failed to load questions. Please try again.",
+    "preview": "Preview",
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "types": {
+      "SINGLE_CHOICE": "Single Choice",
+      "MULTIPLE_CHOICE": "Multiple Choice",
+      "TRUE_FALSE": "True/False"
+    },
+    "difficulty": {
+      "EASY": "Easy",
+      "MEDIUM": "Medium",
+      "HARD": "Hard"
+    },
+    "table": {
+      "question": "Question",
+      "type": "Type",
+      "tags": "Tags",
+      "difficulty": "Difficulty",
+      "actions": "Actions"
+    },
+    "empty": {
+      "title": "No questions found",
+      "description": "Try adjusting your search or filters, or create a new question."
+    },
+    "pagination": {
+      "showing": "Showing {from} to {to} of {total} results",
+      "previous": "Previous",
+      "page": "Page",
+      "of": "of",
+      "next": "Next"
+    },
+    "add_modal": {
+      "title": "Add New Question",
+      "edit_title": "Edit Question",
+      "question_title": "Question Title",
+      "question_title_placeholder": "e.g., Intro to Javascript - Lesson 1",
+      "question_content": "Question Content",
+      "question_content_placeholder": "Write your question details here...",
+      "type": "Question Type",
+      "difficulty": "Difficulty",
+      "tags": "Tags",
+      "tags_placeholder": "e.g. javascript, functions, react",
+      "options_title": "Answer Options",
+      "add_option": "Add Option",
+      "correct_answer": "Correct",
+      "option_placeholder": "Option content",
+      "explanation_placeholder": "Optional explanation/feedback for this answer",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "save": "Save"
+    },
+    "confirm_delete": {
+      "title": "Delete Question",
+      "description": "Are you sure you want to delete this question? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "validation": {
+      "title_required": "Title is required",
+      "content_required": "Content is required",
+      "min_options": "At least 2 options are required",
+      "max_options_true_false": "True/False questions can only have 2 options",
+      "option_content_required": "Option content cannot be empty",
+      "single_correct_required": "Exactly one option must be correct",
+      "multiple_correct_required": "At least one option must be correct"
     }
   }
 }

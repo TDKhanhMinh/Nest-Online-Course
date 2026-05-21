@@ -2,8 +2,8 @@ import {
   ICOURSE_REPOSITORY,
   ICourseRepository
 } from '@domain/course/ports/i-course.repository';
-import { ISECTION_REPOSITORY, ISectionRepository } from '@domain/course/ports/i-section.repository';
 import { ILESSON_REPOSITORY, ILessonRepository } from '@domain/course/ports/i-lesson.repository';
+import { ISECTION_REPOSITORY, ISectionRepository } from '@domain/course/ports/i-section.repository';
 import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UniqueId } from '@shared/types/unique-id.vo';
 

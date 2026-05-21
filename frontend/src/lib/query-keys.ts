@@ -32,5 +32,15 @@ export const queryKeys = {
     all: ["instructor"] as const,
     profile: () => [...queryKeys.instructor.all, "profile"] as const,
     me: () => [...queryKeys.instructor.profile(), "me"] as const,
+    questions: {
+      all: [...["instructor"], "questions"] as const,
+      lists: () => [...queryKeys.instructor.questions.all, "list"] as const,
+      list: (filters: Record<string, any>) =>
+        [...queryKeys.instructor.questions.lists(), { filters }] as const,
+      details: () =>
+        [...queryKeys.instructor.questions.all, "detail"] as const,
+      detail: (id: string) =>
+        [...queryKeys.instructor.questions.details(), id] as const,
+    },
   },
 };

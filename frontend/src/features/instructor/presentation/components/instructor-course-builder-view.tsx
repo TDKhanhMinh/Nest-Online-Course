@@ -829,7 +829,6 @@ const LessonEditor = ({ lesson, onUpdate, isUpdating, sections }: LessonEditorPr
                   </div>
                 </div>
               ) : (
-                // ✅ Chưa có video nào
                 <div
                   onClick={() => fileInputRef.current?.click()}
                   className="border-2 border-dashed rounded-xl p-12 text-center space-y-4 hover:border-primary/50 transition-colors cursor-pointer group"
@@ -839,7 +838,7 @@ const LessonEditor = ({ lesson, onUpdate, isUpdating, sections }: LessonEditorPr
                   </div>
                   <div className="space-y-1">
                     <p className="font-medium">{t("lesson.upload_video")}</p>
-                    <p className="text-sm text-muted-foreground">MP4, MOV, WEBM (Max 2GB)</p>
+                    <p className="text-sm text-muted-foreground">MP4, MOV, WEBM (Max 100MB)</p>
                   </div>
                 </div>
               )}
