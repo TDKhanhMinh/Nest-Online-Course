@@ -61,7 +61,13 @@ export default async function LocaleLayout({
               <MainLayoutWrapper>
                 {children}
               </MainLayoutWrapper>
-              <Toaster />
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  className: "bg-white dark:bg-slate-800",
+                  duration: 2000,
+                }}
+               />
             </TooltipProvider>
           </QueryProvider>
         </ThemeProvider>

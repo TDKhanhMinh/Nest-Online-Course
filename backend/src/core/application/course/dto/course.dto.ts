@@ -1,6 +1,12 @@
 import { CourseLevel } from '@shared/types/course-level.enum';
 import { CourseStatus } from '@shared/types/course-status.enum';
-import { IsEnum, IsNumber, IsOptional, IsString, IsUrl, MinLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CreateCourseDto {
   @IsString()
@@ -18,7 +24,6 @@ export class CreateCourseDto {
   categoryId: string;
 
   @IsOptional()
-  @IsUrl()
   thumbnailUrl?: string;
 
   @IsOptional()
@@ -50,7 +55,6 @@ export class UpdateCourseDto {
   categoryId?: string;
 
   @IsOptional()
-  @IsUrl()
   thumbnailUrl?: string;
 
   @IsOptional()
@@ -79,6 +83,3 @@ export class CourseResponseDto {
   level: CourseLevel;
   language: string;
 }
-
-
-

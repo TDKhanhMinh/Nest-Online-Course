@@ -1,22 +1,19 @@
 import {
   BadRequestException,
   Controller,
-  ForbiddenException,
-  Get,
   Inject,
-  NotFoundException,
   Post,
-  Req,
-  Res,
   UploadedFile,
   UseGuards,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadFileUseCase } from '@application/upload/use-cases/upload-file.use-case';
 import { JwtAuthGuard } from '@presentation/web/shared/guards/jwt-auth.guard';
-import { IFILE_STORAGE_SERVICE, IFileStorageService } from '@shared/abstractions/services/i-file-storage.service';
-import { IVIDEO_STREAMING_SERVICE, IVideoStreamingService } from '@shared/abstractions/services/i-video-streaming.service';
-import { Request, Response } from 'express';
+import {
+  IVIDEO_STREAMING_SERVICE,
+  IVideoStreamingService,
+} from '@shared/abstractions/services/i-video-streaming.service';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -27,8 +24,7 @@ import * as path from 'path';
 })
 export class UploadController {
   constructor(
-    @Inject(IFILE_STORAGE_SERVICE)
-    private readonly fileStorageService: IFileStorageService,
+    private readonly uploadFileUseCase: UploadFileUseCase,
     @Inject(IVIDEO_STREAMING_SERVICE)
     private readonly videoStreamingService: IVideoStreamingService,
   ) {}
@@ -43,17 +39,20 @@ export class UploadController {
 
     // Write buffer to a temp file
     const tempDir = os.tmpdir();
-    const tempFilePath = path.join(tempDir, `${Date.now()}-${file.originalname}`);
-    
+    const tempFilePath = path.join(
+      tempDir,
+      `${Date.now()}-${file.originalname}`,
+    );
+
     try {
       fs.writeFileSync(tempFilePath, file.buffer);
-      
+
       const result = await this.videoStreamingService.uploadVideo(
         tempFilePath,
-        file.originalname
+        file.originalname,
       );
-      console.log("upload video result", result);
-      
+      console.log('upload video result', result);
+
       return result;
     } finally {
       // Clean up temp file
@@ -61,7 +60,7 @@ export class UploadController {
         if (fs.existsSync(tempFilePath)) {
           fs.unlinkSync(tempFilePath);
         }
-      } catch (err) {
+      } catch {
         // ignore
       }
     }
@@ -75,46 +74,10 @@ export class UploadController {
       throw new BadRequestException('No file uploaded');
     }
 
-    const fileUrl = await this.fileStorageService.uploadFile(
-      file.buffer,
-      file.originalname,
-      file.mimetype
-    );
-
-    return { url: fileUrl };
-  }
-
-  @Get('videos/*')
-  async serveVideo(@Req() req: Request, @Res() res: Response) {
-    const relativePath = decodeURIComponent(req.path.substring(req.path.indexOf('/videos/') + 8));
-    const rootDir = path.resolve(process.cwd(), 'uploads', 'videos');
-    const resolvedPath = path.resolve(rootDir, relativePath);
-    
-    if (!resolvedPath.startsWith(rootDir)) {
-      throw new ForbiddenException('Access denied');
-    }
-    
-    if (!fs.existsSync(resolvedPath)) {
-      throw new NotFoundException('Video not found');
-    }
-    
-    return res.sendFile(resolvedPath);
-  }
-
-  @Get('files/*')
-  async serveFile(@Req() req: Request, @Res() res: Response) {
-    const relativePath = decodeURIComponent(req.path.substring(req.path.indexOf('/files/') + 7));
-    const rootDir = path.resolve(process.cwd(), 'uploads', 'files');
-    const resolvedPath = path.resolve(rootDir, relativePath);
-    
-    if (!resolvedPath.startsWith(rootDir)) {
-      throw new ForbiddenException('Access denied');
-    }
-    
-    if (!fs.existsSync(resolvedPath)) {
-      throw new NotFoundException('File not found');
-    }
-    
-    return res.sendFile(resolvedPath);
+    return this.uploadFileUseCase.execute({
+      fileBuffer: file.buffer,
+      fileName: file.originalname,
+      mimeType: file.mimetype,
+    });
   }
 }

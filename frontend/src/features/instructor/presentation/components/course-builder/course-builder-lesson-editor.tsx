@@ -32,7 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import type { Lesson, Section } from "@/features/course/domain/course.types";
-import { courseApi } from "@/features/course/infrastructure/course.api";
+import { useUploadCourseVideo } from "@/features/course/presentation/hooks/use-course-upload";
 import type { InstructorQuiz } from "@/features/instructor/application/instructor-quiz.mapper";
 import {
   useInstructorQuizzes,
@@ -84,7 +84,6 @@ export const CourseBuilderLessonEditor = ({
 }: CourseBuilderLessonEditorProps) => {
   const t = useTranslations("CourseBuilder");
   const tQuizBank = useTranslations("QuizBank");
-  const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [quizSearch, setQuizSearch] = useState("");
   const [selectedQuizOverrideId, setSelectedQuizOverrideId] = useState<
@@ -94,6 +93,7 @@ export const CourseBuilderLessonEditor = ({
   const deferredQuizSearch = useDeferredValue(quizSearch);
 
   const updateQuizLessonMutation = useUpdateInstructorQuizLesson();
+  const uploadVideoMutation = useUploadCourseVideo();
   const {
     data: quizBankResponse,
     isLoading: isLoadingQuizBank,
@@ -143,6 +143,7 @@ export const CourseBuilderLessonEditor = ({
     quizMatchesSearch(quiz, deferredQuizSearch),
   );
   const isSubmittingQuiz = updateQuizLessonMutation.isPending;
+  const isUploading = uploadVideoMutation.isPending;
   const isSubmitting = isUpdating || isUploading || isSubmittingQuiz;
 
   useEffect(() => {
@@ -178,16 +179,14 @@ export const CourseBuilderLessonEditor = ({
     }
 
     try {
-      setIsUploading(true);
       setUploadError(null);
-      const result = await courseApi.uploadVideo(file);
+      const result = await uploadVideoMutation.mutateAsync(file);
       form.setValue("video_url", result.playbackUrl, {
         shouldDirty: true,
         shouldValidate: true,
       });
       toast.success("Video uploaded successfully!");
     } catch (error: unknown) {
-      console.error("Error uploading video:", error);
       const errMsg =
         typeof error === "object" &&
         error !== null &&
@@ -198,9 +197,7 @@ export const CourseBuilderLessonEditor = ({
               .data!.message!
           : "Failed to upload video. Please try again.";
       setUploadError(errMsg);
-      toast.error(errMsg);
     } finally {
-      setIsUploading(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }

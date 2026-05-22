@@ -1,4 +1,3 @@
-import api from "@/lib/axios";
 
 export interface CourseDTO {
   id: number;

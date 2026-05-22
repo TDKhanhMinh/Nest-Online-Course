@@ -1,7 +1,13 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IOrderRepository, IORDER_REPOSITORY } from '@domain/order/ports/i-order.repository';
-import { ICourseRepository, ICOURSE_REPOSITORY } from '@domain/course/ports/i-course.repository';
+import {
+  IOrderRepository,
+  IORDER_REPOSITORY,
+} from '@domain/order/ports/i-order.repository';
+import {
+  ICourseRepository,
+  ICOURSE_REPOSITORY,
+} from '@domain/course/ports/i-course.repository';
 import { Order } from '@domain/order/entities/order.entity';
 import { OrderStatus } from '@shared/types/order-status.enum';
 import { OrderItem } from '@domain/order/entities/order-item.entity';
@@ -20,7 +26,11 @@ export class CreateOrderUseCase {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async execute(studentId: string, studentEmail: string, dto: CreateOrderDto): Promise<Order> {
+  async execute(
+    studentId: string,
+    studentEmail: string,
+    dto: CreateOrderDto,
+  ): Promise<Order> {
     let totalAmount = 0;
     const orderId = UniqueId.generate();
     const orderItems: OrderItem[] = [];
@@ -34,20 +44,25 @@ export class CreateOrderUseCase {
       const price = course.price;
       totalAmount += price;
 
-      orderItems.push(OrderItem.create({
-        orderId,
-        courseId: course.id,
-        courseTitle: course.title.value,
-        courseThumbnail: course.thumbnailUrl,
-        price,
-      }));
+      orderItems.push(
+        OrderItem.create({
+          orderId,
+          courseId: course.id,
+          courseTitle: course.title.value,
+          courseThumbnail: course.thumbnailUrl,
+          price,
+        }),
+      );
     }
 
-    const order = Order.create({
-      studentId: new UniqueId(studentId),
-      totalAmount,
-      status: OrderStatus.PENDING,
-    }, orderId);
+    const order = Order.create(
+      {
+        studentId: new UniqueId(studentId),
+        totalAmount,
+        status: OrderStatus.PENDING,
+      },
+      orderId,
+    );
 
     // Simulate payment success immediately for this version
     order.markAsSuccess();
@@ -60,7 +75,7 @@ export class CreateOrderUseCase {
       new OrderSuccessEvent(
         order.id.value,
         studentId,
-        orderItems.map(item => item.courseId.value),
+        orderItems.map((item) => item.courseId.value),
         studentEmail,
       ),
     );

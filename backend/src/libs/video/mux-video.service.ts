@@ -13,7 +13,10 @@ import {
 export class MuxVideoStreamingAdapter implements IVideoStreamingService {
   private readonly logger = new Logger(MuxVideoStreamingAdapter.name);
 
-  async uploadVideo(filePath: string, title: string): Promise<VideoUploadResult> {
+  async uploadVideo(
+    filePath: string,
+    title: string,
+  ): Promise<VideoUploadResult> {
     this.logger.log(`[Mux] Uploading video: ${title} from ${filePath}`);
     // TODO: Replace with actual Mux SDK call
     return {
@@ -30,6 +33,3 @@ export class MuxVideoStreamingAdapter implements IVideoStreamingService {
     this.logger.log(`[Mux] Deleting video asset: ${assetId}`);
   }
 }
-
-
-

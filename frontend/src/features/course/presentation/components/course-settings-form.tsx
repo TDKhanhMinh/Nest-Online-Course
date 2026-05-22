@@ -1,9 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save } from "lucide-react";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { ImageUp, Loader2, Save } from "lucide-react";
+import { useEffect, useRef, type ChangeEvent } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -27,15 +28,18 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useAllCategories } from "@/features/category/presentation/hooks/use-categories";
 import { Course, CourseLevel } from "../../domain/course.types";
+import { useUploadCourseThumbnail } from "../hooks/use-course-upload";
 import { useUpdateCourse } from "../hooks/use-course-mutations";
 
 const courseSettingsSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100),
   // shortDescription: z.string().min(10, "Short description must be at least 10 characters").max(200),
   description: z.string().min(20, "Description must be at least 20 characters"),
-  price: z.coerce.number({
-    message: 'Price must be a number',
-  }).min(0),
+  price: z.coerce
+    .number({
+      message: "Price must be a number",
+    })
+    .min(0),
 
   level: z.nativeEnum(CourseLevel),
   categoryId: z.string().min(1, "Please select a category"),
@@ -52,9 +56,12 @@ interface CourseSettingsFormProps {
 
 export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
   const { mutate: updateCourse, isPending } = useUpdateCourse();
-  const { data: categories, isLoading: isLoadingCategories } = useAllCategories();
-  console.log("course", course)
-  const form = useForm<CourseSettingsInput, any, CourseSettingsValues>({
+  const uploadThumbnailMutation = useUploadCourseThumbnail();
+  const { data: categories, isLoading: isLoadingCategories } =
+    useAllCategories();
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+
+  const form = useForm<CourseSettingsInput, unknown, CourseSettingsValues>({
     resolver: zodResolver(courseSettingsSchema),
     defaultValues: {
       title: course.title,
@@ -81,14 +88,43 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
     });
   }, [course, form]);
 
+  const handleThumbnailFileChange = async (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file.");
+      event.target.value = "";
+      return;
+    }
+
+    try {
+      const uploadedUrl = await uploadThumbnailMutation.mutateAsync(file);
+      form.setValue("thumbnailUrl", uploadedUrl, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      toast.success("Thumbnail uploaded successfully!");
+    } finally {
+      event.target.value = "";
+    }
+  };
+
   function onSubmit(values: CourseSettingsValues) {
-    console.log("onSubmit", values);
     updateCourse({
-      // @ts-ignore
-      id: course.courseId,
-      data: values
+      id: course.id,
+      data: values,
     });
   }
+
+  const thumbnailUrl = useWatch({
+    control: form.control,
+    name: "thumbnailUrl",
+  });
+  const isUploadingThumbnail = uploadThumbnailMutation.isPending;
+  const isSubmitting = isPending || isUploadingThumbnail;
 
   return (
     <Form {...form}>
@@ -96,16 +132,19 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
             <FormField
-              control={form.control as any}
+              control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Course Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Master React in 30 Days" {...field} />
+                    <Input
+                      placeholder="e.g. Master React in 30 Days"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
-                    This is your course's public name.
+                    This is your course public name.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -127,7 +166,7 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
             /> */}
 
             <FormField
-              control={form.control as any}
+              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
@@ -148,13 +187,22 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <FormField
-                control={form.control as any}
+                control={form.control}
                 name="price"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Price ($)</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input
+                        type="number"
+                        {...field}
+                        value={
+                          typeof field.value === "number" ||
+                          typeof field.value === "string"
+                            ? field.value
+                            : ""
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -162,7 +210,7 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
               />
 
               <FormField
-                control={form.control as any}
+                control={form.control}
                 name="level"
                 render={({ field }) => (
                   <FormItem>
@@ -189,7 +237,7 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <FormField
-                control={form.control as any}
+                control={form.control}
                 name="categoryId"
                 render={({ field }) => (
                   <FormItem>
@@ -201,7 +249,13 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={isLoadingCategories ? "Loading..." : "Select category"} />
+                          <SelectValue
+                            placeholder={
+                              isLoadingCategories
+                                ? "Loading..."
+                                : "Select category"
+                            }
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -218,13 +272,16 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
               />
 
               <FormField
-                control={form.control as any}
+                control={form.control}
                 name="language"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Language</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. Vietnamese, English" {...field} />
+                      <Input
+                        placeholder="e.g. Vietnamese, English"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -233,28 +290,56 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
             </div>
 
             <FormField
-              control={form.control as any}
+              control={form.control}
               name="thumbnailUrl"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Thumbnail URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com/image.jpg" {...field} />
-                  </FormControl>
+                  <div className="flex gap-2">
+                    <FormControl>
+                      <Input
+                        placeholder="https://example.com/image.jpg"
+                        {...field}
+                      />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={isUploadingThumbnail}
+                      onClick={() => thumbnailInputRef.current?.click()}
+                      className="shrink-0 gap-2"
+                    >
+                      {isUploadingThumbnail ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ImageUp className="h-4 w-4" />
+                      )}
+                      {isUploadingThumbnail ? "Uploading..." : "Upload"}
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <input
+              ref={thumbnailInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={isUploadingThumbnail}
+              onChange={handleThumbnailFileChange}
+            />
 
             <div className="p-4 rounded-xl border-2 border-dashed bg-muted/30 flex flex-col items-center justify-center gap-4 min-h-[200px]">
-              {form.watch("thumbnailUrl") ? (
+              {thumbnailUrl ? (
                 <div className="relative aspect-video w-full rounded-lg overflow-hidden border">
                   <img
-                    src={form.watch("thumbnailUrl")}
+                    src={thumbnailUrl}
                     alt="Preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://placehold.co/600x400?text=Invalid+Image+URL";
+                      (e.target as HTMLImageElement).src =
+                        "https://placehold.co/600x400?text=Invalid+Image+URL";
                     }}
                   />
                 </div>
@@ -263,7 +348,9 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
                   <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto">
                     <Save className="h-6 w-6 text-muted-foreground" />
                   </div>
-                  <p className="text-sm text-muted-foreground">Thumbnail Preview</p>
+                  <p className="text-sm text-muted-foreground">
+                    Thumbnail Preview
+                  </p>
                 </div>
               )}
             </div>
@@ -271,13 +358,12 @@ export function CourseSettingsForm({ course }: CourseSettingsFormProps) {
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button type="submit" disabled={isPending} className="gap-2">
+          <Button type="submit" disabled={isSubmitting} className="gap-2">
             <Save size={18} />
             {isPending ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </form>
     </Form>
-
   );
 }

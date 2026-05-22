@@ -4,6 +4,7 @@ import { CourseLevel, CourseStatus } from "../domain/course.types";
 
 export interface CourseDTO {
   id: string;
+  courseId?: string;
   title: string;
   slug: string;
   description: string;
@@ -103,6 +104,15 @@ export interface PaginatedCourses {
   pagination: PaginationMeta;
 }
 
+export interface UploadVideoResponse {
+  assetId: string;
+  playbackUrl: string;
+}
+
+export interface UploadFileResponse {
+  url: string;
+}
+
 export const courseApi = {
   createCourse: async (data: CreateCourseDto): Promise<CourseDTO> => {
     const response = await api.post("/courses", data);
@@ -174,10 +184,22 @@ export const courseApi = {
     await api.delete(`/courses/${courseId}/lessons/${lessonId}`);
   },
 
-  uploadVideo: async (file: File): Promise<{ assetId: string; playbackUrl: string }> => {
+  uploadVideo: async (file: File): Promise<UploadVideoResponse> => {
     const formData = new FormData();
     formData.append("file", file);
     const response = await api.post("/upload/video", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 120000,
+    });
+    return response.data;
+  },
+
+  uploadFile: async (file: File): Promise<UploadFileResponse> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.post("/upload/file", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

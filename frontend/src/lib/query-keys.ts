@@ -7,6 +7,9 @@ export const queryKeys = {
     details: () => [...queryKeys.courses.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.courses.details(), id] as const,
     instructor: () => [...queryKeys.courses.all, "instructor"] as const,
+    uploadThumbnail: () =>
+      [...queryKeys.courses.all, "upload", "thumbnail"] as const,
+    uploadVideo: () => [...queryKeys.courses.all, "upload", "video"] as const,
     curriculum: (id: string) => [...queryKeys.courses.detail(id), "curriculum","list"] as const,
     curriculumDetail: (id: string, sectionId: string) => [...queryKeys.courses.curriculum(id), sectionId] as const,
     curriculumSection: (id: string, sectionId: string) => [...queryKeys.courses.curriculumDetail(id, sectionId), "section", sectionId] as const,

@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, type JwtModuleOptions } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 
 // Schemas
@@ -114,8 +114,8 @@ import { IEMAIL_NOTIFICATION_SERVICE } from '@shared/abstractions/services/i-ema
 import { IFILE_STORAGE_SERVICE } from '@shared/abstractions/services/i-file-storage.service';
 import { IVIDEO_STREAMING_SERVICE } from '@shared/abstractions/services/i-video-streaming.service';
 import { NodemailerAdapter } from './services/notification/nodemailer.adapter';
+import { CloudinaryFileStorageAdapter } from './services/storage/cloudinary-file-storage.adapter';
 import { CloudinaryVideoAdapter } from './services/storage/cloudinary-video.adapter';
-import { S3StorageAdapter } from './services/storage/s3-storage.adapter';
 
 @Global()
 @Module({
@@ -147,7 +147,10 @@ import { S3StorageAdapter } from './services/storage/s3-storage.adapter';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRATION', '1d') as any,
+          expiresIn: configService.get<string>(
+            'JWT_EXPIRATION',
+            '1d',
+          ) as NonNullable<JwtModuleOptions['signOptions']>['expiresIn'],
         },
       }),
     }),
@@ -223,7 +226,7 @@ import { S3StorageAdapter } from './services/storage/s3-storage.adapter';
     },
     {
       provide: IFILE_STORAGE_SERVICE,
-      useClass: S3StorageAdapter,
+      useClass: CloudinaryFileStorageAdapter,
     },
     {
       provide: IVIDEO_STREAMING_SERVICE,

@@ -1,4 +1,8 @@
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IFileStorageService } from '@shared/abstractions/services/i-file-storage.service';
@@ -15,12 +19,16 @@ export class S3StorageAdapter implements IFileStorageService {
 
   constructor(private readonly configService: ConfigService) {
     const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID');
-    const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY');
+    const secretAccessKey = this.configService.get<string>(
+      'AWS_SECRET_ACCESS_KEY',
+    );
     const bucketName = this.configService.get<string>('AWS_S3_BUCKET_NAME');
 
     if (!accessKeyId || !secretAccessKey || !bucketName) {
       this.isFallback = true;
-      this.logger.warn('AWS S3 credentials or bucket name missing. File storage will fall back to local storage.');
+      this.logger.warn(
+        'AWS S3 credentials or bucket name missing. File storage will fall back to local storage.',
+      );
     } else {
       this.isFallback = false;
       this.region = this.configService.get<string>('AWS_REGION', 'us-east-1');
@@ -36,7 +44,11 @@ export class S3StorageAdapter implements IFileStorageService {
     }
   }
 
-  async uploadFile(fileBuffer: Buffer, fileName: string, mimeType: string): Promise<string> {
+  async uploadFile(
+    fileBuffer: Buffer,
+    fileName: string,
+    mimeType: string,
+  ): Promise<string> {
     try {
       if (this.isFallback) {
         const uploadDir = path.join(process.cwd(), 'uploads', 'files');
@@ -81,7 +93,12 @@ export class S3StorageAdapter implements IFileStorageService {
         const urlParts = fileUrl.split('/files/');
         if (urlParts.length > 1) {
           const relativePath = decodeURIComponent(urlParts[1]);
-          const filePath = path.join(process.cwd(), 'uploads', 'files', relativePath);
+          const filePath = path.join(
+            process.cwd(),
+            'uploads',
+            'files',
+            relativePath,
+          );
           if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
           }
@@ -104,4 +121,3 @@ export class S3StorageAdapter implements IFileStorageService {
     }
   }
 }
-

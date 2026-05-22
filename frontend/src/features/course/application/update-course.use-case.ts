@@ -1,7 +1,7 @@
 import { Course, CourseLevel, CourseStatus } from "../domain/course.types";
 import { courseApi, UpdateCourseDto } from "../infrastructure/course.api";
 
-export interface UpdateCourseInput extends Partial<{
+export type UpdateCourseInput = Partial<{
   title: string;
   description: string;
   shortDescription: string;
@@ -11,7 +11,7 @@ export interface UpdateCourseInput extends Partial<{
   categoryId: string;
   language: string;
   status: CourseStatus;
-}> {}
+}>;
 
 export class UpdateCourseUseCase {
   async execute(id: string, input: UpdateCourseInput): Promise<Course> {
@@ -31,4 +31,3 @@ export class UpdateCourseUseCase {
 }
 
 export const updateCourseUseCase = new UpdateCourseUseCase();
-

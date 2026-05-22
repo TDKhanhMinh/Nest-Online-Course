@@ -27,8 +27,7 @@ export const useUpdateCourse = () => {
     onSuccess: (data) => {
       toast.success("Course updated successfully!");
       queryClient.invalidateQueries({ queryKey: queryKeys.courses.instructor() });
-      // @ts-ignore
-      queryClient.invalidateQueries({ queryKey: queryKeys.courses.detail(data.courseId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.detail(data.id) });
     },
   });
 };
@@ -58,4 +57,3 @@ export const useUpdateCourseStatus = () => {
     },
   });
 };
-

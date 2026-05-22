@@ -1,14 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IVideoStreamingService, VideoUploadResult } from '@shared/abstractions/services/i-video-streaming.service';
+import {
+  IVideoStreamingService,
+  VideoUploadResult,
+} from '@shared/abstractions/services/i-video-streaming.service';
 import { v2 as cloudinary } from 'cloudinary';
-import * as fs from 'fs';
-import * as path from 'path';
 
 @Injectable()
 export class CloudinaryVideoAdapter implements IVideoStreamingService {
   private readonly logger = new Logger(CloudinaryVideoAdapter.name);
-  private readonly isFallback: boolean;
+  private readonly isConfigured: boolean;
 
   constructor(private readonly configService: ConfigService) {
     const cloudName = this.configService.get<string>('CLOUDINARY_CLOUD_NAME');
@@ -16,10 +17,12 @@ export class CloudinaryVideoAdapter implements IVideoStreamingService {
     const apiSecret = this.configService.get<string>('CLOUDINARY_API_SECRET');
 
     if (!cloudName || !apiKey || !apiSecret) {
-      this.isFallback = true;
-      this.logger.warn('Cloudinary credentials missing. Video streaming will fall back to local storage.');
+      this.isConfigured = false;
+      this.logger.warn(
+        'Cloudinary credentials missing. Video uploads require Cloudinary configuration.',
+      );
     } else {
-      this.isFallback = false;
+      this.isConfigured = true;
       cloudinary.config({
         cloud_name: cloudName,
         api_key: apiKey,
@@ -28,34 +31,18 @@ export class CloudinaryVideoAdapter implements IVideoStreamingService {
     }
   }
 
-  async uploadVideo(filePath: string, title: string): Promise<VideoUploadResult> {
+  async uploadVideo(
+    filePath: string,
+    title: string,
+  ): Promise<VideoUploadResult> {
     try {
+      this.assertConfigured();
       this.logger.log(`Uploading video: ${title} from ${filePath}`);
-      if (this.isFallback) {
-        const uploadDir = path.join(process.cwd(), 'uploads', 'videos');
-        fs.mkdirSync(uploadDir, { recursive: true });
 
-        const ext = path.extname(filePath) || '.mp4';
-        const safeTitle = title.replace(/[^a-zA-Z0-9]/g, '_');
-        const filename = `${Date.now()}-${safeTitle}${ext}`;
-        const destination = path.join(uploadDir, filename);
-
-        fs.copyFileSync(filePath, destination);
-
-        const port = this.configService.get<string>('PORT', '5000');
-        const playbackUrl = `http://localhost:${port}/api/v1/upload/videos/${filename}`;
-
-        return {
-          assetId: filename,
-          playbackUrl,
-        };
-      }
-
-      // Upload directly using SDK (no need for node-file-manager)
       const result = await cloudinary.uploader.upload(filePath, {
         resource_type: 'video',
-        public_id: `courses/videos/${Date.now()}-${title.replace(/\s+/g, '_')}`,
-        chunk_size: 6000000, 
+        public_id: `courses/videos/${Date.now()}-${this.toSafePublicId(title)}`,
+        chunk_size: 6000000,
       });
 
       return {
@@ -63,45 +50,72 @@ export class CloudinaryVideoAdapter implements IVideoStreamingService {
         playbackUrl: result.secure_url,
       };
     } catch (error) {
-      this.logger.error(`Failed to upload video: ${error.message}`, error.stack);
+      this.logError('upload video', error);
       throw error;
     }
   }
 
-  async getPlaybackUrl(assetId: string): Promise<string> {
+  getPlaybackUrl(assetId: string): Promise<string> {
     try {
-      if (this.isFallback) {
-        const port = this.configService.get<string>('PORT', '5000');
-        return `http://localhost:${port}/api/v1/upload/videos/${assetId}`;
-      }
+      this.assertConfigured();
 
-      return cloudinary.url(assetId, {
-        resource_type: 'video',
-        secure: true,
-      });
+      return Promise.resolve(
+        cloudinary.url(assetId, {
+          resource_type: 'video',
+          secure: true,
+        }),
+      );
     } catch (error) {
-      this.logger.error(`Failed to get playback URL: ${error.message}`, error.stack);
+      this.logError('get playback URL', error);
       throw error;
     }
   }
 
   async deleteVideo(assetId: string): Promise<void> {
     try {
-      if (this.isFallback) {
-        const filePath = path.join(process.cwd(), 'uploads', 'videos', assetId);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-        return;
-      }
+      this.assertConfigured();
 
       await cloudinary.uploader.destroy(assetId, {
         resource_type: 'video',
       });
     } catch (error) {
-      this.logger.error(`Failed to delete video: ${error.message}`, error.stack);
+      this.logError('delete video', error);
       throw error;
     }
   }
-}
 
+  private assertConfigured(): void {
+    if (!this.isConfigured) {
+      throw new Error('Cloudinary credentials are required for video uploads.');
+    }
+  }
+
+  private toSafePublicId(value: string): string {
+    return value.replace(/[^a-zA-Z0-9._-]/g, '_');
+  }
+
+  private logError(action: string, error: unknown): void {
+    const normalizedError = this.toError(error);
+    this.logger.error(
+      `Failed to ${action}: ${normalizedError.message}`,
+      normalizedError.stack,
+    );
+  }
+
+  private toError(error: unknown): Error {
+    if (error instanceof Error) {
+      return error;
+    }
+
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'message' in error &&
+      typeof (error as { message?: unknown }).message === 'string'
+    ) {
+      return new Error((error as { message: string }).message);
+    }
+
+    return new Error(String(error));
+  }
+}

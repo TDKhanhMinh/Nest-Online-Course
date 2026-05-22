@@ -2,9 +2,8 @@ import { CourseDTO } from "../infrastructure/course.api";
 import { Course } from "./course.types";
 
 export const mapCourseDtoToEntity = (dto: CourseDTO): Course => {
-  console.log("mapCourseDtoToEntity", dto)
   return {
-    id: dto.id,
+    id: dto.id || dto.courseId || "",
     title: dto.title,
     slug: dto.slug,
     description: dto.description,

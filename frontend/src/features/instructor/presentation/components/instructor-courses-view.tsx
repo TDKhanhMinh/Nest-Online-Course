@@ -12,24 +12,21 @@ import {
   Plus,
   Search,
   Trash2,
-  Users
+  Users,
 } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -39,16 +36,15 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CourseStatus } from "@/features/course/domain/course.types";
 import { CreateCourseDialog } from "@/features/course/presentation/components/create-course-dialog";
-import { useDeleteCourse, useUpdateCourseStatus } from "@/features/course/presentation/hooks/use-course-mutations";
+import {
+  useDeleteCourse,
+  useUpdateCourseStatus,
+} from "@/features/course/presentation/hooks/use-course-mutations";
 import { useInstructorCourses } from "@/features/course/presentation/hooks/use-instructor-courses";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Link } from "@/i18n/navigation";
@@ -78,15 +74,27 @@ const InstructorCoursesView = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
 
-  const status = activeTab === "all" ? undefined : activeTab === "active" ? CourseStatus.PUBLISHED : activeTab === "draft" ? CourseStatus.DRAFT : undefined;
+  const status =
+    activeTab === "all"
+      ? undefined
+      : activeTab === "active"
+        ? CourseStatus.PUBLISHED
+        : activeTab === "draft"
+          ? CourseStatus.DRAFT
+          : undefined;
 
-  const { data: res, isLoading, isError } = useInstructorCourses({
+  const {
+    data: res,
+    isLoading,
+    isError,
+  } = useInstructorCourses({
     page,
     limit,
     search: debouncedSearch,
     status,
   });
-  const { mutateAsync: deleteCourse, isPending: isDeleting } = useDeleteCourse();
+  const { mutateAsync: deleteCourse, isPending: isDeleting } =
+    useDeleteCourse();
   const { mutate: updateStatus } = useUpdateCourseStatus();
   const [courseToDeleteId, setCourseToDeleteId] = useState<string | null>(null);
 
@@ -94,7 +102,7 @@ const InstructorCoursesView = () => {
   const courses = res?.courses.data || [];
   // @ts-ignore
   const meta = res?.courses.pagination;
-  console.log("courses", courses)
+  console.log("courses", courses);
 
   useEffect(() => {
     setPage(1);
@@ -106,9 +114,17 @@ const InstructorCoursesView = () => {
   const getStatusBadge = (status: string) => {
     switch (status?.toUpperCase()) {
       case "PUBLISHED":
-        return <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">{t("status.active")}</Badge>;
+        return (
+          <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+            {t("status.active")}
+          </Badge>
+        );
       case "DRAFT":
-        return <Badge variant="outline" className="bg-slate-100 text-slate-500">{t("status.draft")}</Badge>;
+        return (
+          <Badge variant="outline" className="bg-slate-100 text-slate-500">
+            {t("status.draft")}
+          </Badge>
+        );
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -119,7 +135,8 @@ const InstructorCoursesView = () => {
   };
 
   const handleToggleStatus = (id: string, currentStatus: string) => {
-    const newStatus = currentStatus === "DRAFT" ? CourseStatus.PUBLISHED : CourseStatus.DRAFT;
+    const newStatus =
+      currentStatus === "DRAFT" ? CourseStatus.PUBLISHED : CourseStatus.DRAFT;
     updateStatus({ id, data: { status: newStatus } });
   };
 
@@ -154,18 +171,33 @@ const InstructorCoursesView = () => {
       <Card className="border-brand-border bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
         <CardHeader className="pb-0">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-            <Tabs defaultValue="all" className="w-full sm:w-auto" onValueChange={setActiveTab}>
+            <Tabs
+              defaultValue="all"
+              className="w-full sm:w-auto"
+              onValueChange={setActiveTab}
+            >
               <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 h-11">
-                <TabsTrigger value="all" className="px-4">{t("tabs.all")}</TabsTrigger>
-                <TabsTrigger value="active" className="px-4">{t("tabs.active")}</TabsTrigger>
-                <TabsTrigger value="draft" className="px-4">{t("tabs.draft")}</TabsTrigger>
-                <TabsTrigger value="finished" className="px-4">{t("tabs.finished")}</TabsTrigger>
+                <TabsTrigger value="all" className="px-4">
+                  {t("tabs.all")}
+                </TabsTrigger>
+                <TabsTrigger value="active" className="px-4">
+                  {t("tabs.active")}
+                </TabsTrigger>
+                <TabsTrigger value="draft" className="px-4">
+                  {t("tabs.draft")}
+                </TabsTrigger>
+                <TabsTrigger value="finished" className="px-4">
+                  {t("tabs.finished")}
+                </TabsTrigger>
               </TabsList>
             </Tabs>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <div className="relative flex-1 sm:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <Search
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  size={16}
+                />
                 <Input
                   placeholder={t("search_placeholder")}
                   className="pl-10 bg-white dark:bg-slate-950 border-brand-border h-11"
@@ -173,7 +205,11 @@ const InstructorCoursesView = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" size="icon" className="h-11 w-11 shrink-0 border-brand-border">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-11 w-11 shrink-0 border-brand-border"
+              >
                 <Filter size={18} />
               </Button>
             </div>
@@ -186,38 +222,70 @@ const InstructorCoursesView = () => {
               <TableHeader className="bg-slate-50 dark:bg-slate-800/50">
                 <TableRow className="border-brand-border hover:bg-transparent">
                   <TableHead className="pl-2">{t("table.course")}</TableHead>
-                  <TableHead className="text-center">{t("table.level")}</TableHead>
-                  <TableHead className="text-center">{t("table.students")}</TableHead>
-                  <TableHead className="text-center">{t("table.price")}</TableHead>
-                  <TableHead className="text-center">{t("table.status")}</TableHead>
-                  <TableHead className="text-right pr-6">{t("table.actions")}</TableHead>
+                  <TableHead className="text-center">
+                    {t("table.level")}
+                  </TableHead>
+                  <TableHead className="text-center">
+                    {t("table.students")}
+                  </TableHead>
+                  <TableHead className="text-center">
+                    {t("table.price")}
+                  </TableHead>
+                  <TableHead className="text-center">
+                    {t("table.status")}
+                  </TableHead>
+                  <TableHead className="text-right pr-6">
+                    {t("table.actions")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   Array.from({ length: 3 }).map((_, i) => (
                     <TableRow key={i}>
-                      <TableCell className="pl-6 py-4"><Skeleton className="h-12 w-full" /></TableCell>
-                      <TableCell><Skeleton className="h-8 w-12 mx-auto" /></TableCell>
-                      <TableCell><Skeleton className="h-8 w-12 mx-auto" /></TableCell>
-                      <TableCell><Skeleton className="h-8 w-20 mx-auto" /></TableCell>
-                      <TableCell><Skeleton className="h-8 w-12 ml-auto" /></TableCell>
+                      <TableCell className="pl-6 py-4">
+                        <Skeleton className="h-12 w-full" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-8 w-12 mx-auto" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-8 w-12 mx-auto" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-8 w-20 mx-auto" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-8 w-12 ml-auto" />
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : isError ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-64 text-center text-red-500">
+                    <TableCell
+                      colSpan={5}
+                      className="h-64 text-center text-red-500"
+                    >
                       Error loading courses. Please try again later.
                     </TableCell>
                   </TableRow>
                 ) : filteredCourses.length > 0 ? (
                   filteredCourses.map((course: any) => (
-                    <TableRow key={course._id.value} className="border-brand-border hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
+                    <TableRow
+                      key={course._id.value}
+                      className="border-brand-border hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
+                    >
                       <TableCell className="pl-2 py-4">
                         <div className="flex items-center gap-4">
                           <div className="h-12 w-20 rounded-md bg-slate-200 dark:bg-slate-800 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-shadow">
-                            {course?.thumbnailUrl ? (
-                              <img src={course?.thumbnailUrl} alt={course?.title?.value} className="w-full h-full object-cover" />
+                            {course?.props?.thumbnailUrl ? (
+                              <Image
+                                src={course?.props?.thumbnailUrl}
+                                alt={course?.props?.title?.value}
+                                fill
+                                sizes="80px"
+                                className="object-cover"
+                              />
                             ) : (
                               <BookOpen className="text-slate-400" size={20} />
                             )}
@@ -228,24 +296,34 @@ const InstructorCoursesView = () => {
                               {course?.props?.title?.value}
                             </p>
                             <p className="text-xs text-slate-400 mt-1 italic">
-                              {t("labels.last_updated")}: {formatDateTime(course?.props?.updatedAt, 'vi-VN')}
+                              {t("labels.last_updated")}:{" "}
+                              {formatDateTime(
+                                course?.props?.updatedAt,
+                                "vi-VN",
+                              )}
                             </p>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">{course?.props?.level}</span>
+                          <span className="font-medium text-slate-700 dark:text-slate-300">
+                            {course?.props?.level}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">{course?.props?.totalEnrolled}</span>
+                          <span className="font-medium text-slate-700 dark:text-slate-300">
+                            {course?.props?.totalEnrolled}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">{formatCurrency(course?.props?.price)}</span>
+                          <span className="font-medium text-slate-700 dark:text-slate-300">
+                            {formatCurrency(course?.props?.price)}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
@@ -253,32 +331,55 @@ const InstructorCoursesView = () => {
                       </TableCell>
                       <TableCell className="text-right pr-6">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:text-brand-primary hover:bg-brand-primary/10" >
-                            <Link href={`/instructor/courses/${course?._id?.value}/builder`}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 text-slate-500 hover:text-brand-primary hover:bg-brand-primary/10"
+                          >
+                            <Link
+                              href={`/instructor/courses/${course?._id?.value}/builder`}
+                            >
                               <Edit size={18} />
                             </Link>
                           </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger
                               render={
-                                <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-9 w-9 text-slate-400"
+                                >
                                   <MoreVertical size={18} />
                                 </Button>
                               }
                             />
-                            <DropdownMenuContent align="end" className="w-48 p-2 border-brand-border">
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-48 p-2 border-brand-border"
+                            >
                               <DropdownMenuItem
                                 className="gap-2 cursor-pointer rounded-md"
-                                onClick={() => handleToggleStatus(course._id?.value, course?.props?.status)}
+                                onClick={() =>
+                                  handleToggleStatus(
+                                    course._id?.value,
+                                    course?.props?.status,
+                                  )
+                                }
                               >
-                                <Eye size={16} /> {course?.props?.status === "DRAFT" ? "Publish Course" : "Unpublish Course"}
+                                <Eye size={16} />{" "}
+                                {course?.props?.status === "DRAFT"
+                                  ? "Publish Course"
+                                  : "Unpublish Course"}
                               </DropdownMenuItem>
                               <DropdownMenuItem className="gap-2 cursor-pointer rounded-md">
                                 <Users size={16} /> {t("actions.students")}
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 className="gap-2 cursor-pointer rounded-md text-red-500 focus:text-red-500 focus:bg-red-500/10"
-                                onClick={() => handleDelete(course?._id?.value || course?.id)}
+                                onClick={() =>
+                                  handleDelete(course?._id?.value || course?.id)
+                                }
                               >
                                 <Trash2 size={16} /> {t("actions.delete")}
                               </DropdownMenuItem>
@@ -296,7 +397,10 @@ const InstructorCoursesView = () => {
                         <p>{t("empty")}</p>
                         <CreateCourseDialog
                           trigger={
-                            <Button variant="link" className="text-brand-primary p-0 h-auto">
+                            <Button
+                              variant="link"
+                              className="text-brand-primary p-0 h-auto"
+                            >
                               {t("create_button")}
                             </Button>
                           }
@@ -316,7 +420,7 @@ const InstructorCoursesView = () => {
                 {t("pagination.showing", {
                   start: (meta.page - 1) * meta.limit + 1,
                   end: Math.min(meta.page * meta.limit, meta.total),
-                  total: meta.total
+                  total: meta.total,
                 })}
               </div>
               <div className="flex items-center gap-2">
@@ -324,32 +428,35 @@ const InstructorCoursesView = () => {
                   variant="outline"
                   size="sm"
                   disabled={meta.page <= 1}
-                  onClick={() => setPage(prev => prev - 1)}
+                  onClick={() => setPage((prev) => prev - 1)}
                   className="h-9 px-3 border-brand-border"
                 >
                   {t("pagination.previous")}
                 </Button>
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
-                    <Button
-                      key={p}
-                      variant={meta.page === p ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setPage(p)}
-                      className={`h-9 w-9 p-0 border-brand-border ${meta.page === p
-                        ? "bg-brand-primary text-white"
-                        : "hover:bg-brand-primary/10 hover:text-brand-primary"
+                  {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map(
+                    (p) => (
+                      <Button
+                        key={p}
+                        variant={meta.page === p ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setPage(p)}
+                        className={`h-9 w-9 p-0 border-brand-border ${
+                          meta.page === p
+                            ? "bg-brand-primary text-white"
+                            : "hover:bg-brand-primary/10 hover:text-brand-primary"
                         }`}
-                    >
-                      {p}
-                    </Button>
-                  ))}
+                      >
+                        {p}
+                      </Button>
+                    ),
+                  )}
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={meta.page >= meta.totalPages}
-                  onClick={() => setPage(prev => prev + 1)}
+                  onClick={() => setPage((prev) => prev + 1)}
                   className="h-9 px-3 border-brand-border"
                 >
                   {t("pagination.next")}
@@ -360,26 +467,57 @@ const InstructorCoursesView = () => {
         </CardContent>
       </Card>
 
-
       {/* Mini Stats for context */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: t("stats.active_learners"), value: "2.4k", trend: "+12%", icon: Users, color: "text-blue-500" },
-          { label: t("stats.completion"), value: "84%", trend: "+5%", icon: ArrowUpRight, color: "text-emerald-500" },
-          { label: t("stats.revenue"), value: "$4.2k", trend: "+18%", icon: DollarSign, color: "text-purple-500" },
-          { label: t("stats.rating"), value: "4.9/5", trend: "+0.1", icon: Eye, color: "text-amber-500" },
+          {
+            label: t("stats.active_learners"),
+            value: "2.4k",
+            trend: "+12%",
+            icon: Users,
+            color: "text-blue-500",
+          },
+          {
+            label: t("stats.completion"),
+            value: "84%",
+            trend: "+5%",
+            icon: ArrowUpRight,
+            color: "text-emerald-500",
+          },
+          {
+            label: t("stats.revenue"),
+            value: "$4.2k",
+            trend: "+18%",
+            icon: DollarSign,
+            color: "text-purple-500",
+          },
+          {
+            label: t("stats.rating"),
+            value: "4.9/5",
+            trend: "+0.1",
+            icon: Eye,
+            color: "text-amber-500",
+          },
         ].map((stat, i) => (
           <motion.div key={i} variants={itemVariants}>
             <Card className="border-brand-border hover:shadow-lg transition-all duration-300">
               <CardContent className="p-4 flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{stat.label}</p>
+                  <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">
+                    {stat.label}
+                  </p>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-xl font-bold text-slate-900 dark:text-white">{stat.value}</span>
-                    <span className={`text-[10px] font-bold ${stat.color}`}>{stat.trend}</span>
+                    <span className="text-xl font-bold text-slate-900 dark:text-white">
+                      {stat.value}
+                    </span>
+                    <span className={`text-[10px] font-bold ${stat.color}`}>
+                      {stat.trend}
+                    </span>
                   </div>
                 </div>
-                <div className={`p-2 rounded-lg bg-slate-50 dark:bg-slate-800 ${stat.color}`}>
+                <div
+                  className={`p-2 rounded-lg bg-slate-50 dark:bg-slate-800 ${stat.color}`}
+                >
                   <stat.icon size={20} />
                 </div>
               </CardContent>
@@ -414,4 +552,3 @@ const InstructorCoursesView = () => {
 };
 
 export default InstructorCoursesView;
-
