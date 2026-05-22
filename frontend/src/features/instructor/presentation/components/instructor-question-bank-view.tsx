@@ -188,7 +188,7 @@ const InstructorQuestionBankView = () => {
   const handleDuplicate = async (question: QuestionBankQuestionNode) => {
     const payload = buildQuestionPayload({
       ...mapQuestionNodeToFormState(question),
-      title: `${question.title || ""} (Copy)`,
+      title: `${question.props.title || ""} (Copy)`,
     });
 
     try {
@@ -212,7 +212,7 @@ const InstructorQuestionBankView = () => {
   // Filter items locally to apply Type filter immediately if API result contains mixed types
   const questionsList = (data?.data || []) as QuestionBankQuestionNode[];
   const filteredQuestions = questionsList.filter((question) => {
-    return selectedType === "all" || question.type === selectedType;
+    return selectedType === "all" || question.props.type === selectedType;
   });
 
   const totalPages = data?.pagination?.pageCount || 1;

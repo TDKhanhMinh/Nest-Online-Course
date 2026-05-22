@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { GripVertical, Plus, Search, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -126,13 +127,31 @@ const QuestionBankListItem = ({
   toggleQuestionSelection,
 }: QuestionBankListItemProps) => {
   const t = useTranslations("QuizCreator");
+  const checkboxRef = useRef<HTMLButtonElement>(null);
+
+  const triggerCheckbox = () => {
+    if (isAlreadyAdded) return;
+    checkboxRef.current?.click();
+  };
 
   return (
-    <div className="flex items-start gap-3 rounded-md border border-brand-border p-3 text-xs transition-colors hover:bg-brand-amber/5">
+    <div
+      role="button"
+      tabIndex={isAlreadyAdded ? -1 : 0}
+      onClick={triggerCheckbox}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        triggerCheckbox();
+      }}
+      className="flex cursor-pointer items-start gap-3 rounded-md border border-brand-border p-3 text-xs transition-colors hover:bg-brand-amber/5"
+    >
       <Checkbox
+        ref={checkboxRef}
         id={`q-bank-${question.id}`}
         checked={isChecked || isAlreadyAdded}
         disabled={isAlreadyAdded}
+        onClick={(event) => event.stopPropagation()}
         onCheckedChange={(checked) =>
           toggleQuestionSelection(question.id, Boolean(checked))
         }

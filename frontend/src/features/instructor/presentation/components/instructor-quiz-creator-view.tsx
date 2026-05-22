@@ -469,6 +469,7 @@ const InstructorQuizCreatorView = () => {
             canSave={canSave}
             handleSaveQuiz={handleSaveQuiz}
             isSaving={isSaving}
+            questions={effectiveSelectedQuestions}
             questionCount={effectiveSelectedQuestions.length}
             resolvedPassingScore={resolvedPassingScore}
             resolvedTimeLimit={resolvedTimeLimit}

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { AlertCircle, CheckCircle2, Loader2, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,12 +14,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import type { QuizValidationItem } from "./quiz-creator.types";
+import type {
+  QuizQuestionDraft,
+  QuizValidationItem,
+} from "./quiz-creator.types";
 
 interface QuizCreatorReviewTabProps {
   canSave: boolean;
   handleSaveQuiz: () => void;
   isSaving: boolean;
+  questions: QuizQuestionDraft[];
   questionCount: number;
   resolvedPassingScore: number;
   resolvedTimeLimit: number;
@@ -30,6 +35,7 @@ export const QuizCreatorReviewTab = ({
   canSave,
   handleSaveQuiz,
   isSaving,
+  questions,
   questionCount,
   resolvedPassingScore,
   resolvedTimeLimit,
@@ -110,6 +116,49 @@ export const QuizCreatorReviewTab = ({
                 </li>
               ))}
             </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-semibold">{t("select_questions")}</h3>
+            {questions.length > 0 ? (
+              <div className="space-y-3">
+                {questions.map((question, index) => (
+                  <div
+                    key={question.id}
+                    className="rounded-xl border border-brand-border bg-brand-bg/40 p-4"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0 space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge
+                            variant="outline"
+                            className="border-brand-border text-[10px] uppercase text-brand-amber"
+                          >
+                            {question.type}
+                          </Badge>
+                          <span className="text-xs font-medium sm:text-sm">
+                            {t("messages.question_index", { index: index + 1 })}
+                          </span>
+                        </div>
+                        <p className="text-sm font-medium leading-relaxed">
+                          {question.title}
+                        </p>
+                        <p className="line-clamp-2 text-xs text-muted-foreground">
+                          {question.content}
+                        </p>
+                      </div>
+                      <Badge variant="secondary">
+                        {t("messages.points_label")}: {question.points}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-xl border-2 border-dashed border-brand-border py-8 text-center text-sm text-muted-foreground">
+                {t("messages.no_selected_questions")}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col items-center justify-between gap-6 rounded-xl border border-brand-amber/20 bg-brand-amber/5 p-6 sm:flex-row">

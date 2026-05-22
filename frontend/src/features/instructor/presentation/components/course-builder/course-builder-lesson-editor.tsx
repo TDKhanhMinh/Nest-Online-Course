@@ -138,7 +138,8 @@ export const CourseBuilderLessonEditor = ({
         selectedQuiz &&
         lessonQuiz.id !== selectedQuiz.id,
     );
-  const filteredQuizzes = allQuizzes.filter((quiz) =>
+  const availableQuizzes = allQuizzes.filter((quiz) => !quiz.lessonId);
+  const filteredQuizzes = availableQuizzes.filter((quiz) =>
     quizMatchesSearch(quiz, deferredQuizSearch),
   );
   const isSubmittingQuiz = updateQuizLessonMutation.isPending;
@@ -246,6 +247,31 @@ export const CourseBuilderLessonEditor = ({
         error instanceof Error && error.message
           ? error.message
           : t("lesson.quiz_bank.attach_failed");
+      toast.error(message);
+    }
+  };
+
+  const handleDetachQuiz = async () => {
+    if (!lessonQuiz) {
+      return;
+    }
+
+    try {
+      await updateQuizLessonMutation.mutateAsync({
+        quizId: lessonQuiz.id,
+        data: {
+          lessonId: null,
+        },
+        previousLessonId: lesson.id,
+      });
+
+      setSelectedQuizOverrideId(null);
+      toast.success(t("lesson.quiz_bank.detach_success"));
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : t("lesson.quiz_bank.detach_failed");
       toast.error(message);
     }
   };
@@ -554,6 +580,18 @@ export const CourseBuilderLessonEditor = ({
                           : t("lesson.quiz_bank.will_attach")}
                       </p>
                     </div>
+                    {selectedQuiz.lessonId === lesson.id && (
+                      <div className="mt-4 flex justify-end">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleDetachQuiz}
+                          disabled={isSubmittingQuiz}
+                        >
+                          {t("lesson.quiz_bank.detach")}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
                 {!lessonQuiz && (

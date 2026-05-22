@@ -74,6 +74,9 @@ export const QuestionBankFormDialog = ({
   onSave,
 }: QuestionBankFormDialogProps) => {
   const t = useTranslations("QuestionBank");
+  const isTrueFalse = formState.type === QuestionType.TRUE_FALSE;
+  const canAddOption = !isTrueFalse;
+  const canRemoveOption = !isTrueFalse && formState.options.length > 2;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -83,8 +86,8 @@ export const QuestionBankFormDialog = ({
             {editingQuestion ? t("add_modal.edit_title") : t("add_modal.title")}
           </DialogTitle>
           <DialogDescription>
-            Provide precise attributes, description, and list of options for
-            the quiz creators to consume.
+            Provide precise attributes, description, and list of options for the
+            quiz creators to consume.
           </DialogDescription>
         </DialogHeader>
 
@@ -145,7 +148,10 @@ export const QuestionBankFormDialog = ({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="form-difficulty" className="text-sm font-semibold">
+              <Label
+                htmlFor="form-difficulty"
+                className="text-sm font-semibold"
+              >
                 {t("add_modal.difficulty")}
               </Label>
               <Select
@@ -193,7 +199,7 @@ export const QuestionBankFormDialog = ({
               <Label className="text-base font-bold text-slate-800 dark:text-slate-100">
                 {t("add_modal.options_title")}
               </Label>
-              {formState.type !== QuestionType.TRUE_FALSE && (
+              {canAddOption && (
                 <Button
                   type="button"
                   variant="outline"
@@ -237,22 +243,21 @@ export const QuestionBankFormDialog = ({
                       onChange={(event) =>
                         onOptionChange(index, "content", event.target.value)
                       }
-                      disabled={formState.type === QuestionType.TRUE_FALSE}
+                      disabled={isTrueFalse}
                       className="h-9 flex-1 border-slate-300 bg-white text-sm"
                     />
 
-                    {formState.type !== QuestionType.TRUE_FALSE &&
-                      formState.options.length > 2 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onRemoveOption(index)}
-                          className="h-9 w-9 text-slate-400 hover:text-red-500"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
+                    {canRemoveOption && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onRemoveOption(index)}
+                        className="h-9 w-9 text-slate-400 hover:text-red-500"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
 
                   <div className="pl-6">
@@ -260,11 +265,7 @@ export const QuestionBankFormDialog = ({
                       placeholder={t("add_modal.explanation_placeholder")}
                       value={option.explanation || ""}
                       onChange={(event) =>
-                        onOptionChange(
-                          index,
-                          "explanation",
-                          event.target.value,
-                        )
+                        onOptionChange(index, "explanation", event.target.value)
                       }
                       className="h-8 border-slate-200 bg-white text-xs text-slate-500"
                     />

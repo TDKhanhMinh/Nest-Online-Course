@@ -15,6 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 
 import type { QuestionBankQuestionNode } from "./question-bank.types";
+import { getQuestionOptionProps } from "./question-bank.utils";
 
 interface QuestionBankPreviewDialogProps {
   open: boolean;
@@ -43,10 +44,10 @@ export const QuestionBankPreviewDialog = ({
           <div className="space-y-6 py-4">
             <div>
               <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-                {question.title}
+                {question.props.title}
               </h3>
               <p className="mt-2 rounded-lg border border-slate-100 bg-slate-50 p-4 text-sm leading-relaxed text-slate-600">
-                {question.content}
+                {question.props.content}
               </p>
             </div>
 
@@ -56,7 +57,7 @@ export const QuestionBankPreviewDialog = ({
                   Difficulty
                 </span>
                 <Badge className="mt-1 font-semibold uppercase">
-                  {question.difficulty}
+                  {question.props.difficulty}
                 </Badge>
               </div>
               <div>
@@ -67,7 +68,7 @@ export const QuestionBankPreviewDialog = ({
                   variant="outline"
                   className="mt-1 border-slate-300 font-semibold uppercase"
                 >
-                  {question.type}
+                  {question.props.type}
                 </Badge>
               </div>
             </div>
@@ -76,34 +77,38 @@ export const QuestionBankPreviewDialog = ({
               <Label className="block text-sm font-bold text-slate-700">
                 Options & Key
               </Label>
-              {question.options?.map((option, index) => (
-                <div
-                  key={index}
-                  className={`flex flex-col gap-1 rounded-lg border p-3 transition-all ${
-                    option.isCorrect
-                      ? "border-emerald-200 bg-emerald-50/70 text-emerald-900"
-                      : "border-slate-200 bg-white text-slate-700"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border bg-muted text-xs font-semibold">
-                      {String.fromCharCode(65 + index)}
-                    </span>
-                    <span className="text-sm font-medium">
-                      {option.content}
-                    </span>
-                    {option.isCorrect && (
-                      <CheckCircle2 className="ml-auto h-4 w-4 shrink-0 text-emerald-600" />
+              {question.props.options?.map((option, index) => {
+                const optionProps = getQuestionOptionProps(option);
+
+                return (
+                  <div
+                    key={index}
+                    className={`flex flex-col gap-1 rounded-lg border p-3 transition-all ${
+                      optionProps.isCorrect
+                        ? "border-emerald-200 bg-emerald-50/70 text-emerald-900"
+                        : "border-slate-200 bg-white text-slate-700"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border bg-muted text-xs font-semibold">
+                        {String.fromCharCode(65 + index)}
+                      </span>
+                      <span className="text-sm font-medium">
+                        {optionProps.content}
+                      </span>
+                      {optionProps.isCorrect && (
+                        <CheckCircle2 className="ml-auto h-4 w-4 shrink-0 text-emerald-600" />
+                      )}
+                    </div>
+
+                    {optionProps.explanation && (
+                      <p className="mt-1 pl-8 text-xs italic text-slate-500">
+                        Explanation: {optionProps.explanation}
+                      </p>
                     )}
                   </div>
-
-                  {option.explanation && (
-                    <p className="mt-1 pl-8 text-xs italic text-slate-500">
-                      Explanation: {option.explanation}
-                    </p>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

@@ -141,14 +141,14 @@ export const QuestionBankTable = ({
                     <TableCell className="font-medium">
                       <div className="flex items-start gap-3">
                         <div className="mt-1 rounded bg-muted p-1">
-                          {getQuestionTypeIcon(question.type)}
+                          {getQuestionTypeIcon(question?.props?.type)}
                         </div>
                         <div>
                           <div className="font-semibold text-slate-800 dark:text-slate-100">
-                            {question.title}
+                            {question?.props?.title}
                           </div>
                           <span className="line-clamp-2 text-sm leading-relaxed font-normal text-slate-500">
-                            {question.content}
+                            {question?.props?.content}
                           </span>
                         </div>
                       </div>
@@ -159,14 +159,14 @@ export const QuestionBankTable = ({
                         variant="secondary"
                         className="capitalize font-normal whitespace-nowrap"
                       >
-                        {t(`types.${question.type}`)}
+                        {t(`types.${question?.props?.type}`)}
                       </Badge>
                     </TableCell>
 
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
-                        {question.tags && question.tags.length > 0 ? (
-                          question.tags.map((tag, index) => (
+                        {question.props.tags && question.props.tags.length > 0 ? (
+                          question.props.tags.map((tag, index) => (
                             <Badge
                               key={`${tag}-${index}`}
                               variant="outline"
@@ -185,10 +185,10 @@ export const QuestionBankTable = ({
 
                     <TableCell>
                       <Badge
-                        variant={getDifficultyVariant(question.difficulty)}
+                        variant={getDifficultyVariant(question?.props?.difficulty)}
                         className="px-2.5 py-0.5 text-xs font-semibold capitalize"
                       >
-                        {t(`difficulty.${question.difficulty}`)}
+                        {t(`difficulty.${question?.props?.difficulty}`)}
                       </Badge>
                     </TableCell>
 

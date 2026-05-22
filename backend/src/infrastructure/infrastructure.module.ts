@@ -4,25 +4,61 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 
 // Schemas
-import { CartItemDocument, CartItemSchema } from '@/database/schemas/cart-item.schema';
+import {
+  CartItemDocument,
+  CartItemSchema,
+} from '@/database/schemas/cart-item.schema';
 import { CartDocument, CartSchema } from '@/database/schemas/cart.schema';
-import { CategoryDocument, CategorySchema } from '@/database/schemas/category.schema';
-import { CertificateDocument, CertificateSchema } from '@/database/schemas/certificate.schema';
+import {
+  CategoryDocument,
+  CategorySchema,
+} from '@/database/schemas/category.schema';
+import {
+  CertificateDocument,
+  CertificateSchema,
+} from '@/database/schemas/certificate.schema';
 import { CourseDocument, CourseSchema } from '@/database/schemas/course.schema';
-import { EnrollmentDocument, EnrollmentSchema } from '@/database/schemas/enrollment.schema';
-import { InstructorProfileDocument, InstructorProfileSchema } from '@/database/schemas/instructor-profile.schema';
-import { LessonProgressDocument, LessonProgressSchema } from '@/database/schemas/lesson-progress.schema';
+import {
+  EnrollmentDocument,
+  EnrollmentSchema,
+} from '@/database/schemas/enrollment.schema';
+import {
+  InstructorProfileDocument,
+  InstructorProfileSchema,
+} from '@/database/schemas/instructor-profile.schema';
+import {
+  LessonProgressDocument,
+  LessonProgressSchema,
+} from '@/database/schemas/lesson-progress.schema';
 import { LessonDocument, LessonSchema } from '@/database/schemas/lesson.schema';
-import { OrderItemDocument, OrderItemSchema } from '@/database/schemas/order-item.schema';
+import {
+  OrderItemDocument,
+  OrderItemSchema,
+} from '@/database/schemas/order-item.schema';
 import { OrderDocument, OrderSchema } from '@/database/schemas/order.schema';
-import { QuestionDocument, QuestionSchema } from '@/database/schemas/question.schema';
-import { QuizAttemptDocument, QuizAttemptSchema } from '@/database/schemas/quiz-attempt.schema';
+import {
+  QuestionDocument,
+  QuestionSchema,
+} from '@/database/schemas/question.schema';
+import {
+  QuizAttemptDocument,
+  QuizAttemptSchema,
+} from '@/database/schemas/quiz-attempt.schema';
 import { QuizDocument, QuizSchema } from '@/database/schemas/quiz.schema';
 import { ReviewDocument, ReviewSchema } from '@/database/schemas/review.schema';
-import { SectionDocument, SectionSchema } from '@/database/schemas/section.schema';
-import { TransactionDocument, TransactionSchema } from '@/database/schemas/transaction.schema';
+import {
+  SectionDocument,
+  SectionSchema,
+} from '@/database/schemas/section.schema';
+import {
+  TransactionDocument,
+  TransactionSchema,
+} from '@/database/schemas/transaction.schema';
 import { UserSchema } from '@/database/schemas/user.schema';
-import { WishlistDocument, WishlistSchema } from '@/database/schemas/wishlist.schema';
+import {
+  WishlistDocument,
+  WishlistSchema,
+} from '@/database/schemas/wishlist.schema';
 
 // Ports
 import { ICART_ITEM_REPOSITORY } from '@domain/cart/ports/i-cart-item.repository';
@@ -241,4 +277,3 @@ import { S3StorageAdapter } from './services/storage/s3-storage.adapter';
   ],
 })
 export class InfrastructureModule {}
-

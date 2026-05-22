@@ -8,15 +8,20 @@ import type {
 
 const defaultQuestionType = QuestionType.SINGLE_CHOICE;
 
+const getUniqueIdValue = (id?: QuestionBankApiNode["_id"]) => {
+  if (!id) return "";
+  return typeof id === "string" ? id : id.value;
+};
+
 export const normalizeQuestionBankItem = (
   question: QuestionBankApiNode,
 ): QuestionBankItem => ({
-  id: question?.id || "",
-  title: question?.title || "",
-  content: question?.content || "",
-  type: question?.type || defaultQuestionType,
-  difficulty: question?.difficulty,
-  tags: question?.tags || [],
+  id: getUniqueIdValue(question?._id),
+  title: question?.props?.title || "",
+  content: question?.props?.content || "",
+  type: question?.props?.type || defaultQuestionType,
+  difficulty: question?.props?.difficulty,
+  tags: question?.props?.tags || [],
 });
 
 export const getErrorMessage = (error: unknown, fallback: string) => {

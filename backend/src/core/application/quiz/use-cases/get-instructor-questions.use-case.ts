@@ -1,5 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { IQuestionRepository, QUESTION_REPOSITORY } from '../../../domain/quiz/ports/i-question.repository';
+import {
+  IQuestionRepository,
+  QUESTION_REPOSITORY,
+} from '../../../domain/quiz/ports/i-question.repository';
 import { Question } from '../../../domain/quiz/entities/question.entity';
 import { UniqueId } from '../../../shared/types/unique-id.vo';
 import { PageOptionsDto } from '../../../shared/pagination/offset/page-options.dto';
@@ -15,14 +18,16 @@ export interface GetInstructorQuestionsCommand {
 export class GetInstructorQuestionsUseCase {
   constructor(
     @Inject(QUESTION_REPOSITORY)
-    private readonly questionRepository: IQuestionRepository
+    private readonly questionRepository: IQuestionRepository,
   ) {}
 
-  async execute(command: GetInstructorQuestionsCommand): Promise<PageDto<Question>> {
+  async execute(
+    command: GetInstructorQuestionsCommand,
+  ): Promise<PageDto<Question>> {
     return this.questionRepository.findInstructorQuestions(
       new UniqueId(command.instructorId),
       command.pageOptionsDto,
-      command.courseId ? new UniqueId(command.courseId) : undefined
+      command.courseId ? new UniqueId(command.courseId) : undefined,
     );
   }
 }

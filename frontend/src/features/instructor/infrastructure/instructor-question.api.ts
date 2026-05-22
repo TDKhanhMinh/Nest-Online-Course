@@ -31,6 +31,10 @@ export interface QuestionOptionDTO {
   explanation?: string | null;
 }
 
+export interface UniqueIdDTO {
+  value: string;
+}
+
 /**
  * Payload for creating a new question.
  * POST /instructor/questions
@@ -50,21 +54,35 @@ export interface CreateQuestionDTO {
  * PUT /instructor/questions/:id
  * Same structure as CreateQuestionDTO — full replacement.
  */
-export interface UpdateQuestionDTO extends CreateQuestionDTO {}
+export type UpdateQuestionDTO = CreateQuestionDTO;
 
-/**
- * Represents a single question returned from the API.
- */
-export interface QuestionDTO {
-  id: string;
-  instructorId: string;
-  courseId?: string | null;
+export interface QuestionOptionNodeDTO {
+  props: {
+    id?: UniqueIdDTO | string;
+    content: string;
+    isCorrect: boolean;
+    explanation?: string | null;
+  };
+}
+
+export interface QuestionPropsDTO {
+  instructorId: UniqueIdDTO | string;
+  courseId?: UniqueIdDTO | string | null;
   title: string;
   content: string;
   type: QuestionType;
   difficulty: DifficultyLevel;
-  options: QuestionOptionDTO[];
+  options: QuestionOptionNodeDTO[];
   tags?: string[];
+}
+
+/**
+ * Represents a single question returned from the current domain-entity API.
+ * The aggregate id is exposed as `_id`; all business data lives under `props`.
+ */
+export interface QuestionDTO {
+  _id: UniqueIdDTO | string;
+  props: QuestionPropsDTO;
 }
 
 /**
@@ -115,7 +133,7 @@ export const instructorQuestionApi = {
    * GET /instructor/questions
    */
   getQuestions: async (
-    params?: GetQuestionsParams
+    params?: GetQuestionsParams,
   ): Promise<QuestionListResponseDTO> => {
     const response = await api.get("/instructor/questions", { params });
     return response.data;
@@ -136,7 +154,7 @@ export const instructorQuestionApi = {
    */
   updateQuestion: async (
     id: string,
-    data: UpdateQuestionDTO
+    data: UpdateQuestionDTO,
   ): Promise<QuestionDTO> => {
     const response = await api.put(`/instructor/questions/${id}`, data);
     return response.data;
@@ -146,9 +164,7 @@ export const instructorQuestionApi = {
    * Delete a question by its ID.
    * DELETE /instructor/questions/:id
    */
-  deleteQuestion: async (
-    id: string
-  ): Promise<DeleteQuestionResponseDTO> => {
+  deleteQuestion: async (id: string): Promise<DeleteQuestionResponseDTO> => {
     const response = await api.delete(`/instructor/questions/${id}`);
     return response.data;
   },

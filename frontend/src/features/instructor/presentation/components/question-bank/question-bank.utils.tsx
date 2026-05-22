@@ -8,7 +8,9 @@ import {
   DifficultyLevel,
   QuestionType,
   type CreateQuestionDTO,
+  type QuestionOptionNodeDTO,
   type QuestionOptionDTO,
+  type UniqueIdDTO,
 } from "../../../infrastructure/instructor-question.api";
 import type {
   QuestionBankFormState,
@@ -16,6 +18,7 @@ import type {
 } from "./question-bank.types";
 
 type ValidationTranslate = (key: string) => string;
+type QuestionNodeId = QuestionBankQuestionNode | QuestionBankQuestionNode["_id"];
 
 export const createDefaultQuestionOptions = (): QuestionOptionDTO[] => [
   { content: "", isCorrect: true, explanation: "" },
@@ -36,23 +39,39 @@ export const createInitialQuestionFormState = (): QuestionBankFormState => ({
   options: createDefaultQuestionOptions(),
 });
 
-export const getQuestionNodeId = (question: QuestionBankQuestionNode) =>
-  question.id || "";
+const getUniqueIdValue = (id?: UniqueIdDTO | string | null) => {
+  if (!id) return "";
+  return typeof id === "string" ? id : id.value;
+};
+
+export const getQuestionNodeId = (question: QuestionNodeId) => {
+  if (typeof question === "string") return question;
+  if ("value" in question) return question.value;
+  return getUniqueIdValue(question._id);
+};
+
+export const getQuestionOptionProps = (option: QuestionOptionNodeDTO) =>
+  option.props;
 
 export const mapQuestionNodeToFormState = (
   question: QuestionBankQuestionNode,
 ): QuestionBankFormState => ({
-  title: question.title || "",
-  content: question.content || "",
-  type: question.type || QuestionType.SINGLE_CHOICE,
-  difficulty: question.difficulty || DifficultyLevel.MEDIUM,
-  tags: question.tags?.join(", ") || "",
+  title: question.props.title || "",
+  content: question.props.content || "",
+  type: question.props.type || QuestionType.SINGLE_CHOICE,
+  difficulty: question.props.difficulty || DifficultyLevel.MEDIUM,
+  tags: question.props.tags?.join(", ") || "",
   options:
-    question.options?.map((option) => ({
-      content: option.content || "",
-      isCorrect: option.isCorrect || false,
-      explanation: option.explanation || "",
-    })) || createDefaultQuestionOptions(),
+    question.props.options?.map((option) => {
+      const optionProps = getQuestionOptionProps(option);
+
+      return {
+        id: getUniqueIdValue(optionProps.id),
+        content: optionProps.content || "",
+        isCorrect: optionProps.isCorrect || false,
+        explanation: optionProps.explanation || "",
+      };
+    }) || createDefaultQuestionOptions(),
 });
 
 export const buildQuestionPayload = (
