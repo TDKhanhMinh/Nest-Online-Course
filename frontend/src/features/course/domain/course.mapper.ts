@@ -1,13 +1,12 @@
 import { CourseDTO } from "../infrastructure/course.api";
 import { Course } from "./course.types";
 
-export const mapCourseDtoToEntity = (dto: CourseDTO): Course => {
+export const mapCourseDtoToEntity = (dto: any): Course => {
   return {
     id: dto.id || dto.courseId || "",
     title: dto.title,
     slug: dto.slug,
     description: dto.description,
-    // shortDescription: "", // Not supported by backend yet
     price: dto.price,
     level: dto.level,
     status: dto.status,
@@ -20,8 +19,39 @@ export const mapCourseDtoToEntity = (dto: CourseDTO): Course => {
     totalStudents: dto.totalStudents,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
-    // UI helper fields
+    // UI helper fields and aliases
     rating: dto.avgRating,
     thumbnail: dto.thumbnailUrl || "",
+    author: dto.instructorName || dto.author || "Unknown Instructor",
+    category: dto.categoryName || dto.category || "Uncategorized",
+    categoryName: dto.categoryName || dto.category,
+    instructorName: dto.instructorName || dto.author,
+    reviewCount: dto.totalReviews,
+    students: dto.totalStudents,
+    duration: dto.duration || 0,
+    lessons: dto.lessons || 0,
+    lessonsCount: dto.lessons || dto.lessonsCount || 0,
+    isBestseller: dto.isBestseller || false,
+    isNew: dto.isNew || false,
+    isHot: dto.isHot || false,
+    sections: dto.sections?.map((section: any) => ({
+      id: section.id,
+      courseId: section.courseId,
+      title: section.title,
+      orderIndex: section.orderIndex,
+      lessons: section.lessons?.map((lesson: any) => ({
+        id: lesson.id,
+        sectionId: lesson.sectionId,
+        title: lesson.title,
+        type: (lesson.type || "").toLowerCase(),
+        order: lesson.orderIndex,
+        isPreview: !!lesson.isFreePreview,
+        duration: lesson.duration,
+        contentUrl: lesson.contentUrl,
+        textContent: lesson.textContent,
+        content: lesson.textContent,
+        videoUrl: lesson.videoUrl,
+      })) || [],
+    })) || [],
   };
 };

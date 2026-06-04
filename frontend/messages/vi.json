@@ -821,6 +821,7 @@
     "status": {
       "active": "Hoạt động",
       "draft": "Nháp",
+      "pending_approval": "Chờ duyệt",
       "finished": "Kết thúc"
     },
     "actions": {
@@ -828,6 +829,8 @@
       "preview": "Xem trước",
       "students": "Học viên",
       "delete": "Xóa",
+      "submit_review": "Gửi duyệt",
+      "submitting_review": "Đang gửi...",
       "duplicate": "Nhân bản"
     },
     "stats": {
@@ -851,13 +854,21 @@
     "delete_title": "Xóa khóa học",
     "delete_description": "Bạn có chắc chắn muốn xóa khóa học này? Hành động này không thể hoàn tác.",
     "deleting": "Đang xóa...",
-    "cancel": "Hủy"
+    "cancel": "Hủy",
+    "messages": {
+      "submit_review_success": "Khóa học đã được gửi duyệt thành công."
+    }
   },
   "CourseBuilder": {
     "title": "Trình xây dựng khóa học",
     "back_to_courses": "Quay lại danh sách",
     "save_draft": "Lưu nháp",
     "publish": "Xuất bản khóa học",
+    "submit_for_review": "Gửi duyệt",
+    "submitting_for_review": "Đang gửi...",
+    "status": {
+      "pending_approval": "Chờ duyệt"
+    },
     "sections": {
       "title": "Chương trình học",
       "add_section": "Thêm chương",
@@ -921,7 +932,10 @@
     "create": "Tạo",
     "creating": "Đang tạo...",
     "delete": "Xóa",
-    "deleting": "Đang xóa..."
+    "deleting": "Đang xóa...",
+    "messages": {
+      "submit_review_success": "Khóa học đã được gửi duyệt thành công."
+    }
   },
   "QuizCreator": {
     "title": "Trình tạo bài kiểm tra",

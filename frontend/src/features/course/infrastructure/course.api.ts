@@ -147,6 +147,11 @@ export const courseApi = {
     const response = await api.patch(`/courses/${id}/status`, data);
     return response.data;
   },
+
+  publishCourse: async (id: string): Promise<CourseDTO> => {
+    const response = await api.patch(`/courses/${id}/publish`);
+    return response.data;
+  },
   
   // Curriculum - Sections
   getCourseCurriculum: async (courseId: string): Promise<SectionDTO[]> => {
@@ -205,6 +210,21 @@ export const courseApi = {
       },
       timeout: 120000,
     });
+    return response.data;
+  },
+
+  getPublicCourses: async (params?: any): Promise<any> => {
+    const response = await api.get("/public/courses", { params });
+    return response.data;
+  },
+
+  getPublicCourseDetail: async (idOrSlug: string): Promise<any> => {
+    const response = await api.get(`/public/courses/${idOrSlug}`);
+    return response.data;
+  },
+
+  getPublicCourseReviews: async (idOrSlug: string): Promise<any> => {
+    const response = await api.get(`/public/courses/${idOrSlug}/reviews`);
     return response.data;
   },
 };

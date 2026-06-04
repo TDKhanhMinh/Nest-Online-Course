@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { CourseLevel } from "@/features/course/domain/course.types";
 import { CourseCard } from "@/features/course/presentation/components/course-card";
+import { usePublicCourses } from "@/features/course/presentation/hooks/use-public-courses";
 import { useRouter } from "@/i18n/navigation";
 import {
   Award,
@@ -16,7 +16,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -39,6 +39,20 @@ export default function HomePage() {
   const tc = useTranslations("Common");
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const publicCourseFilters = useMemo(
+    () => ({
+      page: 1,
+      limit: 100,
+      sortBy: "latest",
+    }),
+    []
+  );
+  const {
+    data: publicCoursesData,
+    isError: isPublicCoursesError,
+    isLoading: isPublicCoursesLoading,
+  } = usePublicCourses(publicCourseFilters);
+  const publicCourses = publicCoursesData?.courses || [];
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -71,60 +85,6 @@ export default function HomePage() {
     { icon: "🔐", name: t("categories.security"), count: 67, key: "Cybersecurity" },
     { icon: "📢", name: t("categories.marketing"), count: 145, key: "Marketing" },
     { icon: "💼", name: t("categories.business"), count: 89, key: "Business" },
-  ];
-
-  const featuredCourses: any[] = [
-    {
-      id: "react-1",
-      title: t("course_data.react.title"),
-      slug: "react-nextjs-complete",
-      author: t("course_data.react.author"),
-      category: t("course_data.react.category"),
-      thumbnail: "/images/courses/react.png",
-      rating: 4.9,
-      reviewCount: 3241,
-      price: 599000,
-      originalPrice: 1299000,
-      duration: 42,
-      lessons: 186,
-      students: 12400,
-      level: CourseLevel.INTERMEDIATE,
-      isBestseller: true,
-    },
-    {
-      id: "ai-1",
-      title: t("course_data.ai.title"),
-      slug: "llm-prompt-engineering",
-      author: t("course_data.ai.author"),
-      category: t("course_data.ai.category"),
-      thumbnail: "/images/courses/ai.png",
-      rating: 4.8,
-      reviewCount: 1876,
-      price: 799000,
-      originalPrice: 1499000,
-      duration: 28,
-      lessons: 124,
-      students: 8700,
-      level: CourseLevel.ADVANCED,
-      isNew: true,
-    },
-    {
-      id: "security-1",
-      title: t("course_data.security.title"),
-      slug: "ethical-hacking-beginners",
-      author: t("course_data.security.author"),
-      category: t("course_data.security.category"),
-      thumbnail: "/images/courses/security.png",
-      rating: 4.7,
-      reviewCount: 987,
-      price: 699000,
-      originalPrice: 1199000,
-      duration: 36,
-      lessons: 158,
-      students: 5200,
-      level: CourseLevel.BEGINNER,
-      isHot: true,
-    },
   ];
 
   const featuresList = [
@@ -273,11 +233,38 @@ export default function HomePage() {
             {t("featured.view_all")} <ChevronRight className="ml-1 h-4 w-4" />
           </Button>
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredCourses.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
+        {isPublicCoursesLoading ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, index) => (
+              <div
+                key={index}
+                className="h-[360px] animate-pulse rounded-xl border border-brand-border bg-brand-card"
+              >
+                <div className="aspect-video bg-slate-200 dark:bg-slate-800" />
+                <div className="space-y-3 p-4">
+                  <div className="h-3 w-24 rounded bg-slate-200 dark:bg-slate-800" />
+                  <div className="h-5 w-3/4 rounded bg-slate-200 dark:bg-slate-800" />
+                  <div className="h-4 w-1/2 rounded bg-slate-200 dark:bg-slate-800" />
+                  <div className="h-4 w-2/3 rounded bg-slate-200 dark:bg-slate-800" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : isPublicCoursesError ? (
+          <div className="rounded-xl border border-brand-border bg-brand-card p-8 text-center text-sm text-slate-600 dark:text-slate-400">
+            Courses are temporarily unavailable.
+          </div>
+        ) : publicCourses.length > 0 ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {publicCourses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-brand-border bg-brand-card p-8 text-center text-sm text-slate-600 dark:text-slate-400">
+            No courses are available yet.
+          </div>
+        )}
       </section>
 
       <div className="mx-auto max-w-7xl border-t border-brand-border" />
@@ -328,7 +315,7 @@ export default function HomePage() {
                     <Star key={i} className="h-3.5 w-3.5" fill="currentColor" />
                   ))}
                 </div>
-                <p className="mb-5 text-sm italic leading-relaxed text-slate-600 dark:text-slate-400">"{t.quote}"</p>
+                <p className="mb-5 text-sm italic leading-relaxed text-slate-600 dark:text-slate-400">&quot;{t.quote}&quot;</p>
                 <div className="flex items-center gap-3">
                   <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-sora text-sm font-bold ${t.avatarClass}`}>
                     {t.initials}

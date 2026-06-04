@@ -109,7 +109,9 @@ export class Course extends AggregateRoot<CourseProps> {
     return false;
   }
 
-  update(props: Partial<Omit<CourseProps, 'instructorId' | 'slug' | 'status'>>): void {
+  update(
+    props: Partial<Omit<CourseProps, 'instructorId' | 'slug' | 'status'>>,
+  ): void {
     if (props.title) this.props.title = props.title;
     if (props.description) this.props.description = props.description;
     if (props.price !== undefined) this.props.price = props.price;
@@ -117,8 +119,10 @@ export class Course extends AggregateRoot<CourseProps> {
     if (props.thumbnailUrl) this.props.thumbnailUrl = props.thumbnailUrl;
     if (props.level) this.props.level = props.level;
     if (props.language) this.props.language = props.language;
-    if (props.totalSection !== undefined) this.props.totalSection = props.totalSection;
-    if (props.totalLesson !== undefined) this.props.totalLesson = props.totalLesson;
+    if (props.totalSection !== undefined)
+      this.props.totalSection = props.totalSection;
+    if (props.totalLesson !== undefined)
+      this.props.totalLesson = props.totalLesson;
     if (props.updatedAt) this.props.updatedAt = props.updatedAt;
   }
 
@@ -129,7 +133,10 @@ export class Course extends AggregateRoot<CourseProps> {
 
   removeSection(lessonLength: number): void {
     this.props.totalSection = Math.max(0, (this.props.totalSection ?? 0) - 1);
-    this.props.totalLesson = Math.max(0, (this.props.totalLesson ?? 0) - lessonLength);
+    this.props.totalLesson = Math.max(
+      0,
+      (this.props.totalLesson ?? 0) - lessonLength,
+    );
     this.props.updatedAt = new Date();
   }
 
@@ -153,6 +160,14 @@ export class Course extends AggregateRoot<CourseProps> {
       throw new Error('Cannot publish course without a thumbnail');
     }
     this.props.status = status;
+    this.props.isPublished = status === CourseStatus.PUBLISHED;
+    this.props.updatedAt = new Date();
+  }
+
+  submitForApproval(): void {
+    this.props.status = CourseStatus.PENDING_APPROVAL;
+    this.props.isPublished = false;
+    this.props.updatedAt = new Date();
   }
 
   static create(props: CourseProps, id?: UniqueId): Course {
@@ -163,6 +178,3 @@ export class Course extends AggregateRoot<CourseProps> {
     return new Course(props, id);
   }
 }
-
-
-

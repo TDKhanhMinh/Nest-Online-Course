@@ -1,8 +1,10 @@
-import { Course, CourseStatus } from "@/features/course/domain/course.types";
+import { Course } from "@/features/course/domain/course.types";
 import {
   adminCourseApi,
   AdminCourseDTO,
-  AdminCourseQuery
+  AdminCourseQuery,
+  AdminCourseStatus,
+  AdminCourseDetailDTO,
 } from "../infrastructure/admin-course.api";
 
 export interface Pagination {
@@ -10,11 +12,13 @@ export interface Pagination {
   page: number;
   limit: number;
   pageCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
 }
 
 export interface PaginatedCourses {
   data: Course[];
-  meta: Pagination;
+  pagination: Pagination;
 }
 
 export class GetAdminCoursesUseCase {
@@ -23,42 +27,50 @@ export class GetAdminCoursesUseCase {
     
     return {
       data: response.data.map(course => this.mapToEntity(course)),
-      meta: {
-        itemCount: response.meta.itemCount,
-        page: response.meta.page,
-        limit: response.meta.limit,
-        pageCount: response.meta.pageCount,
+      pagination: {
+        itemCount: response.pagination.itemCount,
+        page: response.pagination.page,
+        limit: response.pagination.limit,
+        pageCount: response.pagination.pageCount,
+        hasPreviousPage: response.pagination.hasPreviousPage,
+        hasNextPage: response.pagination.hasNextPage,
       }
     };
   }
 
-  private mapToEntity(dto: AdminCourseDTO): Course {
+  private mapToEntity(dto: any): Course {
+    const props = dto.props || {};
     return {
-      id: dto.id,
-      title: dto.title,
-      slug: dto.slug,
-      description: dto.description,
-      price: dto.price,
-      level: dto.level,
-      status: dto.status,
-      thumbnailUrl: dto.thumbnailUrl,
-      instructorId: dto.instructorId,
-      categoryId: dto.categoryId,
-      // category: "", // Will be populated if needed
-      language: dto.language,
-      avgRating: 0,
-      totalReviews: 0,
-      totalStudents: 0,
-      createdAt: dto.createdAt,
-      updatedAt: dto.updatedAt,
-      rating: 0,
-      thumbnail: dto.thumbnailUrl || "",
+      id: dto.id || dto._id?.value || dto._id || "",
+      title: props.title?.value || dto.title || "",
+      slug: props.slug || dto.slug || "",
+      description: props.description || dto.description || "",
+      price: props.price !== undefined ? props.price : (dto.price ?? 0),
+      level: props.level || dto.level,
+      status: props.status || dto.status,
+      thumbnailUrl: props.thumbnailUrl || dto.thumbnailUrl,
+      instructorId: props.instructorId?.value || dto.instructorId || "",
+      categoryId: props.categoryId?.value || dto.categoryId || "",
+      language: props.language || dto.language || "",
+      avgRating: props.averageRating || dto.avgRating || 0,
+      totalReviews: props.totalReview || dto.totalReviews || 0,
+      totalStudents: props.totalEnrolled || dto.totalStudents || 0,
+      createdAt: props.createdAt || dto.createdAt,
+      updatedAt: props.updatedAt || dto.updatedAt,
+      rating: props.averageRating || dto.avgRating || 0,
+      thumbnail: props.thumbnailUrl || dto.thumbnailUrl || "",
     };
   }
 }
 
+export class GetAdminCourseDetailUseCase {
+  async execute(id: string): Promise<AdminCourseDetailDTO> {
+    return await adminCourseApi.getById(id);
+  }
+}
+
 export class UpdateCourseStatusUseCase {
-  async execute(id: string, status: CourseStatus): Promise<Course> {
+  async execute(id: string, status: AdminCourseStatus): Promise<Course> {
     const response = await adminCourseApi.updateStatus(id, status);
     return new GetAdminCoursesUseCase()["mapToEntity"](response);
   }
@@ -78,6 +90,7 @@ export class DeleteCourseUseCase {
 }
 
 export const getAdminCoursesUseCase = new GetAdminCoursesUseCase();
+export const getAdminCourseDetailUseCase = new GetAdminCourseDetailUseCase();
 export const updateCourseStatusUseCase = new UpdateCourseStatusUseCase();
 export const updateCourseCategoryUseCase = new UpdateCourseCategoryUseCase();
 export const deleteCourseUseCase = new DeleteCourseUseCase();

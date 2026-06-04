@@ -14,9 +14,9 @@ import {
   Trash2,
   Users,
 } from "lucide-react";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useState } from "react";
 
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +43,7 @@ import { CourseStatus } from "@/features/course/domain/course.types";
 import { CreateCourseDialog } from "@/features/course/presentation/components/create-course-dialog";
 import {
   useDeleteCourse,
-  useUpdateCourseStatus,
+  usePublishCourse,
 } from "@/features/course/presentation/hooks/use-course-mutations";
 import { useInstructorCourses } from "@/features/course/presentation/hooks/use-instructor-courses";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -65,6 +65,34 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 };
+
+interface InstructorCourseListItem {
+  _id?: {
+    value?: string;
+  };
+  id?: string;
+  props?: {
+    status?: CourseStatus | string;
+    thumbnailUrl?: string;
+    title?: {
+      value?: string;
+    };
+    updatedAt?: string;
+    level?: string;
+    totalEnrolled?: number;
+    price?: number;
+  };
+}
+
+interface InstructorCourseListResponse {
+  data?: InstructorCourseListItem[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
 
 const InstructorCoursesView = () => {
   const t = useTranslations("InstructorCourses");
@@ -95,18 +123,21 @@ const InstructorCoursesView = () => {
   });
   const { mutateAsync: deleteCourse, isPending: isDeleting } =
     useDeleteCourse();
-  const { mutate: updateStatus } = useUpdateCourseStatus();
+  const { mutateAsync: publishCourse, isPending: isPublishing } =
+    usePublishCourse({
+      successMessage: t("messages.submit_review_success"),
+    });
   const [courseToDeleteId, setCourseToDeleteId] = useState<string | null>(null);
+  const [publishingCourseId, setPublishingCourseId] = useState<string | null>(
+    null,
+  );
 
-  // @ts-ignore
-  const courses = res?.courses.data || [];
-  // @ts-ignore
-  const meta = res?.courses.pagination;
+  const coursesResponse = res?.courses as unknown as
+    | InstructorCourseListResponse
+    | undefined;
+  const courses = coursesResponse?.data || [];
+  const meta = coursesResponse?.pagination;
   console.log("courses", courses);
-
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch, activeTab]);
 
   // No longer need client-side filtering as it's handled by the backend
   const filteredCourses = courses;
@@ -125,6 +156,12 @@ const InstructorCoursesView = () => {
             {t("status.draft")}
           </Badge>
         );
+      case "PENDING_APPROVAL":
+        return (
+          <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20">
+            {t("status.pending_approval")}
+          </Badge>
+        );
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -134,10 +171,13 @@ const InstructorCoursesView = () => {
     setCourseToDeleteId(id);
   };
 
-  const handleToggleStatus = (id: string, currentStatus: string) => {
-    const newStatus =
-      currentStatus === "DRAFT" ? CourseStatus.PUBLISHED : CourseStatus.DRAFT;
-    updateStatus({ id, data: { status: newStatus } });
+  const handleSubmitForReview = async (id: string) => {
+    setPublishingCourseId(id);
+    try {
+      await publishCourse(id);
+    } finally {
+      setPublishingCourseId(null);
+    }
   };
 
   return (
@@ -174,7 +214,10 @@ const InstructorCoursesView = () => {
             <Tabs
               defaultValue="all"
               className="w-full sm:w-auto"
-              onValueChange={setActiveTab}
+              onValueChange={(value) => {
+                setActiveTab(value);
+                setPage(1);
+              }}
             >
               <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 h-11">
                 <TabsTrigger value="all" className="px-4">
@@ -202,7 +245,10 @@ const InstructorCoursesView = () => {
                   placeholder={t("search_placeholder")}
                   className="pl-10 bg-white dark:bg-slate-950 border-brand-border h-11"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setPage(1);
+                  }}
                 />
               </div>
               <Button
@@ -270,125 +316,135 @@ const InstructorCoursesView = () => {
                     </TableCell>
                   </TableRow>
                 ) : filteredCourses.length > 0 ? (
-                  filteredCourses.map((course: any) => (
-                    <TableRow
-                      key={course._id.value}
-                      className="border-brand-border hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
-                    >
-                      <TableCell className="pl-2 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-20 rounded-md bg-slate-200 dark:bg-slate-800 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-shadow">
-                            {course?.props?.thumbnailUrl ? (
-                              <Image
-                                src={course?.props?.thumbnailUrl}
-                                alt={course?.props?.title?.value}
-                                fill
-                                sizes="80px"
-                                className="object-cover"
-                              />
-                            ) : (
-                              <BookOpen className="text-slate-400" size={20} />
-                            )}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <p className="font-semibold text-slate-900 dark:text-white group-hover:text-brand-primary transition-colors">
-                              {course?.props?.title?.value}
-                            </p>
-                            <p className="text-xs text-slate-400 mt-1 italic">
-                              {t("labels.last_updated")}:{" "}
-                              {formatDateTime(
-                                course?.props?.updatedAt,
-                                "vi-VN",
+                  filteredCourses.map((course) => {
+                    const courseId = course?._id?.value || course?.id || "";
+                    const courseTitle = course?.props?.title?.value || "";
+                    const courseStatus = course?.props?.status || "";
+                    const updatedAt = course?.props?.updatedAt || "";
+                    const coursePrice = course?.props?.price ?? 0;
+                    const canSubmitForReview =
+                      courseStatus === CourseStatus.DRAFT;
+                    const isSubmittingThisCourse =
+                      isPublishing && publishingCourseId === courseId;
+
+                    return (
+                      <TableRow
+                        key={courseId}
+                        className="border-brand-border hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
+                      >
+                        <TableCell className="pl-2 py-4">
+                          <div className="flex items-center gap-4">
+                            <div className="h-12 w-20 rounded-md bg-slate-200 dark:bg-slate-800 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-shadow">
+                              {course?.props?.thumbnailUrl ? (
+                                <Image
+                                  src={course?.props?.thumbnailUrl}
+                                  alt={courseTitle}
+                                  fill
+                                  sizes="80px"
+                                  className="object-cover"
+                                />
+                              ) : (
+                                <BookOpen className="text-slate-400" size={20} />
                               )}
-                            </p>
+                              <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <p className="font-semibold text-slate-900 dark:text-white group-hover:text-brand-primary transition-colors">
+                                {courseTitle}
+                              </p>
+                              <p className="text-xs text-slate-400 mt-1 italic">
+                                {t("labels.last_updated")}:{" "}
+                                {formatDateTime(
+                                  updatedAt,
+                                  "vi-VN",
+                                )}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">
-                            {course?.props?.level}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">
-                            {course?.props?.totalEnrolled}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">
-                            {formatCurrency(course?.props?.price)}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {getStatusBadge(course?.props?.status)}
-                      </TableCell>
-                      <TableCell className="text-right pr-6">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-9 w-9 text-slate-500 hover:text-brand-primary hover:bg-brand-primary/10"
-                          >
-                            <Link
-                              href={`/instructor/courses/${course?._id?.value}/builder`}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="font-medium text-slate-700 dark:text-slate-300">
+                              {course?.props?.level}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="font-medium text-slate-700 dark:text-slate-300">
+                              {course?.props?.totalEnrolled}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="font-medium text-slate-700 dark:text-slate-300">
+                              {formatCurrency(coursePrice)}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {getStatusBadge(courseStatus)}
+                        </TableCell>
+                        <TableCell className="text-right pr-6">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-9 w-9 text-slate-500 hover:text-brand-primary hover:bg-brand-primary/10"
                             >
-                              <Edit size={18} />
-                            </Link>
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger
-                              render={
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-9 w-9 text-slate-400"
+                              <Link
+                                href={`/instructor/courses/${courseId}/builder`}
+                              >
+                                <Edit size={18} />
+                              </Link>
+                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger
+                                render={
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-9 w-9 text-slate-400"
+                                  >
+                                    <MoreVertical size={18} />
+                                  </Button>
+                                }
+                              />
+                              <DropdownMenuContent
+                                align="end"
+                                className="w-48 p-2 border-brand-border"
+                              >
+                                {canSubmitForReview && (
+                                  <DropdownMenuItem
+                                    className="gap-2 cursor-pointer rounded-md"
+                                    disabled={isSubmittingThisCourse}
+                                    onClick={() => handleSubmitForReview(courseId)}
+                                  >
+                                    <Eye size={16} />{" "}
+                                    {isSubmittingThisCourse
+                                      ? t("actions.submitting_review")
+                                      : t("actions.submit_review")}
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem className="gap-2 cursor-pointer rounded-md">
+                                  <Users size={16} /> {t("actions.students")}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="gap-2 cursor-pointer rounded-md text-red-500 focus:text-red-500 focus:bg-red-500/10"
+                                  onClick={() =>
+                                    handleDelete(courseId)
+                                  }
                                 >
-                                  <MoreVertical size={18} />
-                                </Button>
-                              }
-                            />
-                            <DropdownMenuContent
-                              align="end"
-                              className="w-48 p-2 border-brand-border"
-                            >
-                              <DropdownMenuItem
-                                className="gap-2 cursor-pointer rounded-md"
-                                onClick={() =>
-                                  handleToggleStatus(
-                                    course._id?.value,
-                                    course?.props?.status,
-                                  )
-                                }
-                              >
-                                <Eye size={16} />{" "}
-                                {course?.props?.status === "DRAFT"
-                                  ? "Publish Course"
-                                  : "Unpublish Course"}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="gap-2 cursor-pointer rounded-md">
-                                <Users size={16} /> {t("actions.students")}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                className="gap-2 cursor-pointer rounded-md text-red-500 focus:text-red-500 focus:bg-red-500/10"
-                                onClick={() =>
-                                  handleDelete(course?._id?.value || course?.id)
-                                }
-                              >
-                                <Trash2 size={16} /> {t("actions.delete")}
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                                  <Trash2 size={16} /> {t("actions.delete")}
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} className="h-64 text-center">
@@ -441,11 +497,10 @@ const InstructorCoursesView = () => {
                         variant={meta.page === p ? "default" : "outline"}
                         size="sm"
                         onClick={() => setPage(p)}
-                        className={`h-9 w-9 p-0 border-brand-border ${
-                          meta.page === p
+                        className={`h-9 w-9 p-0 border-brand-border ${meta.page === p
                             ? "bg-brand-primary text-white"
                             : "hover:bg-brand-primary/10 hover:text-brand-primary"
-                        }`}
+                          }`}
                       >
                         {p}
                       </Button>

@@ -4,6 +4,7 @@ import { AdminCourseController } from './admin-course.controller';
 import { CategoryController } from './category.controller';
 import { AdminCategoryController } from './admin-category.controller';
 import { CourseApplicationModule } from '@application/course/course.application.module';
+import { PublicCourseController } from './public-course.controller';
 
 @Module({
   imports: [CourseApplicationModule],
@@ -11,7 +12,8 @@ import { CourseApplicationModule } from '@application/course/course.application.
     CourseController, 
     AdminCourseController,
     CategoryController,
-    AdminCategoryController
+    AdminCategoryController,
+    PublicCourseController
   ],
 })
 export class CourseWebModule {}

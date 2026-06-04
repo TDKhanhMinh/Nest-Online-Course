@@ -9,7 +9,7 @@ export enum CourseStatus {
   PUBLISHED = "PUBLISHED",
   REJECTED = "REJECTED",
   UNPUBLISHED = "UNPUBLISHED",
-  PENDING_APPROVAL = "PENDING_APPROVE",
+  PENDING_APPROVAL = "PENDING_APPROVAL",
   APPROVED = "APPROVED",
   ALL = "ALL",
 }
@@ -19,7 +19,6 @@ export interface Course {
   title: string;
   slug: string;
   description: string;
-  // shortDescription: string;
   price: number;
   level: CourseLevel;
   status: CourseStatus;
@@ -33,24 +32,41 @@ export interface Course {
   totalStudents: number;
   createdAt: string;
   updatedAt: string;
-  // UI helper fields
+  // UI helper and public mapper fields
   rating?: number;
   thumbnail?: string;
+  author?: string;
+  category?: string;
+  categorySlug?: string;
+  instructorName?: string;
+  totalEnrolled?: number;
+  totalReview?: number;
+  averageRating?: number;
+  duration?: number;
+  lessons?: number;
+  lessonsCount?: number;
+  students?: number;
+  reviewCount?: number;
+  isBestseller?: boolean;
+  isNew?: boolean;
+  isHot?: boolean;
+  sections?: Section[];
 }
 
 export interface Lesson {
   id: string;
   sectionId: string;
   title: string;
-  type: "video" | "text" | "quiz" | "assignment";
+  type: "video" | "text" | "quiz" | "assignment" | string;
   order: number;
   content?: string;
   videoUrl?: string;
-  duration?: string;
+  duration?: string | number;
   isPreview: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   contentUrl?: string;
+  textContent?: string;
 }
 
 export interface Section {
@@ -59,6 +75,6 @@ export interface Section {
   title: string;
   orderIndex: number;
   lessons: Lesson[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

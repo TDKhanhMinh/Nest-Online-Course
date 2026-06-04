@@ -1,13 +1,19 @@
 import { CourseLevel, CourseStatus } from "@/features/course/domain/course.types";
 import api from "@/lib/axios";
 
+export type AdminCourseStatus =
+  | CourseStatus.DRAFT
+  | CourseStatus.PENDING_APPROVAL
+  | CourseStatus.PUBLISHED
+  | CourseStatus.REJECTED;
+
 export interface AdminCourseDTO {
   id: string;
   title: string;
   slug: string;
   description: string;
   price: number;
-  status: CourseStatus;
+  status: AdminCourseStatus;
   instructorId: string;
   categoryId: string;
   thumbnailUrl?: string;
@@ -20,7 +26,7 @@ export interface AdminCourseDTO {
 export interface AdminCourseQuery {
   page?: number;
   limit?: number;
-  status?: CourseStatus;
+  status?: AdminCourseStatus;
   categoryId?: string;
   instructorId?: string;
   search?: string;
@@ -37,7 +43,42 @@ export interface PaginationMeta {
 
 export interface PaginatedAdminCourses {
   data: AdminCourseDTO[];
-  meta: PaginationMeta;
+  pagination: PaginationMeta;
+}
+
+export interface AdminCourseLessonDTO {
+  id: string;
+  sectionId: string;
+  title: string;
+  contentUrl?: string;
+  textContent?: string;
+  type: "video" | "text" | "quiz" | "assignment";
+  orderIndex: number;
+  duration?: number;
+  isFreePreview: boolean;
+}
+
+export interface AdminCourseSectionDTO {
+  id: string;
+  courseId: string;
+  title: string;
+  orderIndex: number;
+  lessons: AdminCourseLessonDTO[];
+}
+
+export interface AdminCourseDetailDTO {
+  courseId: string;
+  title: string;
+  description: string;
+  price: number;
+  status: AdminCourseStatus;
+  level: CourseLevel;
+  language: string;
+  thumbnailUrl?: string;
+  categoryId: string;
+  instructorId: string;
+  slug: string;
+  sections: AdminCourseSectionDTO[];
 }
 
 export const adminCourseApi = {
@@ -46,12 +87,12 @@ export const adminCourseApi = {
     return response.data;
   },
 
-  getById: async (id: string): Promise<AdminCourseDTO> => {
+  getById: async (id: string): Promise<AdminCourseDetailDTO> => {
     const response = await api.get(`/admin/courses/${id}`);
     return response.data;
   },
 
-  updateStatus: async (id: string, status: CourseStatus): Promise<AdminCourseDTO> => {
+  updateStatus: async (id: string, status: AdminCourseStatus): Promise<AdminCourseDTO> => {
     const response = await api.patch(`/admin/courses/${id}/status`, { status });
     return response.data;
   },

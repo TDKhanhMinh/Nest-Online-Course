@@ -106,6 +106,20 @@ describe('MongooseCourseRepository', () => {
       expect(result.data.length).toBe(1);
       expect(result.pagination.itemCount).toBe(2);
     });
+
+    it('should escape special regex characters in search query', async () => {
+      await repository.save(createDummyCourse('React & NestJS', 'c-react'));
+      await repository.save(createDummyCourse('Vue & Express', 'c-vue'));
+
+      const pageOptions = Object.assign(new PageOptionsDto(), {
+        limit: 10,
+        page: 1,
+        search: 'React.*',
+      });
+
+      const result = await repository.findAllWithOffset(pageOptions);
+      expect(result.data.length).toBe(0); // Should not match 'React & NestJS' because .* is escaped
+    });
   });
 
   describe('findAllWithCursor', () => {

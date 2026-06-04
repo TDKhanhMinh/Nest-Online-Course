@@ -4,7 +4,10 @@ import {
   UpdateLessonDto,
   UpdateSectionDto,
 } from '@application/course/dto/course-content.dto';
-import { CreateCourseDto, UpdateCourseDto } from '@application/course/dto/course.dto';
+import {
+  CreateCourseDto,
+  UpdateCourseDto,
+} from '@application/course/dto/course.dto';
 import { InstructorCourseQueryDto } from '@application/course/dto/instructor-course-query.dto';
 import { CreateReviewDto } from '@application/course/dto/review.dto';
 import {
@@ -13,13 +16,17 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { CurrentUser, JwtPayload } from '@presentation/web/shared/decorators/current-user.decorator';
+import {
+  CurrentUser,
+  JwtPayload,
+} from '@presentation/web/shared/decorators/current-user.decorator';
 import { Roles } from '@presentation/web/shared/decorators/roles.decorator';
 import { JwtAuthGuard } from '@presentation/web/shared/guards/jwt-auth.guard';
 import { RolesGuard } from '@presentation/web/shared/guards/roles.guard';
@@ -40,6 +47,7 @@ import { GetAllCoursesOffsetUseCase } from '@application/course/use-cases/get-al
 import { GetCourseFullContentUseCase } from '@application/course/use-cases/get-course-full-content.use-case';
 import { GetCourseReviewsUseCase } from '@application/course/use-cases/get-course-reviews.use-case';
 import { GetInstructorCoursesUseCase } from '@application/course/use-cases/get-instructor-courses.use-case';
+import { PublishCourseUseCase } from '@application/course/use-cases/publish-course.use-case';
 import { UpdateCourseUseCase } from '@application/course/use-cases/update-course.use-case';
 import { UpdateLessonUseCase } from '@application/course/use-cases/update-lesson.use-case';
 import { UpdateSectionUseCase } from '@application/course/use-cases/update-section.use-case';
@@ -58,6 +66,7 @@ export class CourseController {
     private readonly getCourseFullContentUseCase: GetCourseFullContentUseCase,
     private readonly createCourseUseCase: CreateCourseUseCase,
     private readonly getInstructorCoursesUseCase: GetInstructorCoursesUseCase,
+    private readonly publishCourseUseCase: PublishCourseUseCase,
     private readonly updateCourseUseCase: UpdateCourseUseCase,
     private readonly deleteCourseUseCase: DeleteCourseUseCase,
     private readonly createSectionUseCase: CreateSectionUseCase,
@@ -108,10 +117,7 @@ export class CourseController {
 
   @Post()
   @Roles(Role.INSTRUCTOR)
-  createCourse(
-    @CurrentUser() user: JwtPayload,
-    @Body() dto: CreateCourseDto,
-  ) {
+  createCourse(@CurrentUser() user: JwtPayload, @Body() dto: CreateCourseDto) {
     return this.createCourseUseCase.execute(user.sub, dto);
   }
 
@@ -132,7 +138,21 @@ export class CourseController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: UpdateCourseDto,
   ) {
-    return this.updateCourseUseCase.execute(user.sub, user.roles, courseId, dto);
+    return this.updateCourseUseCase.execute(
+      user.sub,
+      user.roles,
+      courseId,
+      dto,
+    );
+  }
+
+  @Patch(':courseId/publish')
+  @Roles(Role.INSTRUCTOR)
+  publishCourse(
+    @Param('courseId') courseId: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.publishCourseUseCase.execute(user.sub, courseId);
   }
 
   @Delete(':courseId')
@@ -146,10 +166,7 @@ export class CourseController {
 
   @Get(':courseId/manage')
   @Roles(Role.INSTRUCTOR)
-  async manageCourse(
-    @Param('courseId') courseId: string,
-    @CurrentUser() user: JwtPayload,
-  ) {
+  async manageCourse(@Param('courseId') courseId: string) {
     // Reuse full content logic
     return this.getCourseFullContentUseCase.execute(courseId);
   }
@@ -174,7 +191,12 @@ export class CourseController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: UpdateSectionDto,
   ) {
-    return this.updateSectionUseCase.execute(user.sub, courseId, sectionId, dto);
+    return this.updateSectionUseCase.execute(
+      user.sub,
+      courseId,
+      sectionId,
+      dto,
+    );
   }
 
   @Delete(':courseId/sections/:sectionId')

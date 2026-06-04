@@ -16,30 +16,85 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CurriculumAccordion } from "./curriculum-accordion";
 import { Course, Section } from "../../domain/course.types";
+import { usePublicCourseReviews } from "../hooks/use-public-courses";
 
 interface CourseDetailViewProps {
   course: Course;
 }
 
-const MOCK_SECTIONS: Section[] = [
-  {
-    id: "s1",
-    title: "Introduction to the Course",
-    lessons: [
-      { id: "l1", title: "Course Overview", duration: "05:20", isPreview: true },
-      { id: "l2", title: "Setting up the Environment", duration: "12:45", isPreview: true },
-    ]
-  },
-  {
-    id: "s2",
-    title: "Core Concepts & Architecture",
-    lessons: [
-      { id: "l3", title: "Understanding the Virtual DOM", duration: "15:30", isPreview: false },
-      { id: "l4", title: "Component Lifecycle Hooks", duration: "22:10", isPreview: false },
-      { id: "l5", title: "State Management Patterns", duration: "18:25", isPreview: false },
-    ]
+const ReviewsList = ({ courseId }: { courseId: string }) => {
+  const { data: reviews, isLoading } = usePublicCourseReviews(courseId);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4 mt-6">
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="p-4 border border-brand-border bg-brand-card/50 rounded-xl space-y-2 animate-pulse">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-slate-700/30 rounded-full" />
+              <div>
+                <div className="h-4 bg-slate-700/30 w-24 rounded" />
+                <div className="h-3 bg-slate-700/30 w-16 rounded mt-1" />
+              </div>
+            </div>
+            <div className="h-4 bg-slate-700/30 w-full rounded" />
+          </div>
+        ))}
+      </div>
+    );
   }
-];
+
+  if (!reviews || reviews.length === 0) {
+    return (
+      <div className="text-center py-8 text-slate-500 mt-6 border border-dashed border-brand-border rounded-xl">
+        No reviews yet for this course.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 mt-8 border-t border-brand-border pt-8">
+      <h4 className="font-sora text-lg font-bold text-slate-900 dark:text-white">Student Feedback & Reviews</h4>
+      <div className="space-y-4">
+        {reviews.map((review: any) => (
+          <div key={review.id} className="p-5 border border-brand-border bg-brand-card/30 rounded-xl space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10 border border-brand-border">
+                  <AvatarFallback className="bg-brand-amber/10 text-brand-amber text-xs font-bold uppercase">
+                    {review.studentName?.substring(0, 2).toUpperCase() || "ST"}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="font-bold text-sm text-slate-900 dark:text-white">
+                    {review.studentName || "Student"}
+                  </div>
+                  <div className="flex text-amber-400 gap-0.5 mt-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="h-3 w-3"
+                        fill={i < review.rating ? "currentColor" : "none"}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {review.createdAt && (
+                <span className="text-[10px] text-slate-500">
+                  {new Date(review.createdAt).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed pl-13">
+              {review.comment}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export function CourseDetailView({ course }: CourseDetailViewProps) {
   const t = useTranslations("CourseDetail");
@@ -152,10 +207,14 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                     <h2 className="font-sora text-2xl font-bold">{t("curriculum.title")}</h2>
                     <span className="text-sm text-slate-500 font-medium">
-                      {t("curriculum.stats", { sections: 12, lessons: 145, duration: "32h 45m" })}
+                      {t("curriculum.stats", {
+                        sections: course.sections?.length || 0,
+                        lessons: course.sections?.reduce((acc, s) => acc + (s.lessons?.length || 0), 0) || 0,
+                        duration: course.duration ? `${course.duration}h` : "0h",
+                      })}
                     </span>
                   </div>
-                  <CurriculumAccordion sections={MOCK_SECTIONS} />
+                  <CurriculumAccordion sections={course.sections || []} />
                 </TabsContent>
 
                 <TabsContent value="overview" className="mt-0 prose dark:prose-invert max-w-none">
@@ -232,6 +291,7 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
                         ))}
                      </div>
                   </div>
+                  <ReviewsList courseId={course.id} />
                 </TabsContent>
               </div>
             </Tabs>

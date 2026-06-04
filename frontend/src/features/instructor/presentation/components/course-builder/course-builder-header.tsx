@@ -1,22 +1,36 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { CourseStatus } from "@/features/course/domain/course.types";
 import { Link } from "@/i18n/navigation";
 import { ChevronLeft, Rocket, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface CourseBuilderHeaderProps {
   courseTitle: string;
+  courseStatus: CourseStatus;
   showSettings: boolean;
+  isPublishing: boolean;
   onToggleSettings: () => void;
+  onPublish: () => void;
 }
 
 export const CourseBuilderHeader = ({
   courseTitle,
+  courseStatus,
   showSettings,
+  isPublishing,
   onToggleSettings,
+  onPublish,
 }: CourseBuilderHeaderProps) => {
   const t = useTranslations("CourseBuilder");
+  const canSubmitForReview = courseStatus === CourseStatus.DRAFT;
+  const publishLabel =
+    courseStatus === CourseStatus.PENDING_APPROVAL
+      ? t("status.pending_approval")
+      : isPublishing
+        ? t("submitting_for_review")
+        : t("submit_for_review");
 
   return (
     <header className="border-b bg-background px-4 py-3 flex items-center justify-between sticky top-0 z-20">
@@ -41,9 +55,13 @@ export const CourseBuilderHeader = ({
           <Settings className="h-4 w-4 mr-2" />
           {showSettings ? "Curriculum" : "Settings"}
         </Button>
-        <Button size="sm">
+        <Button
+          size="sm"
+          disabled={!canSubmitForReview || isPublishing}
+          onClick={onPublish}
+        >
           <Rocket className="h-4 w-4 mr-2" />
-          {t("publish")}
+          {publishLabel}
         </Button>
       </div>
     </header>

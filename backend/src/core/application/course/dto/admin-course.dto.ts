@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsOptional, IsNotEmpty, IsString } from 'class-validator';
 import { PageOptionsDto } from '@shared/pagination/offset/page-options.dto';
 import { CourseStatus } from '@shared/types/course-status.enum';
 
@@ -15,6 +15,7 @@ export class AdminUpdateCourseStatusDto {
 }
 
 export class AdminUpdateCourseCategoryDto {
+  @IsString()
   @IsNotEmpty()
   categoryId: string;
 }

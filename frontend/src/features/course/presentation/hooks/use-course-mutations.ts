@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CreateCourseInput, createCourseUseCase } from "../../application/create-course.use-case";
 import { deleteCourseUseCase } from "../../application/delete-course.use-case";
+import { publishCourseUseCase } from "../../application/publish-course.use-case";
 import { UpdateCourseStatusInput, updateCourseStatusUseCase } from "../../application/update-course-status.use-case";
 import { UpdateCourseInput, updateCourseUseCase } from "../../application/update-course.use-case";
 
@@ -52,6 +53,25 @@ export const useUpdateCourseStatus = () => {
       updateCourseStatusUseCase.execute(id, data),
     onSuccess: (data) => {
       toast.success(`Course status updated to ${data.status.toLowerCase()}!`);
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.instructor() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses.detail(data.id) });
+    },
+  });
+};
+
+interface UsePublishCourseOptions {
+  successMessage?: string;
+}
+
+export const usePublishCourse = (options?: UsePublishCourseOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => publishCourseUseCase.execute(id),
+    onSuccess: (data) => {
+      toast.success(
+        options?.successMessage ?? "Course submitted for review successfully!",
+      );
       queryClient.invalidateQueries({ queryKey: queryKeys.courses.instructor() });
       queryClient.invalidateQueries({ queryKey: queryKeys.courses.detail(data.id) });
     },

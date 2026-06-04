@@ -25,6 +25,18 @@ export class MongooseCategoryRepository implements ICategoryRepository {
     return CategoryMapper.toDomain(doc);
   }
 
+  async findByNameOrSlug(value: string): Promise<Category | null> {
+    const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const doc = await this.categoryModel.findOne({
+      $or: [
+        { name: { $regex: new RegExp(`^${escaped}$`, 'i') } },
+        { slug: { $regex: new RegExp(`^${escaped}$`, 'i') } }
+      ]
+    }).exec();
+    if (!doc) return null;
+    return CategoryMapper.toDomain(doc);
+  }
+
   async findAll(): Promise<Category[]> {
     const docs = await this.categoryModel.find().sort({ name: 1 }).exec();
     return docs.map((doc) => CategoryMapper.toDomain(doc));

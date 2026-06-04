@@ -14,6 +14,10 @@ import { UniqueId } from '@shared/types/unique-id.vo';
 import { Model } from 'mongoose';
 import { CourseMapper } from '../mappers/course.mapper';
 
+function escapeRegex(str: string): string {
+  return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+}
+
 @Injectable()
 export class MongooseCourseRepository implements ICourseRepository {
   constructor(
@@ -50,22 +54,29 @@ export class MongooseCourseRepository implements ICourseRepository {
     return docs.map((doc) => CourseMapper.toDomain(doc));
   }
 
-  async findAllWithOffset(pageOptionsDto: PageOptionsDto): Promise<PageDto<Course>> {
-    const query: any = {};
+  async findAllWithOffset(
+    pageOptionsDto: PageOptionsDto,
+    extraFilter?: any,
+    sort?: any,
+  ): Promise<PageDto<Course>> {
+    const query: any = { ...extraFilter };
     
     if (pageOptionsDto.search) {
+      const escapedSearch = escapeRegex(pageOptionsDto.search);
       query.$or = [
-        { title: { $regex: pageOptionsDto.search, $options: 'i' } },
-        { description: { $regex: pageOptionsDto.search, $options: 'i' } },
+        { title: { $regex: escapedSearch, $options: 'i' } },
+        { description: { $regex: escapedSearch, $options: 'i' } },
       ];
     }
 
     const limit = pageOptionsDto.limit ?? 10;
     const skip = pageOptionsDto.skip ?? 0;
     
+    const sortCriteria = sort || { createdAt: pageOptionsDto.order === 'ASC' ? 1 : -1 };
+
     const [docs, total] = await Promise.all([
       this.courseModel.find(query)
-        .sort({ createdAt: pageOptionsDto.order === 'ASC' ? 1 : -1 })
+        .sort(sortCriteria)
         .skip(skip)
         .limit(limit)
         .exec(),
@@ -78,15 +89,20 @@ export class MongooseCourseRepository implements ICourseRepository {
     return new PageDto(courses, pageMetaDto);
   }
 
-  async findAllWithCursor(cursorOptionsDto: CursorOptionsDto): Promise<CursorPageDto<Course>> {
+  async findAllWithCursor(
+    cursorOptionsDto: CursorOptionsDto,
+    extraFilter?: any,
+    sort?: any,
+  ): Promise<CursorPageDto<Course>> {
     const limit = cursorOptionsDto.limit ?? 10;
     const order = cursorOptionsDto.order === Order.ASC ? 1 : -1;
-    const query: any = {};
+    const query: any = { ...extraFilter };
 
     if (cursorOptionsDto.search) {
+      const escapedSearch = escapeRegex(cursorOptionsDto.search);
       query.$or = [
-        { title: { $regex: cursorOptionsDto.search, $options: 'i' } },
-        { description: { $regex: cursorOptionsDto.search, $options: 'i' } },
+        { title: { $regex: escapedSearch, $options: 'i' } },
+        { description: { $regex: escapedSearch, $options: 'i' } },
       ];
     }
 
@@ -96,9 +112,11 @@ export class MongooseCourseRepository implements ICourseRepository {
         : { $lt: cursorOptionsDto.cursor };
     }
 
+    const sortCriteria = sort || { _id: order as any };
+
     const docs = await this.courseModel
       .find(query)
-      .sort({ _id: order as any })
+      .sort(sortCriteria)
       .limit(limit + 1)
       .exec();
 
@@ -122,9 +140,10 @@ export class MongooseCourseRepository implements ICourseRepository {
     }
     
     if (queryDto.search) {
+      const escapedSearch = escapeRegex(queryDto.search);
       query.$or = [
-        { title: { $regex: queryDto.search, $options: 'i' } },
-        { description: { $regex: queryDto.search, $options: 'i' } },
+        { title: { $regex: escapedSearch, $options: 'i' } },
+        { description: { $regex: escapedSearch, $options: 'i' } },
       ];
     }
 
@@ -163,9 +182,10 @@ export class MongooseCourseRepository implements ICourseRepository {
     }
     
     if (queryDto.search) {
+      const escapedSearch = escapeRegex(queryDto.search);
       query.$or = [
-        { title: { $regex: queryDto.search, $options: 'i' } },
-        { description: { $regex: queryDto.search, $options: 'i' } },
+        { title: { $regex: escapedSearch, $options: 'i' } },
+        { description: { $regex: escapedSearch, $options: 'i' } },
       ];
     }
 

@@ -27,59 +27,38 @@ import { Course } from "../../domain/course.types";
 import { CourseCard } from "./course-card";
 import { CourseFilter } from "./course-filter";
 
-const MOCK_COURSES: Course[] = [
-  {
-    id: "react-1",
-    title: "React & Next.js 14 — Complete from Zero to Hero",
-    slug: "react-nextjs-complete",
-    author: "Khoa Nguyen",
-    category: "Frontend",
-    thumbnail: "/images/courses/react.png",
-    rating: 4.9,
-    reviewCount: 3241,
-    price: 599000,
-    originalPrice: 1299000,
-    duration: 42,
-    lessons: 186,
-    students: 12400,
-    level: "intermediate",
-    isBestseller: true,
-  },
-  {
-    id: "ai-1",
-    title: "LLM Engineering & Prompt Engineering in Practice",
-    slug: "llm-prompt-engineering",
-    author: "Tuan Tran",
-    category: "AI & Data Science",
-    thumbnail: "/images/courses/ai.png",
-    rating: 4.8,
-    reviewCount: 1876,
-    price: 799000,
-    originalPrice: 1499000,
-    duration: 28,
-    lessons: 124,
-    students: 8700,
-    level: "advanced",
-    isNew: true,
-  },
-  {
-    id: "security-1",
-    title: "Ethical Hacking & Penetration Testing for Beginners",
-    slug: "ethical-hacking-beginners",
-    author: "Dung Le",
-    category: "Cybersecurity",
-    thumbnail: "/images/courses/security.png",
-    rating: 4.7,
-    reviewCount: 987,
-    price: 699000,
-    originalPrice: 1199000,
-    duration: 36,
-    lessons: 158,
-    students: 5200,
-    level: "beginner",
-    isHot: true,
-  },
-];
+import { usePublicCourses } from "../hooks/use-public-courses";
+
+const mapSortValue = (val: string) => {
+  switch (val) {
+    case "newest":
+      return "latest";
+    case "popular":
+      return "rating_desc";
+    case "price_low":
+      return "price_asc";
+    case "price_high":
+      return "price_desc";
+    default:
+      return "latest";
+  }
+};
+
+const CourseCardSkeleton = () => (
+  <div className="border border-brand-border bg-brand-card/50 rounded-xl overflow-hidden animate-pulse">
+    <div className="aspect-video bg-slate-700/30 w-full" />
+    <div className="p-4 space-y-3">
+      <div className="h-3 bg-slate-700/30 w-1/4 rounded" />
+      <div className="h-5 bg-slate-700/30 w-3/4 rounded" />
+      <div className="h-4 bg-slate-700/30 w-1/2 rounded" />
+      <div className="h-3 bg-slate-700/30 w-2/3 rounded" />
+      <div className="pt-3 border-t border-brand-border flex justify-between items-center">
+        <div className="h-5 bg-slate-700/30 w-1/3 rounded" />
+        <div className="h-7 bg-slate-700/30 w-1/4 rounded-full" />
+      </div>
+    </div>
+  </div>
+);
 
 export function CatalogView() {
   const t = useTranslations("CourseCatalog");
@@ -90,6 +69,9 @@ export function CatalogView() {
 
   const query = searchParams.get("q") || "";
   const categoryParam = searchParams.get("category") || "";
+  const levelParam = searchParams.get("level") || "";
+  const sortByParam = searchParams.get("sortBy") || "newest";
+  const pageParam = Number(searchParams.get("page")) || 1;
 
   const [searchQuery, setSearchQuery] = useState(query);
 
@@ -97,6 +79,20 @@ export function CatalogView() {
   useEffect(() => {
     setSearchQuery(query);
   }, [query]);
+
+  const filters = {
+    search: query,
+    category: categoryParam,
+    level: levelParam,
+    sortBy: mapSortValue(sortByParam),
+    page: pageParam,
+    limit: 6,
+  };
+
+  const { data, isLoading } = usePublicCourses(filters);
+
+  const courses = data?.courses || [];
+  const pagination = data?.pagination || { total: 0, page: 1, limit: 6, total_pages: 1 };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,18 +102,22 @@ export function CatalogView() {
     } else {
       params.delete("q");
     }
+    params.set("page", "1"); // Reset to page 1 on new search
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const filteredCourses = useMemo(() => {
-    return MOCK_COURSES.filter((course) => {
-      const matchesSearch = course.title.toLowerCase().includes(query.toLowerCase()) ||
-        course.author.toLowerCase().includes(query.toLowerCase());
-      const matchesCategory = !categoryParam || course.category === categoryParam;
+  const handleSortChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sortBy", value);
+    params.set("page", "1");
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
-      return matchesSearch && matchesCategory;
-    });
-  }, [query, categoryParam]);
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -133,7 +133,9 @@ export function CatalogView() {
             {t("title")}
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            {query ? t("search_results", { count: filteredCourses.length, query }) : t("all_results", { count: filteredCourses.length })}
+            {query
+              ? t("search_results", { count: pagination.total, query })
+              : t("all_results", { count: pagination.total })}
           </p>
         </div>
 
@@ -149,16 +151,20 @@ export function CatalogView() {
           </form>
 
           <div className="flex gap-2">
-            <div className="hidden lg:block w-56">
-              <Select defaultValue="newest">
+            <div className="hidden sm:block w-56">
+              <Select value={sortByParam} onValueChange={handleSortChange}>
                 <SelectTrigger className="h-12 border-brand-border bg-brand-card/50">
                   <SelectValue placeholder={t("sort.label")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="newest">{t("sort.newest")}</SelectItem>
                   <SelectItem value="popular">{t("sort.popular")}</SelectItem>
-                  <SelectItem value="price_low">{t("sort.price_low")}</SelectItem>
-                  <SelectItem value="price_high">{t("sort.price_high")}</SelectItem>
+                  <SelectItem value="price_low">
+                    {t("sort.price_low")}
+                  </SelectItem>
+                  <SelectItem value="price_high">
+                    {t("sort.price_high")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -166,21 +172,29 @@ export function CatalogView() {
             {/* Mobile/Tablet Filter Trigger */}
             <Sheet>
               <SheetTrigger>
-                <Button variant="outline" className="lg:hidden h-12 gap-2 border-brand-border bg-brand-card/50">
+                <Button
+                  variant="outline"
+                  className="lg:hidden h-12 gap-2 border-brand-border bg-brand-card/50"
+                >
                   <SlidersHorizontal className="h-4 w-4" />
                   {t("filters.title")}
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-full sm:max-w-md bg-brand-bg border-brand-border overflow-y-auto">
+              <SheetContent
+                side="left"
+                className="w-full sm:max-w-md bg-brand-bg border-brand-border overflow-y-auto"
+              >
                 <SheetHeader className="mb-6">
-                  <SheetTitle className="text-left font-sora">{t("filters.title")}</SheetTitle>
+                  <SheetTitle className="text-left font-sora">
+                    {t("filters.title")}
+                  </SheetTitle>
                   <SheetDescription className="text-left">
                     Refine your search with these filters.
                   </SheetDescription>
                 </SheetHeader>
                 <CourseFilter />
                 <div className="mt-8 pt-6 border-t border-brand-border">
-                  <SheetTrigger >
+                  <SheetTrigger>
                     <Button className="w-full bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12">
                       Show Results
                     </Button>
@@ -197,7 +211,9 @@ export function CatalogView() {
         <aside className="hidden lg:block w-64 shrink-0 space-y-8">
           <div className="sticky top-24">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-sora font-bold text-lg">{t("filters.title")}</h2>
+              <h2 className="font-sora font-bold text-lg">
+                {t("filters.title")}
+              </h2>
               <Button
                 variant="ghost"
                 size="sm"
@@ -213,31 +229,88 @@ export function CatalogView() {
 
         {/* Main Grid */}
         <main className="flex-1 min-w-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filteredCourses.map((course, idx) => (
-                <motion.div
-                  key={course.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <CourseCard course={course} />
-                </motion.div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <CourseCardSkeleton key={i} />
               ))}
-            </AnimatePresence>
-          </div>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <AnimatePresence mode="popLayout">
+                  {courses.map((course) => (
+                    <motion.div
+                      key={course.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <CourseCard course={course} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+
+              {/* Pagination Controls */}
+              {pagination.total_pages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-12">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={pagination.page <= 1}
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                    className="h-10 px-4 border-brand-border text-slate-700 dark:text-slate-300 hover:bg-brand-amber hover:text-black transition-colors"
+                  >
+                    Previous
+                  </Button>
+                  {[...Array(pagination.total_pages)].map((_, idx) => {
+                    const pageNumber = idx + 1;
+                    const isActive = pageNumber === pagination.page;
+                    return (
+                      <Button
+                        key={pageNumber}
+                        variant={isActive ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handlePageChange(pageNumber)}
+                        className={`h-10 w-10 font-bold ${
+                          isActive
+                            ? "bg-brand-amber text-black hover:bg-brand-amber2"
+                            : "border-brand-border text-slate-700 dark:text-slate-300 hover:bg-slate-800"
+                        }`}
+                      >
+                        {pageNumber}
+                      </Button>
+                    );
+                  })}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={pagination.page >= pagination.total_pages}
+                    onClick={() => handlePageChange(pagination.page + 1)}
+                    className="h-10 px-4 border-brand-border text-slate-700 dark:text-slate-300 hover:bg-brand-amber hover:text-black transition-colors"
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
 
           {/* Empty State */}
-          {filteredCourses.length === 0 && (
+          {!isLoading && courses.length === 0 && (
             <div className="py-20 text-center">
               <div className="mx-auto w-20 h-20 bg-brand-amber/10 rounded-full flex items-center justify-center mb-6">
                 <Search className="h-8 w-8 text-brand-amber" />
               </div>
-              <h3 className="font-sora text-xl font-bold mb-2">{t("empty.title")}</h3>
-              <p className="text-slate-500 mb-8 max-w-xs mx-auto">{t("empty.description")}</p>
+              <h3 className="font-sora text-xl font-bold mb-2">
+                {t("empty.title")}
+              </h3>
+              <p className="text-slate-500 mb-8 max-w-xs mx-auto">
+                {t("empty.description")}
+              </p>
               <Button
                 onClick={clearFilters}
                 className="bg-brand-amber text-black hover:bg-brand-amber2"
@@ -253,7 +326,7 @@ export function CatalogView() {
 }
 
 // --- Hybrid Responsive Summary ---
-// mobile  (default / sm):  Full width search and filter trigger. Filters in a Sheet. Single column grid.
-// tablet  (md / lg):       Grid 2-col. Search bar horizontal. Sorting visible.
-// desktop (xl / 2xl):      Sticky sidebar filters. Grid 3-col. Staggered reveal animations.
-// Interaction:             Real-time search feedback (simulated). Smooth sheet transitions.
+// mobile  (default / sm):  Full width search, single column grid, filters trigger in Sheet.
+// tablet  (sm / md / lg):  Grid 2-col, sort dropdown visible, pagination controls centred.
+// desktop (xl / 2xl):      Sticky sidebar filters, 3-column grid, motion entry animations.
+// Interaction:             Instant page/sort URL syncing, hover state effects, click targets >=44px.

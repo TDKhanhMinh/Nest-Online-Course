@@ -1,7 +1,12 @@
-import { Inject, Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { 
-  ICourseRepository, 
-  ICOURSE_REPOSITORY 
+import {
+  Inject,
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  ICourseRepository,
+  ICOURSE_REPOSITORY,
 } from '@domain/course/ports/i-course.repository';
 import { UniqueId } from '@shared/types/unique-id.vo';
 import { CourseTitle } from '@domain/course/value-objects/course-title.vo';
@@ -14,7 +19,12 @@ export class UpdateCourseUseCase {
     private readonly courseRepo: ICourseRepository,
   ) {}
 
-  async execute(userId: string, userRoles: string[], courseId: string, dto: UpdateCourseDto): Promise<CourseResponseDto> {
+  async execute(
+    userId: string,
+    userRoles: string[],
+    courseId: string,
+    dto: UpdateCourseDto,
+  ): Promise<CourseResponseDto> {
     // 1. Get course
     const course = await this.courseRepo.findById(new UniqueId(courseId));
     if (!course) throw new NotFoundException('Course not found');
@@ -22,7 +32,15 @@ export class UpdateCourseUseCase {
     // 2. Validate ownership or Admin role
     const isAdmin = userRoles.includes('ADMIN');
     if (!isAdmin && course.instructorId.value !== userId) {
-      throw new ForbiddenException('You do not have permission to manage this course');
+      throw new ForbiddenException(
+        'You do not have permission to manage this course',
+      );
+    }
+
+    if (dto.status && !isAdmin) {
+      throw new ForbiddenException(
+        'Use the publish endpoint to submit this course for admin approval',
+      );
     }
 
     // 3. Update
@@ -32,12 +50,12 @@ export class UpdateCourseUseCase {
       price: dto.price,
       categoryId: dto.categoryId ? new UniqueId(dto.categoryId) : undefined,
       thumbnailUrl: dto.thumbnailUrl,
-      level: dto.level as any,
+      level: dto.level,
       language: dto.language,
     });
 
     if (dto.status) {
-      course.updateStatus(dto.status as any);
+      course.updateStatus(dto.status);
     }
 
     // 4. Save

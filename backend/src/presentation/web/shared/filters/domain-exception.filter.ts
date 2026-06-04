@@ -29,6 +29,8 @@ export class DomainExceptionFilter implements ExceptionFilter {
       [ErrorCode.CATEGORY_NOT_FOUND]: HttpStatus.NOT_FOUND,
       [ErrorCode.COURSE_ALREADY_EXISTS]: HttpStatus.CONFLICT,
       [ErrorCode.COURSE_HAS_CONTENT]: HttpStatus.BAD_REQUEST,
+      [ErrorCode.COURSE_ALREADY_PUBLISHED]: HttpStatus.CONFLICT,
+      [ErrorCode.COURSE_NOT_READY_FOR_REVIEW]: HttpStatus.BAD_REQUEST,
       [ErrorCode.ALREADY_IN_WISHLIST]: HttpStatus.CONFLICT,
       [ErrorCode.PROFILE_EXISTS]: HttpStatus.CONFLICT,
       [ErrorCode.PROFILE_NOT_FOUND]: HttpStatus.NOT_FOUND,
@@ -36,7 +38,9 @@ export class DomainExceptionFilter implements ExceptionFilter {
 
     const status = statusMap[exception.code] ?? HttpStatus.BAD_REQUEST;
 
-    this.logger.warn(`DomainException [${exception.code}]: ${exception.message}`);
+    this.logger.warn(
+      `DomainException [${exception.code}]: ${exception.message}`,
+    );
 
     response.status(status).json({
       statusCode: status,
@@ -48,6 +52,3 @@ export class DomainExceptionFilter implements ExceptionFilter {
     });
   }
 }
-
-
-

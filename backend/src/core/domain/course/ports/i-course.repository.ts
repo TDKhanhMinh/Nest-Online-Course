@@ -8,9 +8,18 @@ import { CursorPageDto } from '@shared/pagination/cursor/cursor-page.dto';
 export interface ICourseRepository {
   findById(id: UniqueId): Promise<Course | null>;
   findByIdOrThrow(id: UniqueId): Promise<Course>;
+  findBySlug(slug: string): Promise<Course | null>;
   findAll(): Promise<Course[]>;
-  findAllWithOffset(pageOptionsDto: PageOptionsDto): Promise<PageDto<Course>>;
-  findAllWithCursor(cursorOptionsDto: CursorOptionsDto): Promise<CursorPageDto<Course>>;
+  findAllWithOffset(
+    pageOptionsDto: PageOptionsDto,
+    extraFilter?: any,
+    sort?: any,
+  ): Promise<PageDto<Course>>;
+  findAllWithCursor(
+    cursorOptionsDto: CursorOptionsDto,
+    extraFilter?: any,
+    sort?: any,
+  ): Promise<CursorPageDto<Course>>;
   findByInstructorId(instructorId: string, query: any): Promise<PageDto<Course>>;
   findAdminCourses(queryDto: any): Promise<PageDto<Course>>;
   existsBySlug(slug: string): Promise<boolean>;

@@ -9,6 +9,7 @@ import { Section } from "@/features/course/domain/course.types";
 import { CourseSettingsForm } from "@/features/course/presentation/components/course-settings-form";
 import { useCourseCurriculum } from "@/features/course/presentation/hooks/use-course-curriculum";
 import { useCourseDetail } from "@/features/course/presentation/hooks/use-course-detail";
+import { usePublishCourse } from "@/features/course/presentation/hooks/use-course-mutations";
 import {
   useLessonMutations,
   useSectionMutations,
@@ -49,6 +50,9 @@ const InstructorCourseBuilderView = () => {
     useSectionMutations(courseId);
   const { createLesson, updateLesson, deleteLesson } =
     useLessonMutations(courseId);
+  const { mutate: publishCourse, isPending: isPublishing } = usePublishCourse({
+    successMessage: t("messages.submit_review_success"),
+  });
 
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
@@ -201,12 +205,15 @@ const InstructorCourseBuilderView = () => {
     <div className="flex flex-col h-[calc(100vh-4rem)]">
       <CourseBuilderHeader
         courseTitle={course.title}
+        courseStatus={course.status}
         showSettings={showSettings}
+        isPublishing={isPublishing}
         onToggleSettings={() => {
           setShowSettings(!showSettings);
           setActiveLessonId(null);
           setActiveSectionId(null);
         }}
+        onPublish={() => publishCourse(courseId)}
       />
 
       <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">

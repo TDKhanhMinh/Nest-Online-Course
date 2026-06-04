@@ -39,7 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCategories } from "@/features/category/presentation/hooks/use-categories";
+import { useAllCategories } from "@/features/category/presentation/hooks/use-categories";
 import { CourseStatus } from "@/features/course/domain/course.types";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -55,12 +55,18 @@ import {
   XCircle
 } from "lucide-react";
 import { useState } from "react";
+import type { AdminCourseStatus } from "../../infrastructure/admin-course.api";
 import { useAdminCourseMutations, useAdminCourses } from "../hooks/use-admin-courses";
+import { CourseDetailDialog } from "./course-detail-dialog";
+
+type AdminCourseFilterStatus = AdminCourseStatus | "ALL";
 
 export function CourseTable() {
   const [page, setPage] = useState(1);
-  const [status, setStatus] = useState<CourseStatus | "ALL">("ALL");
+  const [status, setStatus] = useState<AdminCourseFilterStatus>("ALL");
   const [search, setSearch] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
   const limit = 10;
 
   const { data, isLoading } = useAdminCourses({
@@ -70,11 +76,11 @@ export function CourseTable() {
     search: search || undefined,
   });
 
-  const { data: categories } = useCategories();
+  const { data: categories } = useAllCategories();
 
-  const { updateStatus, updateCategory, deleteCourse, isUpdating, isDeleting } = useAdminCourseMutations();
+  const { updateStatus, updateCategory, deleteCourse } = useAdminCourseMutations();
 
-  const handleStatusChange = (id: string, newStatus: CourseStatus) => {
+  const handleStatusChange = (id: string, newStatus: AdminCourseStatus) => {
     updateStatus.mutate({ id, status: newStatus });
   };
 
@@ -98,7 +104,6 @@ export function CourseTable() {
   };
 
   const getCategoryName = (categoryId: string) => {
-    //@ts-ignore
     return categories?.find(c => c.id === categoryId)?.name || "Chưa phân loại";
   };
 
@@ -135,9 +140,8 @@ export function CourseTable() {
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
           <Select
-            //@ts-ignore
-            value={status}
-            onValueChange={(value) => setStatus(value as any)}
+            value={status as string}
+            onValueChange={(value) => setStatus(value as AdminCourseFilterStatus)}
           >
             <SelectTrigger className="w-full md:w-[180px] bg-background/50 border-border/50">
               <Filter className="h-4 w-4 mr-2 opacity-50" />
@@ -222,7 +226,13 @@ export function CourseTable() {
                         />
                         <DropdownMenuContent align="end" className="w-56 p-1 bg-background/95 backdrop-blur-md border-border/50">
                           <DropdownMenuLabel className="text-xs text-muted-foreground px-2 py-1.5 font-normal uppercase tracking-wider">Hành động</DropdownMenuLabel>
-                          <DropdownMenuItem className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary">
+                          <DropdownMenuItem
+                            className="gap-2 cursor-pointer focus:bg-primary/10 focus:text-primary"
+                            onClick={() => {
+                              setSelectedCourseId(course.id);
+                              setDetailOpen(true);
+                            }}
+                          >
                             <Eye className="h-4 w-4" /> Xem chi tiết
                           </DropdownMenuItem>
 
@@ -235,19 +245,18 @@ export function CourseTable() {
                             </DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                               <DropdownMenuSubContent className="max-h-[300px] overflow-y-auto">
-                                {//@ts-ignore
-                                  categories?.map((cat) => (
-                                    <DropdownMenuItem
-                                      key={cat.id}
-                                      className={cn(
-                                        "cursor-pointer",
-                                        course.categoryId === cat.id && "bg-primary/10 text-primary font-medium"
-                                      )}
-                                      onClick={() => handleCategoryChange(course.id, cat.id)}
-                                    >
-                                      {cat.name}
-                                    </DropdownMenuItem>
-                                  ))}
+                                {categories?.map((cat) => (
+                                  <DropdownMenuItem
+                                    key={cat.id}
+                                    className={cn(
+                                      "cursor-pointer",
+                                      course.categoryId === cat.id && "bg-primary/10 text-primary font-medium"
+                                    )}
+                                    onClick={() => handleCategoryChange(course.id, cat.id)}
+                                  >
+                                    {cat.name}
+                                  </DropdownMenuItem>
+                                ))}
                               </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                           </DropdownMenuSub>
@@ -301,10 +310,10 @@ export function CourseTable() {
       </div>
 
       {/* Pagination */}
-      {data && data.meta.pageCount > 1 && (
+      {data && data.pagination.pageCount > 1 && (
         <div className="flex items-center justify-between px-2">
           <p className="text-sm text-muted-foreground">
-            Hiển thị <span className="font-medium text-foreground">{data.data.length}</span> / <span className="font-medium text-foreground">{data.meta.itemCount}</span> khóa học
+            Hiển thị <span className="font-medium text-foreground">{data.data.length}</span> / <span className="font-medium text-foreground">{data.pagination.itemCount}</span> khóa học
           </p>
           <Pagination className="w-auto mx-0">
             <PaginationContent>
@@ -313,8 +322,7 @@ export function CourseTable() {
                   variant="outline"
                   size="sm"
                   onClick={() => setPage(p => Math.max(1, p - 1))}
-                  //@ts-ignore
-                  disabled={!data.meta.hasPreviousPage}
+                  disabled={!data.pagination.hasPreviousPage}
                   className="gap-1 border-border/50 bg-background/50"
                 >
                   <PaginationPrevious className="hover:bg-transparent" />
@@ -322,7 +330,7 @@ export function CourseTable() {
               </PaginationItem>
 
               <div className="flex items-center gap-1 mx-2">
-                {Array.from({ length: data.meta.pageCount }).map((_, i) => (
+                {Array.from({ length: data.pagination.pageCount }).map((_, i) => (
                   <PaginationItem key={i}>
                     <PaginationLink
                       isActive={page === i + 1}
@@ -343,8 +351,7 @@ export function CourseTable() {
                   variant="outline"
                   size="sm"
                   onClick={() => setPage(p => p + 1)}
-                  //@ts-ignore
-                  disabled={!data.meta.hasNextPage}
+                  disabled={!data.pagination.hasNextPage}
                   className="gap-1 border-border/50 bg-background/50"
                 >
                   <PaginationNext className="hover:bg-transparent" />
@@ -354,6 +361,12 @@ export function CourseTable() {
           </Pagination>
         </div>
       )}
+
+      <CourseDetailDialog
+        courseId={selectedCourseId}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
     </div>
   );
 }

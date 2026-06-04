@@ -21,9 +21,14 @@ import { GetAllCoursesOffsetUseCase } from './use-cases/get-all-courses-offset.u
 import { GetCourseFullContentUseCase } from './use-cases/get-course-full-content.use-case';
 import { GetCourseReviewsUseCase } from './use-cases/get-course-reviews.use-case';
 import { GetInstructorCoursesUseCase } from './use-cases/get-instructor-courses.use-case';
+import { PublishCourseUseCase } from './use-cases/publish-course.use-case';
 import { UpdateCourseUseCase } from './use-cases/update-course.use-case';
 import { UpdateLessonUseCase } from './use-cases/update-lesson.use-case';
 import { UpdateSectionUseCase } from './use-cases/update-section.use-case';
+
+import { GetPublicCoursesUseCase } from './use-cases/get-public-courses.use-case';
+import { GetPublicCourseDetailUseCase } from './use-cases/get-public-course-detail.use-case';
+import { GetPublicCourseReviewsUseCase } from './use-cases/get-public-course-reviews.use-case';
 
 const useCases = [
   AdminDeleteCourseUseCase,
@@ -48,9 +53,13 @@ const useCases = [
   GetCourseFullContentUseCase,
   GetCourseReviewsUseCase,
   GetInstructorCoursesUseCase,
+  PublishCourseUseCase,
   UpdateCourseUseCase,
   UpdateLessonUseCase,
   UpdateSectionUseCase,
+  GetPublicCoursesUseCase,
+  GetPublicCourseDetailUseCase,
+  GetPublicCourseReviewsUseCase,
 ];
 
 @Module({
