@@ -51,6 +51,8 @@ export interface Course {
   isNew?: boolean;
   isHot?: boolean;
   sections?: Section[];
+  originalPrice?: number;
+  shortDescription?: string;
 }
 
 export interface Lesson {

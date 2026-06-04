@@ -3,44 +3,30 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation";
-import { ChevronRight, ShoppingBag, Trash2, Heart, Tag } from "lucide-react";
+import { ChevronRight, Loader2, ShoppingBag, Trash2, Heart, Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { motion } from "framer-motion";
-
-const MOCK_CART_ITEMS = [
-  {
-    id: "1",
-    title: "React & Next.js 14 — Complete from Zero to Hero",
-    author: "Khoa Nguyen",
-    price: 49.99,
-    originalPrice: 89.99,
-    image: "/images/react-thumbnail.png",
-    rating: 4.8,
-    reviews: 1250,
-  },
-  {
-    id: "2",
-    title: "LLM Engineering & Prompt Engineering in Practice",
-    author: "Tuan Tran",
-    price: 39.99,
-    originalPrice: 74.99,
-    image: "/images/ai-thumbnail.png",
-    rating: 4.9,
-    reviews: 850,
-  },
-];
+import { useCartQuery, useRemoveFromCartMutation } from "../hooks/use-cart";
 
 export function CartView() {
   const t = useTranslations("Cart");
-  
-  const subtotal = MOCK_CART_ITEMS.reduce((acc, item) => acc + item.originalPrice, 0);
-  const total = MOCK_CART_ITEMS.reduce((acc, item) => acc + item.price, 0);
-  const discount = subtotal - total;
+  const { data: cart, isLoading } = useCartQuery();
+  const removeFromCart = useRemoveFromCartMutation();
 
-  if (MOCK_CART_ITEMS.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-10 w-10 animate-spin text-brand-amber" />
+      </div>
+    );
+  }
+
+  const items = cart?.items ?? [];
+  const totalAmount = cart?.totalAmount ?? 0;
+
+  if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
         <motion.div 
@@ -58,6 +44,10 @@ export function CartView() {
       </div>
     );
   }
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -77,14 +67,14 @@ export function CartView() {
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-brand-border">
             <p className="text-lg font-bold text-slate-900 dark:text-white">
-              {t("items_count", { count: MOCK_CART_ITEMS.length })}
+              {t("items_count", { count: items.length })}
             </p>
           </div>
           
           <div className="space-y-4">
-            {MOCK_CART_ITEMS.map((item, index) => (
+            {items.map((item, index) => (
               <motion.div
-                key={item.id}
+                key={item.courseId}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -95,7 +85,7 @@ export function CartView() {
                       {/* Thumbnail */}
                       <div className="relative aspect-video w-full sm:w-56 shrink-0 overflow-hidden sm:rounded-l-xl">
                         <Image 
-                          src={item.image} 
+                          src={item.thumbnailUrl || "/images/placeholder.png"} 
                           alt={item.title} 
                           fill 
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -107,33 +97,29 @@ export function CartView() {
                       <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
                         <div>
                           <div className="flex justify-between items-start gap-4">
-                            <Link href={`/courses/${item.id}`} className="no-underline">
+                            <Link href={`/courses/${item.slug}`} className="no-underline">
                               <h3 className="text-xl font-bold leading-tight text-slate-900 dark:text-white group-hover:text-brand-amber transition-colors line-clamp-2">
                                 {item.title}
                               </h3>
                             </Link>
                             <div className="text-right shrink-0">
-                              <p className="text-2xl font-black text-slate-900 dark:text-white">${item.price}</p>
-                              {item.originalPrice > item.price && (
-                                <p className="text-sm text-slate-400 line-through decoration-red-500/50">${item.originalPrice}</p>
-                              )}
+                              <p className="text-2xl font-black text-slate-900 dark:text-white">{formatPrice(item.price)}</p>
                             </div>
                           </div>
-                          <p className="text-sm font-medium text-slate-500 mt-2">By <span className="text-slate-700 dark:text-slate-300">{item.author}</span></p>
-                          <div className="flex items-center gap-2 mt-3">
-                            <div className="flex items-center bg-brand-amber/10 px-2 py-0.5 rounded text-xs font-bold text-brand-amber">
-                              {item.rating}★
-                            </div>
-                            <span className="text-xs text-slate-400">({item.reviews} reviews)</span>
-                          </div>
+                          <p className="text-sm font-medium text-slate-500 mt-2">By <span className="text-slate-700 dark:text-slate-300">{item.instructorName}</span></p>
+                          <p className="text-xs text-brand-amber font-bold uppercase tracking-wider mt-2">{item.categoryName}</p>
                         </div>
 
                         <div className="flex items-center gap-6 mt-6">
-                          <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-500 hover:text-red-600 transition-colors">
+                          <button 
+                            className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-500 hover:text-red-600 transition-colors min-h-[44px] disabled:opacity-50"
+                            onClick={() => removeFromCart.mutate(item.courseId)}
+                            disabled={removeFromCart.isPending}
+                          >
                             <Trash2 className="h-4 w-4" />
                             {t("remove")}
                           </button>
-                          <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-brand-amber transition-colors">
+                          <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-brand-amber transition-colors min-h-[44px]">
                             <Heart className="h-4 w-4" />
                             {t("move_to_wishlist")}
                           </button>
@@ -158,19 +144,10 @@ export function CartView() {
                 </h2>
 
                 <div className="space-y-5">
-                  <div className="flex justify-between items-center text-slate-500 font-medium">
-                    <span>{t("summary.original_price")}</span>
-                    <span className="font-bold">${subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-emerald-500 font-bold bg-emerald-500/10 px-3 py-2 rounded-lg border border-emerald-500/20">
-                    <span className="flex items-center gap-2"><Tag className="h-4 w-4" /> {t("summary.discounts")}</span>
-                    <span>-${discount.toFixed(2)}</span>
-                  </div>
-                  <Separator className="bg-brand-border/50 my-6" />
                   <div className="flex justify-between items-end">
                     <span className="text-lg font-bold text-slate-600 dark:text-slate-400">{t("summary.total")}</span>
                     <div className="text-right">
-                      <p className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">${total.toFixed(2)}</p>
+                      <p className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">{formatPrice(totalAmount)}</p>
                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Inclusive of all taxes</p>
                     </div>
                   </div>

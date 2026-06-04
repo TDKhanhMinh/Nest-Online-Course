@@ -14,16 +14,21 @@ import { Role } from "@/features/auth/infrastructure/auth.api";
 import { useLogout, useMe } from "@/features/auth/presentation/hooks/use-auth-hooks";
 import { Link } from "@/i18n/navigation";
 import { Award, BookOpen, GraduationCap, LayoutDashboard, LogOut, Menu, Receipt, Settings, ShoppingBag, User, UserCircle, X } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useCartQuery } from "@/features/checkout/presentation/hooks/use-cart";
 import { LanguageSwitcher } from "./language-switcher";
 import { ThemeToggle } from "./theme-toggle";
+import { NotificationBell } from "@/features/notifications/presentation/components/notification-bell";
 
 export default function Header() {
   const t = useTranslations();
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: user } = useMe();
   const { logout } = useLogout();
+  const { data: cartData } = useCartQuery();
+  const cartCount = cartData?.totalItems ?? 0;
 
   const getDashboardLink = () => {
     if (!user) return "/dashboard";
@@ -70,11 +75,14 @@ export default function Header() {
         <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher />
           <ThemeToggle />
+          {user && <NotificationBell />}
           <Link href="/cart" className="relative group p-2 rounded-lg hover:bg-brand-bg2 transition-colors no-underline">
             <ShoppingBag className="h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-brand-amber transition-colors" />
-            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-amber text-[10px] font-black text-black shadow-lg border border-brand-bg ring-2 ring-brand-bg">
-              2
-            </span>
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-amber text-[10px] font-black text-black shadow-lg border border-brand-bg ring-2 ring-brand-bg">
+                {cartCount}
+              </span>
+            )}
           </Link>
           {user ? (
             <DropdownMenu>
@@ -82,7 +90,13 @@ export default function Header() {
                 render={
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-brand-bg2 hover:bg-brand-bg3 p-0 overflow-hidden border border-brand-border cursor-pointer">
                     {user.avatar ? (
-                      <img src={user.avatar} alt={user.fullName} className="h-full w-full object-cover" />
+                      <Image
+                        src={user.avatar}
+                        alt={user.fullName || "User avatar"}
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                      />
                     ) : (
                       <User className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                     )}
@@ -92,9 +106,15 @@ export default function Header() {
               <DropdownMenuContent className="w-60 mt-2 border-brand-border bg-brand-bg/95 backdrop-blur-md" align="end">
                 <div className="px-3 py-2.5">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-amber/15 text-brand-amber">
+                    <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-amber/15 text-brand-amber">
                       {user.avatar ? (
-                        <img src={user.avatar} alt={user.fullName} className="h-full w-full rounded-full object-cover" />
+                        <Image
+                          src={user.avatar}
+                          alt={user.fullName || "User avatar"}
+                          fill
+                          sizes="36px"
+                          className="object-cover"
+                        />
                       ) : (
                         <span className="text-sm font-bold">{user.fullName?.charAt(0)?.toUpperCase()}</span>
                       )}
@@ -205,11 +225,14 @@ export default function Header() {
 
         {/* Mobile menu toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          {user && <NotificationBell />}
           <Link href="/cart" className="relative p-2 rounded-lg hover:bg-brand-bg3 transition-colors no-underline">
             <ShoppingBag className="h-5 w-5 text-slate-600 dark:text-slate-400" />
-            <span className="absolute top-1 right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-brand-amber text-[8px] font-black text-black">
-              2
-            </span>
+            {cartCount > 0 && (
+              <span className="absolute top-1 right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-brand-amber text-[8px] font-black text-black">
+                {cartCount}
+              </span>
+            )}
           </Link>
           <LanguageSwitcher />
           <ThemeToggle />
@@ -229,9 +252,15 @@ export default function Header() {
           {user && (
             <div className="border-b border-brand-border py-4 mb-2">
               <div className="flex items-center gap-3 px-3">
-                <div className="h-10 w-10 rounded-full bg-brand-bg3 overflow-hidden border border-brand-border">
+                <div className="relative h-10 w-10 rounded-full bg-brand-bg3 overflow-hidden border border-brand-border">
                   {user.avatar ? (
-                    <img src={user.avatar} alt={user.fullName} className="h-full w-full object-cover" />
+                    <Image
+                      src={user.avatar}
+                      alt={user.fullName || "User avatar"}
+                      fill
+                      sizes="40px"
+                      className="object-cover"
+                    />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-brand-bg3">
                       <User className="h-5 w-5 text-slate-500" />

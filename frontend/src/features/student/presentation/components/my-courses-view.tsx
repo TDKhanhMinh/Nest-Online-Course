@@ -6,114 +6,42 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Course, CourseLevel, CourseStatus } from "@/features/course/domain/course.types";
 import { Link } from "@/i18n/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { BookOpen, Play, Search, Trophy } from "lucide-react";
+import { BookOpen, Play, Search, Trophy, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
-
-interface MyCourse extends Course {
-  progress: number;
-  lastAccessed: string;
-  author: string; // Instructor name for display
-  category: string; // Category name for display
-  lessons: number; // Total lessons count
-}
-
-const MOCK_MY_COURSES: MyCourse[] = [
-  {
-    id: "react-1",
-    title: "React & Next.js 14 — Complete from Zero to Hero",
-    slug: "react-nextjs-complete",
-    description: "Detailed description",
-    shortDescription: "Short description",
-    author: "Khoa Nguyen",
-    category: "Frontend",
-    categoryId: "frontend",
-    instructorId: "instructor-1",
-    thumbnailUrl: "/images/courses/react.png",
-    avgRating: 4.9,
-    totalReviews: 3241,
-    price: 599000,
-    totalStudents: 12400,
-    level: CourseLevel.INTERMEDIATE,
-    status: CourseStatus.PUBLISHED,
-    language: "vi",
-    progress: 45,
-    lastAccessed: "2024-05-20",
-    lessons: 186,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "ai-1",
-    title: "LLM Engineering & Prompt Engineering in Practice",
-    slug: "llm-prompt-engineering",
-    description: "Detailed description",
-    shortDescription: "Short description",
-    author: "Tuan Tran",
-    category: "AI & Data Science",
-    categoryId: "ai",
-    instructorId: "instructor-2",
-    thumbnailUrl: "/images/courses/ai.png",
-    avgRating: 4.8,
-    totalReviews: 1876,
-    price: 799000,
-    totalStudents: 8700,
-    level: CourseLevel.ADVANCED,
-    status: CourseStatus.PUBLISHED,
-    language: "vi",
-    progress: 10,
-    lastAccessed: "2024-05-18",
-    lessons: 124,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "security-1",
-    title: "Ethical Hacking & Penetration Testing for Beginners",
-    slug: "ethical-hacking-beginners",
-    description: "Detailed description",
-    shortDescription: "Short description",
-    author: "Dung Le",
-    category: "Cybersecurity",
-    categoryId: "security",
-    instructorId: "instructor-3",
-    thumbnailUrl: "/images/courses/security.png",
-    avgRating: 4.7,
-    totalReviews: 987,
-    price: 699000,
-    totalStudents: 5200,
-    level: CourseLevel.BEGINNER,
-    status: CourseStatus.PUBLISHED,
-    language: "vi",
-    progress: 100,
-    lastAccessed: "2024-05-10",
-    lessons: 158,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+import { useEnrollmentsQuery } from "../hooks/use-enrollments";
 
 export function MyCoursesView() {
   const t = useTranslations("MyCourses");
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: enrollments, isLoading } = useEnrollmentsQuery();
 
-  const filteredCourses = MOCK_MY_COURSES.filter((course) => {
-    const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-10 w-10 animate-spin text-brand-amber" />
+      </div>
+    );
+  }
+
+  const coursesList = enrollments ?? [];
+
+  const filteredCourses = coursesList.filter((item) => {
+    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTab =
       activeTab === "all" ||
-      (activeTab === "in_progress" && course.progress < 100 && course.progress > 0) ||
-      (activeTab === "completed" && course.progress === 100);
+      (activeTab === "in_progress" && item.progress < 100) ||
+      (activeTab === "completed" && item.progress === 100);
 
     return matchesSearch && matchesTab;
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
+    <div className="space-y-6 md:space-y-8 pb-12">
       {/* Header Section */}
       <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
@@ -121,7 +49,7 @@ export function MyCoursesView() {
             {t("title")}
           </h1>
           <p className="mt-2 text-slate-600 dark:text-slate-400">
-            Welcome back! You have {MOCK_MY_COURSES.length} courses in your library.
+            Welcome back! You have {coursesList.length} courses in your library.
           </p>
         </div>
 
@@ -148,18 +76,15 @@ export function MyCoursesView() {
           <TabsTrigger value="completed" className="data-[state=active]:bg-brand-amber data-[state=active]:text-black">
             {t("tabs.completed")}
           </TabsTrigger>
-          <TabsTrigger value="wishlist" className="data-[state=active]:bg-brand-amber data-[state=active]:text-black">
-            {t("tabs.wishlist")}
-          </TabsTrigger>
         </TabsList>
       </Tabs>
 
       {/* Course Grid */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <AnimatePresence mode="popLayout">
-          {filteredCourses.map((course) => (
+          {filteredCourses.map((item) => (
             <motion.div
-              key={course.id}
+              key={item.courseId}
               layout
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -170,8 +95,8 @@ export function MyCoursesView() {
                 {/* Thumbnail */}
                 <div className="relative aspect-video w-full overflow-hidden">
                   <Image
-                    src={course.thumbnailUrl || "/images/placeholder.png"}
-                    alt={course.title}
+                    src={item.thumbnailUrl || "/images/placeholder.png"}
+                    alt={item.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -182,14 +107,14 @@ export function MyCoursesView() {
                     <motion.div
                       className="h-full bg-brand-amber"
                       initial={{ width: 0 }}
-                      animate={{ width: `${course.progress}%` }}
+                      animate={{ width: `${item.progress}%` }}
                       transition={{ duration: 1, delay: 0.5 }}
                     />
                   </div>
 
                   {/* Play Button Overlay */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                    <Link href={`/learning/${course.id}`}>
+                    <Link href={`/learning/${item.courseId}`}>
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-amber text-black shadow-xl ring-4 ring-brand-amber/20">
                         <Play className="ml-1 h-6 w-6 fill-current" />
                       </div>
@@ -201,9 +126,9 @@ export function MyCoursesView() {
                   <div className="mb-4 flex-1">
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-brand-amber">
-                        {course.category}
+                        {item.categoryName}
                       </span>
-                      {course.progress === 100 && (
+                      {item.progress === 100 && (
                         <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px]">
                           <Trophy className="mr-1 h-3 w-3" />
                           COMPLETED
@@ -211,30 +136,27 @@ export function MyCoursesView() {
                       )}
                     </div>
                     <h3 className="line-clamp-2 font-sora text-lg font-bold leading-tight text-slate-900 dark:text-white group-hover:text-brand-amber transition-colors">
-                      {course.title}
+                      {item.title}
                     </h3>
-                    <p className="mt-1 text-sm text-slate-500">{course.author}</p>
+                    <p className="mt-1 text-sm text-slate-500">{item.instructorName}</p>
                   </div>
 
                   {/* Progress Info */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium text-slate-700 dark:text-slate-300">
-                        {t("progress", { percent: course.progress })}
-                      </span>
-                      <span className="text-xs text-slate-500">
-                        {course.lessons} lessons
+                        {t("progress", { percent: item.progress })}
                       </span>
                     </div>
-                    <Progress value={course.progress} className="h-1.5" />
+                    <Progress value={item.progress} className="h-1.5" />
 
                     <div className="pt-2">
-                      <Link href={`/learning/${course.id}`} className="w-full">
+                      <Link href={`/learning/${item.courseId}`} className="w-full">
                         <Button
                           className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-slate-200"
                           variant="default"
                         >
-                          {course.progress === 100 ? "Review Course" : course.progress > 0 ? t("continue") : t("start")}
+                          {item.progress === 100 ? "Review Course" : item.progress > 0 ? t("continue") : t("start")}
                         </Button>
                       </Link>
                     </div>
@@ -252,9 +174,7 @@ export function MyCoursesView() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t("empty")}</h3>
             <p className="mt-2 text-slate-600 dark:text-slate-400 max-w-xs mx-auto">
-              {activeTab === "wishlist"
-                ? "You haven't added any courses to your wishlist yet."
-                : "Try searching with different keywords or explore our catalog."}
+              Try searching with different keywords or explore our catalog.
             </p>
             <Link href="/courses" className="mt-6">
               <Button className="bg-brand-amber text-black hover:bg-brand-amber/90">

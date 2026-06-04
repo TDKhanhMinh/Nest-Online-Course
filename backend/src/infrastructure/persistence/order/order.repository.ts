@@ -34,6 +34,13 @@ export class OrderRepository implements IOrderRepository {
     return docs.map((doc) => this.orderMapper.toDomain(doc));
   }
 
+  async findItemsByOrderId(orderId: UniqueId): Promise<OrderItem[]> {
+    const docs = await this.itemModel
+      .find({ orderId: orderId.value })
+      .exec();
+    return docs.map((doc) => this.itemMapper.toDomain(doc));
+  }
+
   async save(order: Order, items: OrderItem[]): Promise<void> {
     const orderPersistence = this.orderMapper.toPersistence(order);
     await this.orderModel

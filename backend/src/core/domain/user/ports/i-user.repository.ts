@@ -9,6 +9,7 @@ export interface IUserRepository {
   save(user: User): Promise<void>;
   findAll(limit: number, offset: number): Promise<{ users: User[], total: number }>;
   delete(id: UniqueId): Promise<void>;
+  findActiveStudentUserIdsBatch(limit: number, afterId?: string): Promise<string[]>;
 }
 
 

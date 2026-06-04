@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import databaseConfig from '@/database/config/database.config';
+import paymentConfig from '@/core/shared/config/payment.config';
+import firebaseConfig from '@/core/shared/config/firebase.config';
 import { InfrastructureModule } from '@/infrastructure/infrastructure.module';
 import { AuthWebModule } from '@presentation/web/controllers/auth/auth.web.module';
 import { CartWebModule } from '@presentation/web/controllers/cart/cart.web.module';
@@ -14,6 +16,8 @@ import { StudentFeaturesWebModule } from '@presentation/web/controllers/student-
 import { UserWebModule } from '@presentation/web/controllers/user/user.web.module';
 import { UploadWebModule } from '@presentation/web/controllers/upload/upload.web.module';
 import { QuizWebModule } from '@presentation/web/controllers/quiz/quiz.web.module';
+import { PaymentWebModule } from '@presentation/web/controllers/payment/payment.web.module';
+import { NotificationWebModule } from '@presentation/web/controllers/notification/notification.web.module';
 
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -21,7 +25,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig],
+      load: [databaseConfig, paymentConfig, firebaseConfig],
     }),
 
     MongooseModule.forRootAsync({
@@ -46,6 +50,8 @@ import { MongooseModule } from '@nestjs/mongoose';
     StudentFeaturesWebModule,
     UploadWebModule,
     QuizWebModule,
+    PaymentWebModule,
+    NotificationWebModule,
   ],
 })
 export class AppModule { }

@@ -40,7 +40,7 @@ const createCourseSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100),
   shortDescription: z.string().min(10, "Short description must be at least 10 characters").max(200),
   description: z.string().min(20, "Description must be at least 20 characters"),
-  price: z.coerce.number().min(0, "Price must be a positive number"),
+  price: z.number().min(0, "Price must be a positive number"),
   level: z.nativeEnum(CourseLevel),
   categoryId: z.string().min(1, "Please select a category"),
   language: z.string().min(1, "Please enter course language"),
@@ -50,7 +50,7 @@ const createCourseSchema = z.object({
 type CreateCourseValues = z.infer<typeof createCourseSchema>;
 
 interface CreateCourseDialogProps {
-  trigger?: React.ReactNode;
+  trigger?: React.ReactElement;
 }
 
 export function CreateCourseDialog({ trigger }: CreateCourseDialogProps) {
@@ -160,13 +160,17 @@ export function CreateCourseDialog({ trigger }: CreateCourseDialogProps) {
                   <FormItem>
                     <FormLabel>Price ($)</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField<CreateCourseValues>
+              <FormField<CreateCourseValues, "level">
                 control={form.control}
                 name="level"
                 render={({ field }) => (
@@ -192,7 +196,7 @@ export function CreateCourseDialog({ trigger }: CreateCourseDialogProps) {
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField<CreateCourseValues>
+              <FormField<CreateCourseValues, "categoryId">
                 control={form.control}
                 name="categoryId"
                 render={({ field }) => (

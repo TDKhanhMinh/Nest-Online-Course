@@ -1,6 +1,6 @@
+import { mapCourseDtoToEntity } from "../domain/course.mapper";
 import { Course } from "../domain/course.types";
 import { courseApi } from "../infrastructure/course.api";
-import { mapCourseDtoToEntity } from "../domain/course.mapper";
 
 export class GetCourseDetailUseCase {
   async execute(id: string): Promise<Course> {

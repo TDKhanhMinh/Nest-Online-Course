@@ -1,20 +1,27 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
-  IOrderRepository,
+  ICOURSE_REPOSITORY,
+  ICourseRepository,
+} from '@domain/course/ports/i-course.repository';
+import { OrderItem } from '@domain/order/entities/order-item.entity';
+import { Order } from '@domain/order/entities/order.entity';
+import { Transaction } from '@domain/order/entities/transaction.entity';
+import {
   IORDER_REPOSITORY,
+  IOrderRepository,
 } from '@domain/order/ports/i-order.repository';
 import {
-  ICourseRepository,
-  ICOURSE_REPOSITORY,
-} from '@domain/course/ports/i-course.repository';
-import { Order } from '@domain/order/entities/order.entity';
+  ITRANSACTION_REPOSITORY,
+  ITransactionRepository,
+} from '@domain/order/ports/i-transaction.repository';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { OrderStatus } from '@shared/types/order-status.enum';
-import { OrderItem } from '@domain/order/entities/order-item.entity';
 import { UniqueId } from '@shared/types/unique-id.vo';
 import { CreateOrderDto } from '../dto/order.dto';
-
 import { OrderSuccessEvent } from '../events/order-success.event';
+
+// Let's import PaymentMethod properly
+import { PaymentMethod as DomainPaymentMethod } from '@shared/types/payment-method.enum';
 
 @Injectable()
 export class CreateOrderUseCase {
@@ -23,6 +30,8 @@ export class CreateOrderUseCase {
     private readonly orderRepo: IOrderRepository,
     @Inject(ICOURSE_REPOSITORY)
     private readonly courseRepo: ICourseRepository,
+    @Inject(ITRANSACTION_REPOSITORY)
+    private readonly transactionRepo: ITransactionRepository,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -64,21 +73,42 @@ export class CreateOrderUseCase {
       orderId,
     );
 
-    // Simulate payment success immediately for this version
-    order.markAsSuccess();
+    // If order total is 0, finalize immediately (Free Course Checkout)
+    if (totalAmount === 0) {
+      order.markAsSuccess();
+      order.markAsPendingPayment(DomainPaymentMethod.FREE);
+      order.markAsPaid();
+      
+      await this.orderRepo.save(order, orderItems);
 
-    await this.orderRepo.save(order, orderItems);
+      const transaction = Transaction.create({
+        userId: new UniqueId(studentId),
+        orderId: order.id,
+        courseId: orderItems.length === 1 ? orderItems[0].courseId : undefined,
+        paymentMethod: DomainPaymentMethod.FREE,
+        amountVnd: 0,
+        currency: 'VND',
+        amount: 0,
+        gatewayTransactionNo: 'FREE_' + order.id.value,
+      });
+      transaction.markAsSuccess('FREE_' + order.id.value, { note: 'Free checkout' });
 
-    // Emit event for automatic enrollment
-    this.eventEmitter.emit(
-      'order.success',
-      new OrderSuccessEvent(
-        order.id.value,
-        studentId,
-        orderItems.map((item) => item.courseId.value),
-        studentEmail,
-      ),
-    );
+      await this.transactionRepo.save(transaction);
+
+      // Emit event for automatic enrollment
+      this.eventEmitter.emit(
+        'order.success',
+        new OrderSuccessEvent(
+          order.id.value,
+          studentId,
+          orderItems.map((item) => item.courseId.value),
+          studentEmail,
+        ),
+      );
+    } else {
+      // Keep order PENDING, wait for payment gateway callbacks
+      await this.orderRepo.save(order, orderItems);
+    }
 
     return order;
   }

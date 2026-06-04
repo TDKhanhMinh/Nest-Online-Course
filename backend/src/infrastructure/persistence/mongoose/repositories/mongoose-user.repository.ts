@@ -6,6 +6,8 @@ import { UserDocument } from '@/database/schemas/user.schema';
 import { IUserRepository } from '@domain/user/ports/i-user.repository';
 import { UserMapper } from '../mappers/user.mapper';
 import { UniqueId } from '@shared/types/unique-id.vo';
+import { Role } from '@shared/types/role.enum';
+
 
 @Injectable()
 export class MongooseUserRepository implements IUserRepository {
@@ -49,5 +51,17 @@ export class MongooseUserRepository implements IUserRepository {
 
   async delete(id: UniqueId): Promise<void> {
     await this.userModel.findByIdAndDelete(id.value).exec();
+  }
+
+  async findActiveStudentUserIdsBatch(limit: number, afterId?: string): Promise<string[]> {
+    const query: any = {
+      isActive: true,
+      roles: Role.STUDENT,
+    };
+    if (afterId) {
+      query._id = { $gt: afterId };
+    }
+    const docs = await this.userModel.find(query, { _id: 1 }).sort({ _id: 1 }).limit(limit).exec();
+    return docs.map(doc => doc._id.toString());
   }
 }

@@ -2,6 +2,7 @@ import { OrderStatus } from '@/core/shared/types/order-status.enum';
 import { OrderDocument } from '@/database/schemas/order.schema';
 import { Order } from '@domain/order/entities/order.entity';
 import { UniqueId } from '@shared/types/unique-id.vo';
+import { PaymentMethod } from '@shared/types/payment-method.enum';
 
 export class OrderMapper {
   static toDomain(doc: OrderDocument): Order {
@@ -10,6 +11,8 @@ export class OrderMapper {
         studentId: new UniqueId(doc.studentId.toString()),
         totalAmount: doc.totalAmount,
         status: doc.status as OrderStatus,
+        paymentMethod: doc.paymentMethod as PaymentMethod | undefined,
+        paidAt: doc.paidAt,
         createdAt: (doc as any).createdAt,
       },
       new UniqueId((doc._id as any).toString()),
@@ -22,6 +25,8 @@ export class OrderMapper {
       studentId: domain.studentId.value,
       totalAmount: domain.totalAmount,
       status: domain.status as any,
+      paymentMethod: domain.paymentMethod,
+      paidAt: domain.paidAt,
     };
   }
 }

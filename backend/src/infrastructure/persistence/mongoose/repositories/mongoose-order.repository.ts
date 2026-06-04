@@ -24,8 +24,18 @@ export class MongooseOrderRepository implements IOrderRepository {
   }
 
   async findByStudentId(studentId: UniqueId): Promise<Order[]> {
-    const docs = await this.orderModel.find({ studentId: studentId.value }).exec();
+    const docs = await this.orderModel
+      .find({ studentId: studentId.value })
+      .sort({ createdAt: -1 })
+      .exec();
     return docs.map((doc) => OrderMapper.toDomain(doc));
+  }
+
+  async findItemsByOrderId(orderId: UniqueId): Promise<OrderItem[]> {
+    const docs = await this.orderItemModel
+      .find({ orderId: orderId.value })
+      .exec();
+    return docs.map((doc) => OrderItemMapper.toDomain(doc));
   }
 
   async save(order: Order, items: OrderItem[]): Promise<void> {

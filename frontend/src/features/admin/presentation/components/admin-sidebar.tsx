@@ -22,7 +22,8 @@ import {
   Users,
   Layers,
   ShieldCheck,
-  BarChart3
+  BarChart3,
+  Bell,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -52,6 +53,11 @@ export function AdminSidebar() {
       title: "Category Management",
       href: "/admin/categories",
       icon: Layers,
+    },
+    {
+      title: "Notifications",
+      href: "/admin/notifications",
+      icon: Bell,
     },
     {
       title: "Analytics",

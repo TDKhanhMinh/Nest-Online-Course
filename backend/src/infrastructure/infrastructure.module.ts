@@ -79,6 +79,8 @@ import { QUIZ_REPOSITORY } from '@domain/quiz/ports/i-quiz.repository';
 import { IWISHLIST_REPOSITORY } from '@domain/student-features/ports/i-wishlist.repository';
 import { IINSTRUCTOR_PROFILE_REPOSITORY } from '@domain/user/ports/i-instructor-profile.repository';
 import { IUSER_REPOSITORY } from '@domain/user/ports/i-user.repository';
+import { IVNPAY_GATEWAY_SERVICE } from '@domain/order/ports/i-vnpay-gateway.service';
+import { IPAYPAL_GATEWAY_SERVICE } from '@domain/order/ports/i-paypal-gateway.service';
 
 // Repositories
 import { QuestionMapper } from './persistence/mongoose/mappers/question.mapper';
@@ -116,6 +118,21 @@ import { IVIDEO_STREAMING_SERVICE } from '@shared/abstractions/services/i-video-
 import { NodemailerAdapter } from './services/notification/nodemailer.adapter';
 import { CloudinaryFileStorageAdapter } from './services/storage/cloudinary-file-storage.adapter';
 import { CloudinaryVideoAdapter } from './services/storage/cloudinary-video.adapter';
+import { VnPayGatewayService } from './services/payment/vnpay-gateway.service';
+import { PayPalGatewayService } from './services/payment/paypal-gateway.service';
+
+// Notifications
+import { NotificationDocument, NotificationSchema } from '@/database/schemas/notification.schema';
+import { NotificationDeviceDocument, NotificationDeviceSchema } from '@/database/schemas/notification-device.schema';
+import { AdminNotificationCampaignDocument, AdminNotificationCampaignSchema } from '@/database/schemas/admin-notification-campaign.schema';
+import { INOTIFICATION_REPOSITORY } from '@domain/notification/ports/i-notification.repository';
+import { INOTIFICATION_DEVICE_REPOSITORY } from '@domain/notification/ports/i-notification-device.repository';
+import { IPUSH_NOTIFICATION_SERVICE } from '@domain/notification/ports/i-push-notification.service';
+import { MongooseNotificationRepository } from './persistence/mongoose/repositories/mongoose-notification.repository';
+import { MongooseNotificationDeviceRepository } from './persistence/mongoose/repositories/mongoose-notification-device.repository';
+import { FirebasePushNotificationService } from './services/notification/firebase-push-notification.service';
+import { NotificationMapper } from './persistence/mongoose/mappers/notification.mapper';
+import { NotificationDeviceMapper } from './persistence/mongoose/mappers/notification-device.mapper';
 
 @Global()
 @Module({
@@ -140,6 +157,9 @@ import { CloudinaryVideoAdapter } from './services/storage/cloudinary-video.adap
       { name: QuestionDocument.name, schema: QuestionSchema },
       { name: QuizDocument.name, schema: QuizSchema },
       { name: QuizAttemptDocument.name, schema: QuizAttemptSchema },
+      { name: NotificationDocument.name, schema: NotificationSchema },
+      { name: NotificationDeviceDocument.name, schema: NotificationDeviceSchema },
+      { name: AdminNotificationCampaignDocument.name, schema: AdminNotificationCampaignSchema },
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -237,6 +257,14 @@ import { CloudinaryVideoAdapter } from './services/storage/cloudinary-video.adap
       useClass: NodemailerAdapter,
     },
     {
+      provide: IVNPAY_GATEWAY_SERVICE,
+      useClass: VnPayGatewayService,
+    },
+    {
+      provide: IPAYPAL_GATEWAY_SERVICE,
+      useClass: PayPalGatewayService,
+    },
+    {
       provide: QUESTION_REPOSITORY,
       useClass: MongooseQuestionRepository,
     },
@@ -248,9 +276,23 @@ import { CloudinaryVideoAdapter } from './services/storage/cloudinary-video.adap
       provide: QUIZ_ATTEMPT_REPOSITORY,
       useClass: MongooseQuizAttemptRepository,
     },
+    {
+      provide: INOTIFICATION_REPOSITORY,
+      useClass: MongooseNotificationRepository,
+    },
+    {
+      provide: INOTIFICATION_DEVICE_REPOSITORY,
+      useClass: MongooseNotificationDeviceRepository,
+    },
+    {
+      provide: IPUSH_NOTIFICATION_SERVICE,
+      useClass: FirebasePushNotificationService,
+    },
     QuestionMapper,
     QuizMapper,
     QuizAttemptMapper,
+    NotificationMapper,
+    NotificationDeviceMapper,
   ],
   exports: [
     IUSER_REPOSITORY,
@@ -276,6 +318,11 @@ import { CloudinaryVideoAdapter } from './services/storage/cloudinary-video.adap
     QUESTION_REPOSITORY,
     QUIZ_REPOSITORY,
     QUIZ_ATTEMPT_REPOSITORY,
+    IVNPAY_GATEWAY_SERVICE,
+    IPAYPAL_GATEWAY_SERVICE,
+    INOTIFICATION_REPOSITORY,
+    INOTIFICATION_DEVICE_REPOSITORY,
+    IPUSH_NOTIFICATION_SERVICE,
     JwtModule,
   ],
 })

@@ -3,7 +3,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -13,75 +20,71 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Link } from "@/i18n/navigation";
-import { 
-  Download, 
-  Search, 
-  Filter, 
-  CheckCircle2, 
-  Clock, 
-  XCircle, 
-  ExternalLink,
+import { motion } from "framer-motion";
+import {
+  CheckCircle2,
   ChevronRight,
-  ShoppingBag
+  Clock,
+  CreditCard,
+  Eye,
+  Loader2,
+  ShoppingBag,
+  XCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-
-const MOCK_ORDERS = [
-  {
-    id: "ORD-99283-X1",
-    date: "2024-05-01",
-    total: 89.98,
-    status: "success",
-    items: ["React & Next.js 14", "LLM Engineering"]
-  },
-  {
-    id: "ORD-99120-A2",
-    date: "2024-04-15",
-    total: 45.00,
-    status: "success",
-    items: ["Advanced Tailwind CSS"]
-  },
-  {
-    id: "ORD-98850-B7",
-    date: "2024-03-22",
-    total: 29.99,
-    status: "failed",
-    items: ["Python for Data Science"]
-  },
-  {
-    id: "ORD-98701-C3",
-    date: "2024-02-10",
-    total: 55.50,
-    status: "refunded",
-    items: ["Cybersecurity Fundamentals"]
-  }
-];
+import Image from "next/image";
+import { useState } from "react";
+import { StudentOrderDto } from "../../infrastructure/order.api";
+import { useOrdersQuery } from "../hooks/use-orders";
 
 export function OrderHistoryView() {
   const t = useTranslations("Orders");
+  const { data: orders, isLoading } = useOrdersQuery();
+  const [selectedOrder, setSelectedOrder] = useState<StudentOrderDto | null>(null);
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+  };
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "success": return <CheckCircle2 className="h-4 w-4" />;
-      case "pending": return <Clock className="h-4 w-4" />;
-      case "failed": return <XCircle className="h-4 w-4" />;
+    switch (status.toUpperCase()) {
+      case "SUCCESS": return <CheckCircle2 className="h-4 w-4" />;
+      case "PENDING": return <Clock className="h-4 w-4" />;
+      case "FAILED": return <XCircle className="h-4 w-4" />;
       default: return <Clock className="h-4 w-4" />;
     }
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "success": return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
-      case "pending": return "bg-amber-500/10 text-amber-500 border-amber-500/20";
-      case "failed": return "bg-red-500/10 text-red-500 border-red-500/20";
-      case "refunded": return "bg-slate-500/10 text-slate-500 border-slate-500/20";
+    switch (status.toUpperCase()) {
+      case "SUCCESS": return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+      case "PENDING": return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+      case "FAILED": return "bg-red-500/10 text-red-500 border-red-500/20";
       default: return "bg-slate-500/10 text-slate-500 border-slate-500/20";
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    switch (status.toUpperCase()) {
+      case "SUCCESS": return t("status.success");
+      case "PENDING": return t("status.pending");
+      case "FAILED": return t("status.failed");
+      default: return status;
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-10 w-10 animate-spin text-brand-amber" />
+      </div>
+    );
+  }
+
+  const ordersList = orders ?? [];
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <div className="space-y-6 md:space-y-8 pb-12">
       {/* Breadcrumb */}
       <nav className="mb-10 flex items-center gap-2 text-sm text-slate-500">
         <Link href="/" className="hover:text-brand-amber transition-colors">Home</Link>
@@ -96,20 +99,6 @@ export function OrderHistoryView() {
           </h1>
           <p className="mt-3 text-slate-500 text-lg font-medium">Manage your purchases and download invoices.</p>
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-            <Input 
-              placeholder="Search orders..." 
-              className="h-14 pl-12 pr-6 border-brand-border bg-brand-bg/40 focus-visible:ring-brand-amber rounded-2xl w-full sm:w-72 font-medium"
-            />
-          </div>
-          <Button variant="outline" className="h-14 px-6 border-brand-border bg-brand-bg/40 rounded-2xl font-bold flex items-center gap-2 hover:bg-brand-bg2 transition-all">
-            <Filter className="h-5 w-5" />
-            Filter
-          </Button>
-        </div>
       </div>
 
       <Card className="overflow-hidden border-brand-border bg-brand-bg/40 backdrop-blur-xl shadow-2xl rounded-[2rem]">
@@ -123,12 +112,12 @@ export function OrderHistoryView() {
                   <TableHead className="py-6 px-8 font-black uppercase tracking-widest text-[11px] text-slate-500">{t("table.items") || "Items"}</TableHead>
                   <TableHead className="py-6 px-8 font-black uppercase tracking-widest text-[11px] text-slate-500 text-right">{t("table.total")}</TableHead>
                   <TableHead className="py-6 px-8 font-black uppercase tracking-widest text-[11px] text-slate-500 text-center">{t("table.status")}</TableHead>
-                  <TableHead className="py-6 px-8 font-black uppercase tracking-widest text-[11px] text-slate-500 text-right">{t("table.actions")}</TableHead>
+                  <TableHead className="py-6 px-8 font-black uppercase tracking-widest text-[11px] text-slate-500 text-center">{t("table.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {MOCK_ORDERS.length > 0 ? (
-                  MOCK_ORDERS.map((order, idx) => (
+                {ordersList.length > 0 ? (
+                  ordersList.map((order, idx) => (
                     <motion.tr
                       key={order.id}
                       initial={{ opacity: 0, y: 10 }}
@@ -137,38 +126,41 @@ export function OrderHistoryView() {
                       className="group border-brand-border hover:bg-brand-amber/[0.02] transition-colors"
                     >
                       <TableCell className="py-8 px-8 font-mono text-sm font-bold text-slate-900 dark:text-white">
-                        {order.id}
+                        {order.id.slice(0, 12)}...
                       </TableCell>
                       <TableCell className="py-8 px-8 text-sm font-medium text-slate-500">
-                        {new Date(order.date).toLocaleDateString()}
+                        {new Date(order.createdAt).toLocaleDateString("vi-VN")}
                       </TableCell>
-                      <TableCell className="py-8 px-8 max-w-[240px]">
-                        <div className="flex flex-wrap gap-2">
+                      <TableCell className="py-8 px-8 max-w-[300px]">
+                        <div className="flex flex-col gap-1">
                           {order.items.map((item, i) => (
                             <span key={i} className="text-xs font-bold text-slate-700 dark:text-slate-300 line-clamp-1">
-                              {item}{i < order.items.length - 1 ? "," : ""}
+                              {item.courseTitle}
                             </span>
                           ))}
                         </div>
                       </TableCell>
                       <TableCell className="py-8 px-8 text-right font-black text-slate-900 dark:text-white">
-                        ${order.total.toFixed(2)}
+                        {formatPrice(order.totalAmount)}
                       </TableCell>
                       <TableCell className="py-8 px-8">
                         <div className="flex justify-center">
                           <Badge className={`px-4 py-1.5 rounded-full border-2 font-black uppercase tracking-wider text-[10px] flex items-center gap-1.5 shadow-sm ${getStatusColor(order.status)}`}>
                             {getStatusIcon(order.status)}
-                            {t(`status.${order.status}`)}
+                            {getStatusLabel(order.status)}
                           </Badge>
                         </div>
                       </TableCell>
-                      <TableCell className="py-8 px-8 text-right">
-                        <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-xl hover:bg-brand-amber/10 hover:text-brand-amber">
-                            <Download className="h-5 w-5" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-xl hover:bg-brand-amber/10 hover:text-brand-amber">
-                            <ExternalLink className="h-5 w-5" />
+                      <TableCell className="py-8 px-8">
+                        <div className="flex justify-center">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-9 font-bold hover:bg-brand-amber/10 hover:text-brand-amber text-slate-600 dark:text-slate-400 gap-1.5 border border-brand-border rounded-xl"
+                            onClick={() => setSelectedOrder(order)}
+                          >
+                            <Eye className="h-4 w-4" />
+                            {t("view_invoice")}
                           </Button>
                         </div>
                       </TableCell>
@@ -177,13 +169,13 @@ export function OrderHistoryView() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={6} className="py-24 text-center">
-                       <div className="flex flex-col items-center">
-                          <ShoppingBag className="h-12 w-12 text-slate-300 mb-4" />
-                          <p className="text-slate-500 font-bold">{t("empty")}</p>
-                          <Button asChild variant="link" className="text-brand-amber font-black mt-2">
-                             <Link href="/courses">Browse Courses</Link>
-                          </Button>
-                       </div>
+                      <div className="flex flex-col items-center">
+                        <ShoppingBag className="h-12 w-12 text-slate-300 mb-4" />
+                        <p className="text-slate-500 font-bold">{t("empty")}</p>
+                        <Button asChild variant="link" className="text-brand-amber font-black mt-2">
+                          <Link href="/courses">Browse Courses</Link>
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}
@@ -195,14 +187,81 @@ export function OrderHistoryView() {
 
       {/* Helper Footer */}
       <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 px-4">
-         <p className="text-sm font-medium text-slate-500">
-           Showing <span className="font-bold text-slate-900 dark:text-white">1 - {MOCK_ORDERS.length}</span> of <span className="font-bold text-slate-900 dark:text-white">{MOCK_ORDERS.length}</span> transactions
-         </p>
-         <div className="flex gap-2">
-            <Button disabled variant="outline" className="rounded-xl font-bold">Previous</Button>
-            <Button disabled variant="outline" className="rounded-xl font-bold">Next</Button>
-         </div>
+        <p className="text-sm font-medium text-slate-500">
+          Showing <span className="font-bold text-slate-900 dark:text-white">{ordersList.length}</span> transactions
+        </p>
       </div>
+
+      {/* Order Details Dialog */}
+      <Dialog open={selectedOrder !== null} onOpenChange={(open) => !open && setSelectedOrder(null)}>
+        <DialogContent className="sm:max-w-lg bg-brand-bg2 border border-brand-border rounded-2xl p-6">
+          {selectedOrder && (
+            <>
+              <DialogHeader className="border-b border-brand-border pb-4 mb-4">
+                <DialogTitle className="text-xl font-bold font-sora text-slate-900 dark:text-white flex items-center gap-2">
+                  Order Details
+                  <span className="text-xs font-mono text-slate-500">#{selectedOrder.id.slice(0, 12)}</span>
+                </DialogTitle>
+                <DialogDescription className="text-xs text-slate-500">
+                  Transaction date: {new Date(selectedOrder.createdAt).toLocaleString("vi-VN")}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-6">
+                {/* Status & Total */}
+                <div className="flex justify-between items-center bg-brand-bg/50 p-4 rounded-xl border border-brand-border">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Status</span>
+                    <Badge className={`w-fit px-3 py-1 rounded-full border text-[10px] font-bold flex items-center gap-1.5 ${getStatusColor(selectedOrder.status)}`}>
+                      {getStatusIcon(selectedOrder.status)}
+                      {getStatusLabel(selectedOrder.status)}
+                    </Badge>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs text-slate-400 font-bold uppercase tracking-wider block">Total Amount</span>
+                    <span className="text-xl font-black text-slate-900 dark:text-white">{formatPrice(selectedOrder.totalAmount)}</span>
+                  </div>
+                </div>
+
+                {/* Items list */}
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Purchased Courses</h4>
+                  <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                    {selectedOrder.items.map((item) => (
+                      <div key={item.courseId} className="flex gap-4 items-center bg-brand-bg3/30 p-3 rounded-xl border border-brand-border/50">
+                        <div className="h-12 w-12 bg-brand-bg2 rounded-lg border border-brand-border overflow-hidden shrink-0 relative flex items-center justify-center">
+                          {item.courseThumbnail ? (
+                            <Image src={item.courseThumbnail} alt={item.courseTitle} fill className="object-cover" />
+                          ) : (
+                            <CreditCard className="h-5 w-5 text-brand-amber/30" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight">
+                            {item.courseTitle}
+                          </p>
+                        </div>
+                        <span className="text-xs font-black text-slate-900 dark:text-white shrink-0">
+                          {formatPrice(item.price)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="mt-6 pt-4 border-t border-brand-border/50">
+                <Button
+                  onClick={() => setSelectedOrder(null)}
+                  className="bg-brand-amber text-black hover:bg-brand-amber2 font-bold px-6 rounded-xl animate-in fade-in zoom-in duration-100"
+                >
+                  Close
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* --- Hybrid Responsive Summary ---
           mobile  (default / sm): Table becomes scrollable horizontally, badges and text sizes adjusted for small screens.

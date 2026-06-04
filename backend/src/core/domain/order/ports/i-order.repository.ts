@@ -7,8 +7,6 @@ export const IORDER_REPOSITORY = Symbol('IOrderRepository');
 export interface IOrderRepository {
   findById(id: UniqueId): Promise<Order | null>;
   findByStudentId(studentId: UniqueId): Promise<Order[]>;
+  findItemsByOrderId(orderId: UniqueId): Promise<OrderItem[]>;
   save(order: Order, items: OrderItem[]): Promise<void>;
 }
-
-
-

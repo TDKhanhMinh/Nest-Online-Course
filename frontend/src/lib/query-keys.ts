@@ -61,4 +61,10 @@ export const queryKeys = {
         [...queryKeys.instructor.questions.details(), id] as const,
     },
   },
+  notifications: {
+    all: ["notifications"] as const,
+    lists: () => [...queryKeys.notifications.all, "list"] as const,
+    list: (params: any) => [...queryKeys.notifications.lists(), params] as const,
+    unreadCount: () => [...queryKeys.notifications.all, "unread-count"] as const,
+  },
 };

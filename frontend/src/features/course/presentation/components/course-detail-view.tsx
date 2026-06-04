@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { 
-  Star, Clock, Globe, Calendar, CheckCircle2, 
+  Star, Globe, Calendar, CheckCircle2, 
   PlayCircle, FileText, Smartphone, Award,
-  ChevronRight, Share2, Heart, Play
+  ChevronRight, Share2, Heart, Play, Loader2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
@@ -15,11 +15,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CurriculumAccordion } from "./curriculum-accordion";
-import { Course, Section } from "../../domain/course.types";
+import { Course } from "../../domain/course.types";
 import { usePublicCourseReviews } from "../hooks/use-public-courses";
+import { useMe } from "@/features/auth/presentation/hooks/use-auth-hooks";
+import { useEnrollmentStatusQuery } from "@/features/student/presentation/hooks/use-enrollments";
+import { useAddToCartMutation } from "@/features/checkout/presentation/hooks/use-cart";
+import { useRouter } from "@/i18n/navigation";
 
 interface CourseDetailViewProps {
   course: Course;
+}
+
+interface PublicCourseReview {
+  id: string;
+  studentName?: string;
+  rating: number;
+  createdAt?: string;
+  comment: string;
 }
 
 const ReviewsList = ({ courseId }: { courseId: string }) => {
@@ -56,7 +68,7 @@ const ReviewsList = ({ courseId }: { courseId: string }) => {
     <div className="space-y-6 mt-8 border-t border-brand-border pt-8">
       <h4 className="font-sora text-lg font-bold text-slate-900 dark:text-white">Student Feedback & Reviews</h4>
       <div className="space-y-4">
-        {reviews.map((review: any) => (
+        {(reviews as PublicCourseReview[]).map((review) => (
           <div key={review.id} className="p-5 border border-brand-border bg-brand-card/30 rounded-xl space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -99,6 +111,54 @@ const ReviewsList = ({ courseId }: { courseId: string }) => {
 export function CourseDetailView({ course }: CourseDetailViewProps) {
   const t = useTranslations("CourseDetail");
   const [isSticky, setIsSticky] = useState(false);
+  const { data: user } = useMe();
+  const { data: status, isLoading: statusLoading } = useEnrollmentStatusQuery(course.id, !!user);
+  const addToCartMutation = useAddToCartMutation();
+  const router = useRouter();
+
+  const isEnrolled = status?.enrolled || false;
+  const isInCart = status?.inCart || false;
+
+  const handleBuyNow = async () => {
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
+    if (isEnrolled) {
+      router.push(`/learning/${course.id}`);
+      return;
+    }
+    if (isInCart) {
+      router.push("/cart");
+      return;
+    }
+    try {
+      await addToCartMutation.mutateAsync(course.id);
+      router.push("/checkout");
+    } catch {
+      // Error handled by mutation
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
+    if (isEnrolled) {
+      router.push(`/learning/${course.id}`);
+      return;
+    }
+    if (isInCart) {
+      router.push("/cart");
+      return;
+    }
+    try {
+      await addToCartMutation.mutateAsync(course.id);
+    } catch {
+      // Error handled by mutation
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -331,12 +391,52 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
                     </div>
 
                     <div className="grid gap-3">
-                      <Button className="w-full bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12">
-                        {t("enrollment.buy_now")}
-                      </Button>
-                      <Button variant="outline" className="w-full border-brand-border h-12 font-bold">
-                        {t("enrollment.enroll_now")}
-                      </Button>
+                      {statusLoading ? (
+                        <Button disabled className="w-full bg-brand-amber text-black font-bold h-12">
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          {t("enrollment.buy_now")}
+                        </Button>
+                      ) : isEnrolled ? (
+                        <Button 
+                          onClick={handleBuyNow}
+                          className="w-full bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12"
+                        >
+                          {t("enrollment.go_to_learning")}
+                        </Button>
+                      ) : isInCart ? (
+                        <Button 
+                          onClick={handleBuyNow}
+                          className="w-full bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12"
+                        >
+                          {t("enrollment.in_cart")}
+                        </Button>
+                      ) : (
+                        <>
+                          <Button 
+                            onClick={handleBuyNow}
+                            disabled={addToCartMutation.isPending}
+                            className="w-full bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12"
+                          >
+                            {addToCartMutation.isPending ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              t("enrollment.buy_now")
+                            )}
+                          </Button>
+                          <Button 
+                            onClick={handleAddToCart}
+                            disabled={addToCartMutation.isPending}
+                            variant="outline" 
+                            className="w-full border-brand-border h-12 font-bold"
+                          >
+                            {addToCartMutation.isPending ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              t("enrollment.add_to_cart")
+                            )}
+                          </Button>
+                        </>
+                      )}
                     </div>
 
                     <p className="text-[11px] text-center text-slate-500">
@@ -390,9 +490,32 @@ export function CourseDetailView({ course }: CourseDetailViewProps) {
                 <span className="font-sora font-extrabold text-lg">{course.price.toLocaleString()}đ</span>
                 <span className="text-[10px] text-red-500 font-bold uppercase tracking-wider">Sale Ends Soon</span>
               </div>
-              <Button className="flex-1 bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12">
-                {t("enrollment.buy_now")}
-              </Button>
+              {statusLoading ? (
+                <Button disabled className="flex-1 bg-brand-amber text-black font-bold h-12">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  {t("enrollment.buy_now")}
+                </Button>
+              ) : isEnrolled ? (
+                <Button onClick={handleBuyNow} className="flex-1 bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12">
+                  {t("enrollment.go_to_learning")}
+                </Button>
+              ) : isInCart ? (
+                <Button onClick={handleBuyNow} className="flex-1 bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12">
+                  {t("enrollment.in_cart")}
+                </Button>
+              ) : (
+                <Button 
+                  onClick={handleBuyNow} 
+                  disabled={addToCartMutation.isPending}
+                  className="flex-1 bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12"
+                >
+                  {addToCartMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    t("enrollment.buy_now")
+                  )}
+                </Button>
+              )}
             </div>
           </motion.div>
         )}

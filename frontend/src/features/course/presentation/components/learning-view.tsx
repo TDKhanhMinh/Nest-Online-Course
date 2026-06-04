@@ -25,69 +25,134 @@ import {
   PlayCircle,
   X,
   HelpCircle,
-  Upload
+  Upload,
+  Loader2
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DiscussionForum } from "./discussion-forum";
 import { QuizPlayer } from "./quiz-player";
 import { AssignmentSubmission } from "./assignment-submission";
+import { useCourseDetail } from "../hooks/use-course-detail";
 
-type LessonType = "video" | "quiz" | "assignment";
-
-interface Lesson {
-  id: string;
-  title: string;
-  duration: string;
-  completed: boolean;
-  type: LessonType;
-}
-
-const MOCK_COURSE = {
-  id: "react-1",
-  title: "React & Next.js 14 — Complete from Zero to Hero",
-  sections: [
-    {
-      id: "s1",
-      title: "Introduction to React",
-      lessons: [
-        { id: "l1", title: "Course Overview", duration: "05:20", completed: true, type: "video" as LessonType },
-        { id: "l2", title: "Setting up Environment", duration: "12:45", completed: true, type: "video" as LessonType },
-      ]
-    },
-    {
-      id: "s2",
-      title: "React Fundamentals",
-      lessons: [
-        { id: "l3", title: "JSX & Components", duration: "18:30", completed: true, type: "video" as LessonType },
-        { id: "l4", title: "React Core Concepts Quiz", duration: "15:00", completed: false, type: "quiz" as LessonType },
-        { id: "l5", title: "Build a To-Do App", duration: "3 Days", completed: false, type: "assignment" as LessonType },
-      ]
-    },
-    {
-      id: "s3",
-      title: "Next.js App Router",
-      lessons: [
-        { id: "l6", title: "File-based Routing", duration: "22:10", completed: false, type: "video" as LessonType },
-        { id: "l7", title: "Server Components vs Client Components", duration: "35:00", completed: false, type: "video" as LessonType },
-      ]
-    }
-  ]
-};
-
-export function LearningView() {
+export function LearningView({ courseId }: { courseId: string }) {
   const t = useTranslations("Learning");
   const tc = useTranslations("Common");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [currentLesson, setCurrentLesson] = useState<Lesson>(MOCK_COURSE.sections[1].lessons[0]); // JSX & Components
-  const [progress, setProgress] = useState(35);
+  
+  // Fetch real course details and curriculum
+  const { data: course, isLoading, error } = useCourseDetail(courseId);
+  const [currentLesson, setCurrentLesson] = useState<any>(null);
 
-  const getLessonIcon = (type: LessonType, isCurrent: boolean) => {
-    switch (type) {
+  // Load completed lessons list from localStorage (persisted per student & course)
+  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(`completed_lessons_${courseId}`);
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  });
+
+  const toggleLessonComplete = (lessonId: string) => {
+    setCompletedLessonIds((prev) => {
+      const next = prev.includes(lessonId)
+        ? prev.filter((id) => id !== lessonId)
+        : [...prev, lessonId];
+      if (typeof window !== "undefined") {
+        localStorage.setItem(`completed_lessons_${courseId}`, JSON.stringify(next));
+      }
+      return next;
+    });
+  };
+
+  // Flattened list of lessons for progress calculation & prev/next index calculation
+  const flattenedLessons = course?.sections?.flatMap((s) => s.lessons || []) || [];
+  const totalLessons = flattenedLessons.length;
+  const progress = totalLessons > 0 ? Math.round((completedLessonIds.length / totalLessons) * 100) : 0;
+
+  // Set the first lesson of the first section as active once data loads
+  useEffect(() => {
+    if (course?.sections && course.sections.length > 0 && !currentLesson) {
+      for (const section of course.sections) {
+        if (section.lessons && section.lessons.length > 0) {
+          setCurrentLesson(section.lessons[0]);
+          break;
+        }
+      }
+    }
+  }, [course, currentLesson]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[calc(100vh-64px)] items-center justify-center bg-brand-bg">
+        <Loader2 className="h-10 w-10 animate-spin text-brand-amber" />
+      </div>
+    );
+  }
+
+  if (error || !course) {
+    return (
+      <div className="flex h-[calc(100vh-64px)] flex-col items-center justify-center bg-brand-bg text-center px-4">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Course not found</h2>
+        <p className="mt-2 text-slate-600 dark:text-slate-400">We couldn't retrieve the details for this course.</p>
+        <Link href="/my-courses" className="mt-6">
+          <Button className="bg-brand-amber text-black hover:bg-brand-amber/90">
+            Back to My Courses
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  if (totalLessons === 0) {
+    return (
+      <div className="flex h-[calc(100vh-64px)] flex-col items-center justify-center bg-brand-bg text-center px-4">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">No content in this course</h2>
+        <p className="mt-2 text-slate-600 dark:text-slate-400 font-medium">The instructor has not added any lessons to this course yet.</p>
+        <Link href="/my-courses" className="mt-6">
+          <Button className="bg-brand-amber text-black hover:bg-brand-amber/90">
+            Back to My Courses
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const currentLessonIndex = currentLesson ? flattenedLessons.findIndex((l) => l.id === currentLesson.id) : -1;
+
+  const handlePrevLesson = () => {
+    if (currentLessonIndex > 0) {
+      setCurrentLesson(flattenedLessons[currentLessonIndex - 1]);
+    }
+  };
+
+  const handleNextLesson = () => {
+    if (currentLessonIndex !== -1 && currentLessonIndex < totalLessons - 1) {
+      setCurrentLesson(flattenedLessons[currentLessonIndex + 1]);
+    }
+  };
+
+  const handleCompleteAndContinue = () => {
+    if (currentLesson) {
+      if (!completedLessonIds.includes(currentLesson.id)) {
+        toggleLessonComplete(currentLesson.id);
+      }
+      handleNextLesson();
+    }
+  };
+
+  const getLessonIcon = (type: string, isCurrent: boolean) => {
+    switch (type.toLowerCase()) {
       case "quiz":
         return <HelpCircle className={`h-4 w-4 shrink-0 ${isCurrent ? "text-brand-amber" : "text-slate-400"}`} />;
       case "assignment":
         return <Upload className={`h-4 w-4 shrink-0 ${isCurrent ? "text-brand-amber" : "text-slate-400"}`} />;
+      case "text":
+        return <FileText className={`h-4 w-4 shrink-0 ${isCurrent ? "text-brand-amber" : "text-slate-400"}`} />;
       case "video":
       default:
         return <PlayCircle className={`h-4 w-4 shrink-0 ${isCurrent ? "text-brand-amber" : "text-slate-400"}`} />;
@@ -97,22 +162,29 @@ export function LearningView() {
   return (
     <div className="flex h-[calc(100vh-64px)] flex-col bg-brand-bg md:flex-row overflow-hidden">
       {/* Main Content Area */}
-      <div className="relative flex flex-1 flex-col overflow-hidden">
+      <div className="relative flex flex-1 flex-col overflow-hidden pb-16 md:pb-0">
         
-        {currentLesson.type === "video" && (
+        {currentLesson && currentLesson.type === "video" && (
           <>
-            {/* Video Player (Placeholder) */}
-            <div className="relative aspect-video w-full shrink-0 bg-black flex items-center justify-center group">
-              <div className="absolute inset-0 flex items-center justify-center">
+            {/* Video Player */}
+            <div className="relative aspect-video w-full shrink-0 bg-black flex items-center justify-center">
+              {currentLesson.videoUrl || currentLesson.contentUrl ? (
+                <video
+                  key={currentLesson.id}
+                  src={currentLesson.videoUrl || currentLesson.contentUrl}
+                  controls
+                  className="w-full h-full object-contain"
+                />
+              ) : (
                 <div className="text-center">
-                  <PlayCircle className="mx-auto h-20 w-20 text-brand-amber opacity-40 group-hover:opacity-100 transition-opacity cursor-pointer" />
-                  <p className="mt-4 text-slate-400 font-sora">Click to play lesson video</p>
+                  <PlayCircle className="mx-auto h-20 w-20 text-brand-amber opacity-40" />
+                  <p className="mt-4 text-slate-400 font-sora">No video content for this lesson</p>
                 </div>
-              </div>
+              )}
 
               {/* Top Bar Overlay */}
-              <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent flex items-center gap-4 z-10">
-                <Link href="/my-courses">
+              <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent flex items-center gap-4 z-10 pointer-events-none">
+                <Link href="/my-courses" className="pointer-events-auto">
                   <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                     <ArrowLeft className="h-5 w-5" />
                   </Button>
@@ -120,11 +192,6 @@ export function LearningView() {
                 <h2 className="font-sora text-sm font-semibold text-white md:text-base line-clamp-1">
                   {currentLesson.title}
                 </h2>
-              </div>
-
-              {/* Player Controls (Mock) */}
-              <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/20 z-10">
-                <div className="h-full bg-brand-amber w-1/3 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
               </div>
             </div>
 
@@ -136,28 +203,42 @@ export function LearningView() {
                     <h1 className="font-sora text-2xl font-bold text-slate-900 dark:text-white md:text-3xl">
                       {currentLesson.title}
                     </h1>
-                    <div className="mt-2 flex items-center gap-4 text-sm text-slate-500">
-                      <span className="flex items-center gap-1.5">
-                        <Clock className="h-4 w-4" />
-                        {currentLesson.duration}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <FileText className="h-4 w-4" />
-                        Resources (2)
-                      </span>
-                    </div>
+                    {currentLesson.duration && (
+                      <div className="mt-2 flex items-center gap-4 text-sm text-slate-500">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="h-4 w-4" />
+                          {currentLesson.duration} Mins
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="hidden items-center gap-3 md:flex">
-                    <Button variant="outline" size="sm" className="gap-2 border-brand-border">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2 border-brand-border"
+                      onClick={handlePrevLesson}
+                      disabled={currentLessonIndex <= 0}
+                    >
                       <ChevronLeft className="h-4 w-4" />
                       {t("navigation.prev")}
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2 border-brand-border">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2 border-brand-border"
+                      onClick={handleNextLesson}
+                      disabled={currentLessonIndex >= totalLessons - 1}
+                    >
                       {t("navigation.next")}
                       <ChevronRight className="h-4 w-4" />
                     </Button>
-                    <Button size="sm" className="bg-brand-amber text-black hover:bg-brand-amber/90">
-                      {t("navigation.complete_continue")}
+                    <Button
+                      size="sm"
+                      className="bg-brand-amber text-black hover:bg-brand-amber/90"
+                      onClick={handleCompleteAndContinue}
+                    >
+                      {completedLessonIds.includes(currentLesson.id) ? "Completed & Next" : t("navigation.complete_continue")}
                     </Button>
                   </div>
                 </div>
@@ -185,24 +266,9 @@ export function LearningView() {
                   </TabsList>
 
                   <TabsContent value="overview" className="pt-6 prose dark:prose-invert max-w-none">
-                    <p className="text-slate-600 dark:text-slate-400">
-                      In this lesson, we will dive deep into React Props and State. These are the building blocks of interactive components.
-                    </p>
-                    <h4 className="font-sora text-lg font-bold text-slate-900 dark:text-white mt-8 mb-4">Key Learning Objectives</h4>
-                    <ul className="space-y-2 list-none p-0">
-                      <li className="flex items-start gap-2">
-                        <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-amber" />
-                        Understand unidirectional data flow.
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-amber" />
-                        Differentiate between functional components and class components (legacy).
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-amber" />
-                        Master the useState hook for state management.
-                      </li>
-                    </ul>
+                    <div className="text-slate-600 dark:text-slate-400 whitespace-pre-wrap">
+                      {currentLesson.content || currentLesson.textContent || "No description provided for this lesson."}
+                    </div>
                   </TabsContent>
 
                   <TabsContent value="notes" className="pt-6">
@@ -229,7 +295,77 @@ export function LearningView() {
           </>
         )}
 
-        {currentLesson.type === "quiz" && (
+        {currentLesson && currentLesson.type === "text" && (
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="container max-w-4xl px-4 py-8">
+              {/* Header with back link */}
+              <div className="mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Link href="/my-courses">
+                    <Button variant="ghost" size="icon" className="text-slate-600 dark:text-slate-400">
+                      <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand-amber">Text Lesson</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 border-brand-border"
+                    onClick={handlePrevLesson}
+                    disabled={currentLessonIndex <= 0}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    {t("navigation.prev")}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 border-brand-border"
+                    onClick={handleNextLesson}
+                    disabled={currentLessonIndex >= totalLessons - 1}
+                  >
+                    {t("navigation.next")}
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-brand-amber text-black hover:bg-brand-amber/90"
+                    onClick={handleCompleteAndContinue}
+                  >
+                    {completedLessonIds.includes(currentLesson.id) ? "Completed & Next" : t("navigation.complete_continue")}
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="mb-8 border-b border-brand-border pb-6">
+                <h1 className="font-sora text-3xl font-bold text-slate-900 dark:text-white md:text-4xl">
+                  {currentLesson.title}
+                </h1>
+                {currentLesson.duration && (
+                  <div className="mt-2 text-sm text-slate-500 flex items-center gap-1.5">
+                    <Clock className="h-4 w-4" />
+                    <span>{currentLesson.duration} Mins Read</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Text content container */}
+              <div className="prose dark:prose-invert max-w-none text-slate-750 dark:text-slate-300 leading-relaxed whitespace-pre-wrap my-8">
+                {currentLesson.content || currentLesson.textContent || (
+                  <p className="italic text-slate-500">No content available for this lesson.</p>
+                )}
+              </div>
+
+              <div className="mt-12 pt-8 border-t border-brand-border">
+                <DiscussionForum />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {currentLesson && currentLesson.type === "quiz" && (
           <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative">
             <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between gap-4 z-10 border-b border-brand-border bg-white dark:bg-brand-bg">
               <div className="flex items-center gap-4">
@@ -242,6 +378,26 @@ export function LearningView() {
                   Quiz: {currentLesson.title}
                 </h2>
               </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePrevLesson}
+                  disabled={currentLessonIndex <= 0}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  {t("navigation.prev")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNextLesson}
+                  disabled={currentLessonIndex >= totalLessons - 1}
+                >
+                  {t("navigation.next")}
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             <div className="mt-[73px] flex-1">
               <QuizPlayer />
@@ -249,7 +405,7 @@ export function LearningView() {
           </div>
         )}
 
-        {currentLesson.type === "assignment" && (
+        {currentLesson && currentLesson.type === "assignment" && (
           <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative">
             <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between gap-4 z-10 border-b border-brand-border bg-white dark:bg-brand-bg">
               <div className="flex items-center gap-4">
@@ -261,6 +417,26 @@ export function LearningView() {
                 <h2 className="font-sora text-sm font-semibold text-slate-900 dark:text-white md:text-base line-clamp-1">
                   Assignment: {currentLesson.title}
                 </h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePrevLesson}
+                  disabled={currentLessonIndex <= 0}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  {t("navigation.prev")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNextLesson}
+                  disabled={currentLessonIndex >= totalLessons - 1}
+                >
+                  {t("navigation.next")}
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
               </div>
             </div>
             <div className="mt-[73px] flex-1">
@@ -276,8 +452,12 @@ export function LearningView() {
             Content
           </Button>
           <div className="h-8 w-px bg-brand-border mx-2" />
-          <Button className="flex-[2] bg-brand-amber text-black hover:bg-brand-amber/90 text-xs font-bold">
-            Next
+          <Button 
+            className="flex-[2] bg-brand-amber text-black hover:bg-brand-amber/90 text-xs font-bold"
+            onClick={handleCompleteAndContinue}
+            disabled={currentLessonIndex >= totalLessons - 1 && completedLessonIds.includes(currentLesson?.id)}
+          >
+            {currentLessonIndex >= totalLessons - 1 ? "Finish" : "Next"}
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -291,7 +471,7 @@ export function LearningView() {
             animate={{ x: 0 }}
             exit={{ x: 350 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 right-0 z-[60] w-full bg-white dark:bg-brand-card shadow-2xl md:relative md:z-auto md:w-80 lg:w-96 md:border-l md:border-brand-border"
+            className="fixed inset-y-0 right-0 z-[60] w-full bg-white dark:bg-brand-card shadow-2xl md:relative md:z-auto md:w-80 lg:w-96 md:border-l md:border-brand-border animate-fade-in-up"
           >
             <div className="flex h-full flex-col">
               <div className="flex items-center justify-between border-b border-brand-border p-5">
@@ -315,8 +495,12 @@ export function LearningView() {
               </div>
 
               <ScrollArea className="flex-1">
-                <Accordion defaultValue={["s2"]} className="px-2 pb-20">
-                  {MOCK_COURSE.sections.map((section, sIdx) => (
+                <Accordion 
+                  multiple 
+                  defaultValue={course.sections?.map((section: any) => section.id) || []} 
+                  className="px-2 pb-20"
+                >
+                  {course.sections?.map((section: any, sIdx: number) => (
                     <AccordionItem key={section.id} value={section.id} className="border-none">
                       <AccordionTrigger className="hover:no-underline py-4 px-3 text-left">
                         <div className="flex flex-col gap-1">
@@ -326,13 +510,14 @@ export function LearningView() {
                       </AccordionTrigger>
                       <AccordionContent className="pb-2">
                         <div className="space-y-1">
-                          {section.lessons.map((lesson) => {
-                            const isCurrent = currentLesson.id === lesson.id;
+                          {section.lessons?.map((lesson: any) => {
+                            const isCurrent = currentLesson?.id === lesson.id;
+                            const isCompleted = completedLessonIds.includes(lesson.id);
                             return (
                               <div
                                 key={lesson.id}
                                 onClick={() => {
-                                  setCurrentLesson(lesson as Lesson);
+                                  setCurrentLesson(lesson);
                                   if (window.innerWidth < 768) setIsSidebarOpen(false);
                                 }}
                                 className={`group flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors ${isCurrent
@@ -340,19 +525,30 @@ export function LearningView() {
                                   : "hover:bg-slate-100 dark:hover:bg-slate-800"
                                   }`}
                               >
-                                {lesson.completed ? (
-                                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                                ) : (
-                                  getLessonIcon(lesson.type as LessonType, isCurrent)
-                                )}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleLessonComplete(lesson.id);
+                                  }}
+                                  className="focus:outline-none mt-0.5 shrink-0"
+                                >
+                                  {isCompleted ? (
+                                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                  ) : (
+                                    getLessonIcon(lesson.type, isCurrent)
+                                  )}
+                                </button>
                                 <div className="flex-1 overflow-hidden">
                                   <p className={`text-sm leading-snug ${isCurrent ? "font-bold text-brand-amber" : "font-medium text-slate-700 dark:text-slate-300"}`}>
                                     {lesson.title}
                                   </p>
-                                  <div className="mt-1 flex items-center gap-2 text-[10px] text-slate-500">
-                                    <Clock className="h-3 w-3" />
-                                    <span>{lesson.duration}</span>
-                                  </div>
+                                  {lesson.duration && (
+                                    <div className="mt-1 flex items-center gap-2 text-[10px] text-slate-500">
+                                      <Clock className="h-3 w-3" />
+                                      <span>{lesson.duration} mins</span>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             );

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -22,8 +23,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { Course } from "../../domain/course.types";
+import { useState } from "react";
 import { CourseCard } from "./course-card";
 import { CourseFilter } from "./course-filter";
 
@@ -73,12 +73,20 @@ export function CatalogView() {
   const sortByParam = searchParams.get("sortBy") || "newest";
   const pageParam = Number(searchParams.get("page")) || 1;
 
-  const [searchQuery, setSearchQuery] = useState(query);
+  const [searchState, setSearchState] = useState({
+    sourceQuery: query,
+    value: query,
+  });
 
-  // Sync state with URL when params change
-  useEffect(() => {
-    setSearchQuery(query);
-  }, [query]);
+  const searchQuery =
+    searchState.sourceQuery === query ? searchState.value : query;
+
+  const updateSearchQuery = (value: string) => {
+    setSearchState({
+      sourceQuery: query,
+      value,
+    });
+  };
 
   const filters = {
     search: query,
@@ -106,7 +114,8 @@ export function CatalogView() {
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const handleSortChange = (value: string) => {
+  const handleSortChange = (value: string | null) => {
+    if (!value) return;
     const params = new URLSearchParams(searchParams.toString());
     params.set("sortBy", value);
     params.set("page", "1");
@@ -120,7 +129,7 @@ export function CatalogView() {
   };
 
   const clearFilters = () => {
-    setSearchQuery("");
+    updateSearchQuery("");
     router.push(pathname);
   };
 
@@ -145,7 +154,7 @@ export function CatalogView() {
             <Input
               placeholder={tc("search")}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => updateSearchQuery(e.target.value)}
               className="pl-10 h-12 border-brand-border bg-brand-card/50 focus-visible:ring-brand-amber"
             />
           </form>
@@ -171,14 +180,16 @@ export function CatalogView() {
 
             {/* Mobile/Tablet Filter Trigger */}
             <Sheet>
-              <SheetTrigger>
-                <Button
-                  variant="outline"
-                  className="lg:hidden h-12 gap-2 border-brand-border bg-brand-card/50"
-                >
-                  <SlidersHorizontal className="h-4 w-4" />
-                  {t("filters.title")}
-                </Button>
+              <SheetTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    className="lg:hidden h-12 gap-2 border-brand-border bg-brand-card/50"
+                  />
+                }
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                {t("filters.title")}
               </SheetTrigger>
               <SheetContent
                 side="left"
@@ -194,11 +205,13 @@ export function CatalogView() {
                 </SheetHeader>
                 <CourseFilter />
                 <div className="mt-8 pt-6 border-t border-brand-border">
-                  <SheetTrigger>
-                    <Button className="w-full bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12">
-                      Show Results
-                    </Button>
-                  </SheetTrigger>
+                  <SheetClose
+                    render={
+                      <Button className="w-full bg-brand-amber text-black hover:bg-brand-amber2 font-bold h-12" />
+                    }
+                  >
+                    Show Results
+                  </SheetClose>
                 </div>
               </SheetContent>
             </Sheet>

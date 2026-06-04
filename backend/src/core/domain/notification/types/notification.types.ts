@@ -1,0 +1,23 @@
+export enum NotificationType {
+  SYSTEM = 'SYSTEM',
+  ORDER_SUCCESS = 'ORDER_SUCCESS',
+  ENROLLMENT_CREATED = 'ENROLLMENT_CREATED',
+  CERTIFICATE_ISSUED = 'CERTIFICATE_ISSUED',
+  QUIZ_PASSED = 'QUIZ_PASSED',
+  COURSE_UPDATED = 'COURSE_UPDATED',
+  ADMIN_MANUAL = 'ADMIN_MANUAL',
+}
+
+export enum NotificationPriority {
+  LOW = 'LOW',
+  NORMAL = 'NORMAL',
+  HIGH = 'HIGH',
+}
+
+export enum NotificationTargetType {
+  ORDER = 'ORDER',
+  COURSE = 'COURSE',
+  CERTIFICATE = 'CERTIFICATE',
+  QUIZ = 'QUIZ',
+  SYSTEM = 'SYSTEM',
+}

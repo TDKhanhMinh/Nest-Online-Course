@@ -33,7 +33,7 @@ export function CertificatesView() {
   const t = useTranslations("Certificates");
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
+    <div className="space-y-6 md:space-y-8 pb-12">
       <div className="mb-10 max-w-2xl">
         <h1 className="font-sora text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl">
           {t("title")}

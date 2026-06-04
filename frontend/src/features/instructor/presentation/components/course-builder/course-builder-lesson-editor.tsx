@@ -108,7 +108,7 @@ export const CourseBuilderLessonEditor = ({
     resolver: zodResolver(lessonSchema),
     defaultValues: {
       title: lesson.title || "",
-      type: lesson.type || "text",
+      type: (lesson.type as "video" | "text" | "quiz" | "assignment") || "text",
       content: lesson.content || "",
       video_url: lesson.videoUrl || lesson.contentUrl || "",
       is_preview: lesson.isPreview ?? false,
@@ -149,7 +149,7 @@ export const CourseBuilderLessonEditor = ({
   useEffect(() => {
     form.reset({
       title: lesson.title || "",
-      type: lesson.type || "text",
+      type: (lesson.type as "video" | "text" | "quiz" | "assignment") || "text",
       content: lesson.content || "",
       video_url: lesson.videoUrl || lesson.contentUrl || "",
       is_preview: lesson.isPreview ?? false,
